@@ -120,6 +120,24 @@ const faqs = [
   ["É possível solicitar atendimento à distância?", "Entre em contato com a equipe para verificar as possibilidades de atendimento para a sua necessidade."],
 ];
 
+const localBusinessSchema = {
+  "@context": "https://schema.org",
+  "@graph": units.map((unit) => ({
+    "@type": "ProfessionalService",
+    name: unit.name,
+    description: "Assessoria documental para veículos, pessoas e empresas.",
+    telephone: `+55 ${unit.phone}`,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: unit.address.split(" — ")[0],
+      addressLocality: unit.city.startsWith("Carapicuíba") ? "Carapicuíba" : "Osasco",
+      addressRegion: "SP",
+      postalCode: unit.zip.replace(/.*CEP /, ""),
+      addressCountry: "BR",
+    },
+  })),
+};
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -136,8 +154,8 @@ export const Route = createFileRoute("/")({
 
 function Logo({ inverse = false }: { inverse?: boolean }) {
   return (
-    <span className={`flex h-11 w-[130px] items-center overflow-hidden rounded-sm ${inverse ? "bg-brand-deep" : "bg-brand-blue"}`}>
-      <img src={logoAsset.url} alt="DHG Despachante" className="h-full w-full object-cover" width="1906" height="825" />
+    <span className={`flex h-[46px] w-[106px] items-center overflow-hidden rounded-sm ${inverse ? "bg-brand-deep" : "bg-brand-blue"}`}>
+      <img src={logoAsset.url} alt="DHG Despachante" className="h-full w-full object-contain" width="1906" height="825" />
     </span>
   );
 }
@@ -147,6 +165,7 @@ function Index() {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-background text-foreground">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} />
       <header className="sticky top-0 z-50 border-b border-border/80 bg-background/95 backdrop-blur">
         <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-5 lg:px-8">
           <a href="#inicio" aria-label="DHG Despachante — início"><Logo /></a>
