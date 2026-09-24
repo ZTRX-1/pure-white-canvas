@@ -1,3 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ServiceDetail } from "@/components/dhg/page-elements";
-export const Route = createFileRoute("/servicos/documentacao-veicular")({ head: () => ({ meta: [{ title: "Documentação Veicular | DHG Despachante" }, { name: "description", content: "Assessoria para emplacamento, licenciamento, segunda via e atualizações de documentação veicular." }, { property: "og:title", content: "Documentação Veicular | DHG" }, { property: "og:description", content: "Orientação para processos documentais do seu veículo." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }), component: () => <ServiceDetail serviceKey="documentacao-veicular" /> });
+export const Route = createFileRoute("/servicos/documentacao-veicular")({
+  head: () => ({
+    meta: [
+      { title: "Documentação Veicular | DHG Despachante" },
+      {
+        name: "description",
+        content:
+          "Assessoria para emplacamento, licenciamento, segunda via e atualizações de documentação veicular.",
+      },
+      { property: "og:title", content: "Documentação Veicular | DHG" },
+      {
+        property: "og:description",
+        content: "Orientação para processos documentais do seu veículo.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: () => <ServiceDetail serviceKey="documentacao-veicular" />,
+});

@@ -1,3 +1,5 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 export const Route = createFileRoute("/servicos")({ component: ServicosLayout });
-function ServicosLayout() { return <Outlet />; }
+function ServicosLayout() {
+  return <Outlet />;
+}

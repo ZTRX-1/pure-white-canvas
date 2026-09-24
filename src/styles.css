@@ -108,7 +108,12 @@
   --brand-mid: oklch(0.34 0.15 258);
   --brand-soft: oklch(0.965 0.025 246);
   --whatsapp: oklch(0.67 0.17 150);
-  --brand-overlay: linear-gradient(90deg, color-mix(in oklch, var(--brand-deep) 94%, transparent) 0%, color-mix(in oklch, var(--brand-deep) 72%, transparent) 42%, color-mix(in oklch, var(--brand-deep) 8%, transparent) 78%);
+  --brand-overlay: linear-gradient(
+    90deg,
+    color-mix(in oklch, var(--brand-deep) 94%, transparent) 0%,
+    color-mix(in oklch, var(--brand-deep) 72%, transparent) 42%,
+    color-mix(in oklch, var(--brand-deep) 8%, transparent) 78%
+  );
 }
 
 .dark {
@@ -200,17 +205,33 @@
 }
 
 @utility bg-brand-hero {
-  background: linear-gradient(90deg, color-mix(in oklch, var(--brand-deep) 94%, transparent) 0%, color-mix(in oklch, var(--brand-deep) 70%, transparent) 42%, color-mix(in oklch, var(--brand-deep) 8%, transparent) 78%);
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklch, var(--brand-deep) 94%, transparent) 0%,
+    color-mix(in oklch, var(--brand-deep) 70%, transparent) 42%,
+    color-mix(in oklch, var(--brand-deep) 8%, transparent) 78%
+  );
 }
 
 @utility home-hero-overlay {
-  background: linear-gradient(90deg, color-mix(in oklch, var(--brand-deep) 96%, transparent) 0%, color-mix(in oklch, var(--brand-deep) 82%, transparent) 38%, color-mix(in oklch, var(--brand-deep) 32%, transparent) 68%, color-mix(in oklch, var(--brand-deep) 10%, transparent) 100%);
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklch, var(--brand-deep) 96%, transparent) 0%,
+    color-mix(in oklch, var(--brand-deep) 82%, transparent) 38%,
+    color-mix(in oklch, var(--brand-deep) 32%, transparent) 68%,
+    color-mix(in oklch, var(--brand-deep) 10%, transparent) 100%
+  );
   backdrop-filter: blur(1.5px);
   mask-image: linear-gradient(90deg, black 0%, black 48%, transparent 100%);
 }
 
 @utility bg-brand-overlay {
-  background: linear-gradient(0deg, color-mix(in oklch, var(--brand-deep) 88%, transparent) 0%, color-mix(in oklch, var(--brand-deep) 35%, transparent) 58%, transparent 100%);
+  background: linear-gradient(
+    0deg,
+    color-mix(in oklch, var(--brand-deep) 88%, transparent) 0%,
+    color-mix(in oklch, var(--brand-deep) 35%, transparent) 58%,
+    transparent 100%
+  );
 }
 
 @utility eyebrow {
@@ -222,7 +243,9 @@
 }
 
 @utility editorial-link {
-  transition: color 180ms ease, transform 180ms ease;
+  transition:
+    color 180ms ease,
+    transform 180ms ease;
 }
 
 @utility reveal-in {
@@ -230,13 +253,21 @@
 }
 
 @keyframes reveal-in {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-  .reveal-in { animation: none; }
+  .reveal-in {
+    animation: none;
+  }
 }

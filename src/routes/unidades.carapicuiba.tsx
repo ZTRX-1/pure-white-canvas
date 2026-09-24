@@ -1,3 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { UnitDetail } from "@/components/dhg/page-elements";
-export const Route = createFileRoute("/unidades/carapicuiba")({ head: () => ({ meta: [{ title: "Despachante em Carapicuíba | DHG" }, { name: "description", content: "DHG Despachante em Carapicuíba: R. Itajubá, 81, Parque Santa Teresa. Atendimento para pessoas e empresas." }, { property: "og:title", content: "DHG Despachante Carapicuíba" }, { property: "og:description", content: "Assessoria documental no Parque Santa Teresa, Carapicuíba." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }), component: () => <UnitDetail unitKey="carapicuiba" /> });
+export const Route = createFileRoute("/unidades/carapicuiba")({
+  head: () => ({
+    meta: [
+      { title: "Despachante em Carapicuíba | DHG" },
+      {
+        name: "description",
+        content:
+          "DHG Despachante em Carapicuíba: R. Itajubá, 81, Parque Santa Teresa. Atendimento para pessoas e empresas.",
+      },
+      { property: "og:title", content: "DHG Despachante Carapicuíba" },
+      {
+        property: "og:description",
+        content: "Assessoria documental no Parque Santa Teresa, Carapicuíba.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: () => <UnitDetail unitKey="carapicuiba" />,
+});

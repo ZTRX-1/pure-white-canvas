@@ -1,8 +1,94 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHero, SectionTitle, CtaBand } from "@/components/dhg/page-elements";
 import { unitImages } from "@/lib/dhg-media";
-export const Route = createFileRoute("/empresas")({ head: () => ({ meta: [
-  { title: "Assessoria Documental para Empresas | DHG" }, { name: "description", content: "Gestão documental, regularizações, controle de vencimentos e acompanhamento de processos para empresas." },
-  { property: "og:title", content: "Soluções para Empresas | DHG" }, { property: "og:description", content: "Assessoria documental profissional para rotinas empresariais." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" },
-] }), component: EmpresasPage });
-function EmpresasPage() { const items = ["Gestão de documentos e vencimentos", "Preparação de documentos e requerimentos", "Protocolização e acompanhamento de processos", "Regularizações, alvarás e licenças", "Laudos, perícias, vistorias e avaliações", "Certificações, registros e cadastros"]; return <><PageHero eyebrow="Soluções para empresas" title="Organização documental para sua operação avançar." text="Acompanhamento profissional para empresas que precisam de clareza, organização e continuidade em seus processos." image={unitImages["osasco-jardim-conceicao"]} /><section className="bg-brand-soft py-20 sm:py-24"><div className="mx-auto grid max-w-7xl gap-14 px-5 lg:grid-cols-[0.75fr_1.25fr] lg:px-8"><SectionTitle eyebrow="Atuação B2B" title="Assessoria que acompanha o ritmo da empresa" text="A DHG organiza demandas recorrentes, documentos, vencimentos e protocolos para que a equipe da empresa tenha clareza sobre o que está em andamento e o que exige providência." /><ul className="border-t border-brand-deep/20">{items.map((item) => <li key={item} className="border-b border-brand-deep/20 py-5 text-base font-semibold text-brand-deep">{item}</li>)}</ul></div></section><section className="bg-brand-deep py-20 text-primary-foreground"><div className="mx-auto max-w-7xl px-5 lg:px-8"><p className="eyebrow text-primary-foreground/60">Como começamos</p><h2 className="mt-4 text-4xl font-semibold sm:text-5xl">Entendimento antes da execução</h2><div className="mt-12 grid border-t border-primary-foreground/20 md:grid-cols-3">{[["01","Contexto","A equipe entende as necessidades documentais apresentadas."],["02","Orientação","Os próximos passos e documentos são organizados de acordo com o processo."],["03","Acompanhamento","A DHG conduz e acompanha as etapas aplicáveis."]].map(([n,t,d]) => <div key={n} className="border-b border-primary-foreground/20 py-8 md:border-r md:px-8 first:pl-0 last:border-r-0"><span className="text-sm text-primary-foreground/50">{n}</span><h3 className="mt-7 text-2xl font-semibold">{t}</h3><p className="mt-4 text-base leading-7 text-primary-foreground/70">{d}</p></div>)}</div></div></section><CtaBand title="Sua empresa precisa organizar uma demanda documental?" text="Converse com a equipe e apresente a sua necessidade." /></> }
+export const Route = createFileRoute("/empresas")({
+  head: () => ({
+    meta: [
+      { title: "Assessoria Documental para Empresas | DHG" },
+      {
+        name: "description",
+        content:
+          "Gestão documental, regularizações, controle de vencimentos e acompanhamento de processos para empresas.",
+      },
+      { property: "og:title", content: "Soluções para Empresas | DHG" },
+      {
+        property: "og:description",
+        content: "Assessoria documental profissional para rotinas empresariais.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: EmpresasPage,
+});
+function EmpresasPage() {
+  const items = [
+    "Gestão de documentos e vencimentos",
+    "Preparação de documentos e requerimentos",
+    "Protocolização e acompanhamento de processos",
+    "Regularizações, alvarás e licenças",
+    "Laudos, perícias, vistorias e avaliações",
+    "Certificações, registros e cadastros",
+  ];
+  return (
+    <>
+      <PageHero
+        eyebrow="Soluções para empresas"
+        title="Organização documental para sua operação avançar."
+        text="Acompanhamento profissional para empresas que precisam de clareza, organização e continuidade em seus processos."
+        image={unitImages["osasco-jardim-conceicao"]}
+      />
+      <section className="bg-brand-soft py-20 sm:py-24">
+        <div className="mx-auto grid max-w-7xl gap-14 px-5 lg:grid-cols-[0.75fr_1.25fr] lg:px-8">
+          <SectionTitle
+            eyebrow="Atuação B2B"
+            title="Assessoria que acompanha o ritmo da empresa"
+            text="A DHG organiza demandas recorrentes, documentos, vencimentos e protocolos para que a equipe da empresa tenha clareza sobre o que está em andamento e o que exige providência."
+          />
+          <ul className="border-t border-brand-deep/20">
+            {items.map((item) => (
+              <li
+                key={item}
+                className="border-b border-brand-deep/20 py-5 text-base font-semibold text-brand-deep"
+              >
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+      <section className="bg-brand-deep py-20 text-primary-foreground">
+        <div className="mx-auto max-w-7xl px-5 lg:px-8">
+          <p className="eyebrow text-primary-foreground/60">Como começamos</p>
+          <h2 className="mt-4 text-4xl font-semibold sm:text-5xl">
+            Entendimento antes da execução
+          </h2>
+          <div className="mt-12 grid border-t border-primary-foreground/20 md:grid-cols-3">
+            {[
+              ["01", "Contexto", "A equipe entende as necessidades documentais apresentadas."],
+              [
+                "02",
+                "Orientação",
+                "Os próximos passos e documentos são organizados de acordo com o processo.",
+              ],
+              ["03", "Acompanhamento", "A DHG conduz e acompanha as etapas aplicáveis."],
+            ].map(([n, t, d]) => (
+              <div
+                key={n}
+                className="border-b border-primary-foreground/20 py-8 md:border-r md:px-8 first:pl-0 last:border-r-0"
+              >
+                <span className="text-sm text-primary-foreground/50">{n}</span>
+                <h3 className="mt-7 text-2xl font-semibold">{t}</h3>
+                <p className="mt-4 text-base leading-7 text-primary-foreground/70">{d}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+      <CtaBand
+        title="Sua empresa precisa organizar uma demanda documental?"
+        text="Converse com a equipe e apresente a sua necessidade."
+      />
+    </>
+  );
+}

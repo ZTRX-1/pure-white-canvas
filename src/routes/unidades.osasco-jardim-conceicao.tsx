@@ -1,3 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { UnitDetail } from "@/components/dhg/page-elements";
-export const Route = createFileRoute("/unidades/osasco-jardim-conceicao")({ head: () => ({ meta: [{ title: "Despachante no Jardim Conceição, Osasco | DHG" }, { name: "description", content: "DHG Despachante em Osasco: R. Pernambucana, 113, Conceição." }, { property: "og:title", content: "DHG Despachante Jardim Conceição" }, { property: "og:description", content: "Assessoria documental no Jardim Conceição, Osasco." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }), component: () => <UnitDetail unitKey="osasco-jardim-conceicao" /> });
+export const Route = createFileRoute("/unidades/osasco-jardim-conceicao")({
+  head: () => ({
+    meta: [
+      { title: "Despachante no Jardim Conceição, Osasco | DHG" },
+      {
+        name: "description",
+        content: "DHG Despachante em Osasco: R. Pernambucana, 113, Conceição.",
+      },
+      { property: "og:title", content: "DHG Despachante Jardim Conceição" },
+      { property: "og:description", content: "Assessoria documental no Jardim Conceição, Osasco." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: () => <UnitDetail unitKey="osasco-jardim-conceicao" />,
+});

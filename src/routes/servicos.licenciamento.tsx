@@ -1,3 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ServiceDetail } from "@/components/dhg/page-elements";
-export const Route = createFileRoute("/servicos/licenciamento")({ head: () => ({ meta: [{ title: "Licenciamento de Veículo | DHG" }, { name: "description", content: "Suporte para licenciamento anual, documentação e pendências relacionadas ao veículo." }, { property: "og:title", content: "Licenciamento | DHG Despachante" }, { property: "og:description", content: "Orientação para o licenciamento do seu veículo." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }), component: () => <ServiceDetail serviceKey="licenciamento" /> });
+export const Route = createFileRoute("/servicos/licenciamento")({
+  head: () => ({
+    meta: [
+      { title: "Licenciamento de Veículo | DHG" },
+      {
+        name: "description",
+        content:
+          "Suporte para licenciamento anual, documentação e pendências relacionadas ao veículo.",
+      },
+      { property: "og:title", content: "Licenciamento | DHG Despachante" },
+      { property: "og:description", content: "Orientação para o licenciamento do seu veículo." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
+  component: () => <ServiceDetail serviceKey="licenciamento" />,
+});
