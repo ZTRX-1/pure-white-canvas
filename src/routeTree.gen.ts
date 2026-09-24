@@ -16,6 +16,7 @@ import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as ConteudosRouteImport } from './routes/conteudos'
 import { Route as EmpresasRouteImport } from './routes/empresas'
 import { Route as InternoRouteImport } from './routes/interno'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as UnidadesRouteImport } from './routes/unidades'
@@ -65,6 +66,11 @@ const EmpresasRoute = EmpresasRouteImport.update({
 const InternoRoute = InternoRouteImport.update({
   id: '/interno',
   path: '/interno',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicosRoute = ServicosRouteImport.update({
@@ -156,6 +162,7 @@ export interface FileRoutesByFullPath {
   '/conteudos': typeof ConteudosRoute
   '/empresas': typeof EmpresasRoute
   '/interno': typeof InternoRouteWithChildren
+  '/login': typeof LoginRoute
   '/servicos': typeof ServicosRouteWithChildren
   '/sobre': typeof SobreRoute
   '/unidades': typeof UnidadesRouteWithChildren
@@ -180,6 +187,7 @@ export interface FileRoutesByTo {
   '/conteudos': typeof ConteudosRoute
   '/empresas': typeof EmpresasRoute
   '/interno': typeof InternoRouteWithChildren
+  '/login': typeof LoginRoute
   '/sobre': typeof SobreRoute
   '/interno/documentos': typeof InternoDocumentosRoute
   '/servicos/cnh': typeof ServicosCnhRoute
@@ -203,6 +211,7 @@ export interface FileRoutesById {
   '/conteudos': typeof ConteudosRoute
   '/empresas': typeof EmpresasRoute
   '/interno': typeof InternoRouteWithChildren
+  '/login': typeof LoginRoute
   '/servicos': typeof ServicosRouteWithChildren
   '/sobre': typeof SobreRoute
   '/unidades': typeof UnidadesRouteWithChildren
@@ -229,6 +238,7 @@ export interface FileRouteTypes {
     | '/conteudos'
     | '/empresas'
     | '/interno'
+    | '/login'
     | '/servicos'
     | '/sobre'
     | '/unidades'
@@ -253,6 +263,7 @@ export interface FileRouteTypes {
     | '/conteudos'
     | '/empresas'
     | '/interno'
+    | '/login'
     | '/sobre'
     | '/interno/documentos'
     | '/servicos/cnh'
@@ -275,6 +286,7 @@ export interface FileRouteTypes {
     | '/conteudos'
     | '/empresas'
     | '/interno'
+    | '/login'
     | '/servicos'
     | '/sobre'
     | '/unidades'
@@ -300,6 +312,7 @@ export interface RootRouteChildren {
   ConteudosRoute: typeof ConteudosRoute
   EmpresasRoute: typeof EmpresasRoute
   InternoRoute: typeof InternoRouteWithChildren
+  LoginRoute: typeof LoginRoute
   ServicosRoute: typeof ServicosRouteWithChildren
   SobreRoute: typeof SobreRoute
   UnidadesRoute: typeof UnidadesRouteWithChildren
@@ -354,6 +367,13 @@ declare module '@tanstack/react-router' {
       path: '/interno'
       fullPath: '/interno'
       preLoaderRoute: typeof InternoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/servicos': {
@@ -525,6 +545,7 @@ const rootRouteChildren: RootRouteChildren = {
   ConteudosRoute: ConteudosRoute,
   EmpresasRoute: EmpresasRoute,
   InternoRoute: InternoRouteWithChildren,
+  LoginRoute: LoginRoute,
   ServicosRoute: ServicosRouteWithChildren,
   SobreRoute: SobreRoute,
   UnidadesRoute: UnidadesRouteWithChildren,
