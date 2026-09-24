@@ -1,6 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHero, SectionTitle, CtaBand } from "@/components/dhg/page-elements";
 import { unitImages } from "@/lib/dhg-media";
+
+const items = [
+  "Gestão de documentos e vencimentos",
+  "Preparação de documentos e requerimentos",
+  "Protocolização e acompanhamento de processos",
+  "Regularizações, alvarás e licenças",
+  "Laudos, perícias, vistorias e avaliações",
+  "Certificações, registros e cadastros",
+];
+
 export const Route = createFileRoute("/empresas")({
   head: () => ({
     meta: [
@@ -21,15 +31,8 @@ export const Route = createFileRoute("/empresas")({
   }),
   component: EmpresasPage,
 });
+
 function EmpresasPage() {
-  const items = [
-    "Gestão de documentos e vencimentos",
-    "Preparação de documentos e requerimentos",
-    "Protocolização e acompanhamento de processos",
-    "Regularizações, alvarás e licenças",
-    "Laudos, perícias, vistorias e avaliações",
-    "Certificações, registros e cadastros",
-  ];
   return (
     <>
       <PageHero
@@ -38,23 +41,24 @@ function EmpresasPage() {
         text="Acompanhamento profissional para empresas que precisam de clareza, organização e continuidade em seus processos."
         image={unitImages["osasco-jardim-conceicao"]}
       />
-      <section className="bg-brand-soft py-20 sm:py-24">
-        <div className="mx-auto grid max-w-7xl gap-14 px-5 lg:grid-cols-[0.75fr_1.25fr] lg:px-8">
+      <section className="bg-brand-soft py-20 sm:py-28">
+        <div className="mx-auto grid max-w-7xl gap-16 px-5 lg:grid-cols-[0.75fr_1.25fr] lg:px-8">
           <SectionTitle
             eyebrow="Atuação B2B"
             title="Assessoria que acompanha o ritmo da empresa"
             text="A DHG organiza demandas recorrentes, documentos, vencimentos e protocolos para que a equipe da empresa tenha clareza sobre o que está em andamento e o que exige providência."
           />
-          <ul className="border-t border-brand-deep/20">
+          <div className="grid gap-3 sm:grid-cols-2">
             {items.map((item) => (
-              <li
+              <div
                 key={item}
-                className="border-b border-brand-deep/20 py-5 text-base font-semibold text-brand-deep"
+                className="flex items-start gap-3 rounded-lg bg-background p-5"
               >
-                {item}
-              </li>
+                <span className="mt-1 size-2 shrink-0 rounded-full bg-brand-blue" />
+                <span className="text-base font-semibold text-brand-deep">{item}</span>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       </section>
       <section className="bg-brand-deep py-20 text-primary-foreground">
@@ -63,23 +67,19 @@ function EmpresasPage() {
           <h2 className="mt-4 text-4xl font-semibold sm:text-5xl">
             Entendimento antes da execução
           </h2>
-          <div className="mt-12 grid border-t border-primary-foreground/20 md:grid-cols-3">
+          <div className="mt-12 grid gap-6 md:grid-cols-3">
             {[
               ["01", "Contexto", "A equipe entende as necessidades documentais apresentadas."],
-              [
-                "02",
-                "Orientação",
-                "Os próximos passos e documentos são organizados de acordo com o processo.",
-              ],
+              ["02", "Orientação", "Os próximos passos e documentos são organizados de acordo com o processo."],
               ["03", "Acompanhamento", "A DHG conduz e acompanha as etapas aplicáveis."],
             ].map(([n, t, d]) => (
               <div
                 key={n}
-                className="border-b border-primary-foreground/20 py-8 md:border-r md:px-8 first:pl-0 last:border-r-0"
+                className="rounded-lg border border-primary-foreground/15 bg-brand-deep/60 px-7 py-8"
               >
                 <span className="text-sm text-primary-foreground/50">{n}</span>
-                <h3 className="mt-7 text-2xl font-semibold">{t}</h3>
-                <p className="mt-4 text-base leading-7 text-primary-foreground/70">{d}</p>
+                <h3 className="mt-5 text-xl font-semibold">{t}</h3>
+                <p className="mt-3 text-base leading-7 text-primary-foreground/70">{d}</p>
               </div>
             ))}
           </div>
