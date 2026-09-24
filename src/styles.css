@@ -65,6 +65,7 @@
   --color-brand-blue: var(--brand-blue);
   --color-brand-soft: var(--brand-soft);
   --color-whatsapp: var(--whatsapp);
+  --color-brand-overlay: var(--brand-overlay);
 }
 
 :root {
@@ -105,6 +106,7 @@
   --brand-blue: oklch(0.42 0.18 256);
   --brand-soft: oklch(0.955 0.025 250);
   --whatsapp: oklch(0.67 0.17 150);
+  --brand-overlay: linear-gradient(90deg, oklch(0.18 0.08 256 / 0.98) 0%, oklch(0.2 0.08 256 / 0.86) 45%, oklch(0.2 0.08 256 / 0.2) 100%);
 }
 
 .dark {
@@ -154,6 +156,10 @@
     text-rendering: optimizeLegibility;
   }
 
+  a {
+    text-decoration: none;
+  }
+
   html {
     scroll-behavior: smooth;
   }
@@ -169,6 +175,22 @@
     background: var(--brand-blue);
     color: var(--primary-foreground);
   }
+}
+
+@utility bg-brand-hero {
+  background: linear-gradient(90deg, oklch(0.18 0.08 256 / 0.98) 0%, oklch(0.2 0.08 256 / 0.86) 44%, oklch(0.2 0.08 256 / 0.16) 100%);
+}
+
+@utility bg-brand-overlay {
+  background: linear-gradient(0deg, oklch(0.18 0.08 256 / 0.98) 0%, oklch(0.2 0.08 256 / 0.7) 55%, oklch(0.2 0.08 256 / 0.25) 100%);
+}
+
+@utility eyebrow {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
 }
 
 @media (prefers-reduced-motion: reduce) {

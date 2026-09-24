@@ -1,0 +1,3 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { ServiceDetail } from "@/components/dhg/page-elements";
+export const Route = createFileRoute("/servicos/transferencia-de-veiculo")({ head: () => ({ meta: [{ title: "Transferência de Veículo | DHG" }, { name: "description", content: "Orientação e acompanhamento para transferência de propriedade, estado ou município." }, { property: "og:title", content: "Transferência de Veículo | DHG" }, { property: "og:description", content: "Assessoria para conduzir sua transferência veicular." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }), component: () => <ServiceDetail serviceKey="transferencia-de-veiculo" /> });

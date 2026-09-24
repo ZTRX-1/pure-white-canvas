@@ -10,33 +10,262 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ClienteRouteImport } from './routes/cliente'
+import { Route as ConsultasRouteImport } from './routes/consultas'
+import { Route as ContatoRouteImport } from './routes/contato'
+import { Route as ConteudosRouteImport } from './routes/conteudos'
+import { Route as EmpresasRouteImport } from './routes/empresas'
+import { Route as ServicosRouteImport } from './routes/servicos'
+import { Route as SobreRouteImport } from './routes/sobre'
+import { Route as UnidadesRouteImport } from './routes/unidades'
+import { Route as ServicosIndexRouteImport } from './routes/servicos.index'
+import { Route as ServicosCnhRouteImport } from './routes/servicos.cnh'
+import { Route as ServicosDebitosERegularizacoesRouteImport } from './routes/servicos.debitos-e-regularizacoes'
+import { Route as ServicosDocumentacaoVeicularRouteImport } from './routes/servicos.documentacao-veicular'
+import { Route as ServicosLicenciamentoRouteImport } from './routes/servicos.licenciamento'
+import { Route as ServicosTransferenciaDeVeiculoRouteImport } from './routes/servicos.transferencia-de-veiculo'
+import { Route as UnidadesIndexRouteImport } from './routes/unidades.index'
+import { Route as UnidadesCarapicuibaRouteImport } from './routes/unidades.carapicuiba'
+import { Route as UnidadesOsascoJardimConceicaoRouteImport } from './routes/unidades.osasco-jardim-conceicao'
+import { Route as UnidadesOsascoJardimDabrilRouteImport } from './routes/unidades.osasco-jardim-dabril'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ClienteRoute = ClienteRouteImport.update({
+  id: '/cliente',
+  path: '/cliente',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConsultasRoute = ConsultasRouteImport.update({
+  id: '/consultas',
+  path: '/consultas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContatoRoute = ContatoRouteImport.update({
+  id: '/contato',
+  path: '/contato',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConteudosRoute = ConteudosRouteImport.update({
+  id: '/conteudos',
+  path: '/conteudos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmpresasRoute = EmpresasRouteImport.update({
+  id: '/empresas',
+  path: '/empresas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicosRoute = ServicosRouteImport.update({
+  id: '/servicos',
+  path: '/servicos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SobreRoute = SobreRouteImport.update({
+  id: '/sobre',
+  path: '/sobre',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UnidadesRoute = UnidadesRouteImport.update({
+  id: '/unidades',
+  path: '/unidades',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicosIndexRoute = ServicosIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ServicosRoute,
+} as any)
+const ServicosCnhRoute = ServicosCnhRouteImport.update({
+  id: '/cnh',
+  path: '/cnh',
+  getParentRoute: () => ServicosRoute,
+} as any)
+const ServicosDebitosERegularizacoesRoute =
+  ServicosDebitosERegularizacoesRouteImport.update({
+    id: '/debitos-e-regularizacoes',
+    path: '/debitos-e-regularizacoes',
+    getParentRoute: () => ServicosRoute,
+  } as any)
+const ServicosDocumentacaoVeicularRoute =
+  ServicosDocumentacaoVeicularRouteImport.update({
+    id: '/documentacao-veicular',
+    path: '/documentacao-veicular',
+    getParentRoute: () => ServicosRoute,
+  } as any)
+const ServicosLicenciamentoRoute = ServicosLicenciamentoRouteImport.update({
+  id: '/licenciamento',
+  path: '/licenciamento',
+  getParentRoute: () => ServicosRoute,
+} as any)
+const ServicosTransferenciaDeVeiculoRoute =
+  ServicosTransferenciaDeVeiculoRouteImport.update({
+    id: '/transferencia-de-veiculo',
+    path: '/transferencia-de-veiculo',
+    getParentRoute: () => ServicosRoute,
+  } as any)
+const UnidadesIndexRoute = UnidadesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => UnidadesRoute,
+} as any)
+const UnidadesCarapicuibaRoute = UnidadesCarapicuibaRouteImport.update({
+  id: '/carapicuiba',
+  path: '/carapicuiba',
+  getParentRoute: () => UnidadesRoute,
+} as any)
+const UnidadesOsascoJardimConceicaoRoute =
+  UnidadesOsascoJardimConceicaoRouteImport.update({
+    id: '/osasco-jardim-conceicao',
+    path: '/osasco-jardim-conceicao',
+    getParentRoute: () => UnidadesRoute,
+  } as any)
+const UnidadesOsascoJardimDabrilRoute =
+  UnidadesOsascoJardimDabrilRouteImport.update({
+    id: '/osasco-jardim-dabril',
+    path: '/osasco-jardim-dabril',
+    getParentRoute: () => UnidadesRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/cliente': typeof ClienteRoute
+  '/consultas': typeof ConsultasRoute
+  '/contato': typeof ContatoRoute
+  '/conteudos': typeof ConteudosRoute
+  '/empresas': typeof EmpresasRoute
+  '/servicos': typeof ServicosRouteWithChildren
+  '/sobre': typeof SobreRoute
+  '/unidades': typeof UnidadesRouteWithChildren
+  '/servicos/cnh': typeof ServicosCnhRoute
+  '/servicos/debitos-e-regularizacoes': typeof ServicosDebitosERegularizacoesRoute
+  '/servicos/documentacao-veicular': typeof ServicosDocumentacaoVeicularRoute
+  '/servicos/licenciamento': typeof ServicosLicenciamentoRoute
+  '/servicos/transferencia-de-veiculo': typeof ServicosTransferenciaDeVeiculoRoute
+  '/unidades/carapicuiba': typeof UnidadesCarapicuibaRoute
+  '/unidades/osasco-jardim-conceicao': typeof UnidadesOsascoJardimConceicaoRoute
+  '/unidades/osasco-jardim-dabril': typeof UnidadesOsascoJardimDabrilRoute
+  '/servicos/': typeof ServicosIndexRoute
+  '/unidades/': typeof UnidadesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/cliente': typeof ClienteRoute
+  '/consultas': typeof ConsultasRoute
+  '/contato': typeof ContatoRoute
+  '/conteudos': typeof ConteudosRoute
+  '/empresas': typeof EmpresasRoute
+  '/sobre': typeof SobreRoute
+  '/servicos/cnh': typeof ServicosCnhRoute
+  '/servicos/debitos-e-regularizacoes': typeof ServicosDebitosERegularizacoesRoute
+  '/servicos/documentacao-veicular': typeof ServicosDocumentacaoVeicularRoute
+  '/servicos/licenciamento': typeof ServicosLicenciamentoRoute
+  '/servicos/transferencia-de-veiculo': typeof ServicosTransferenciaDeVeiculoRoute
+  '/unidades/carapicuiba': typeof UnidadesCarapicuibaRoute
+  '/unidades/osasco-jardim-conceicao': typeof UnidadesOsascoJardimConceicaoRoute
+  '/unidades/osasco-jardim-dabril': typeof UnidadesOsascoJardimDabrilRoute
+  '/servicos': typeof ServicosIndexRoute
+  '/unidades': typeof UnidadesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/cliente': typeof ClienteRoute
+  '/consultas': typeof ConsultasRoute
+  '/contato': typeof ContatoRoute
+  '/conteudos': typeof ConteudosRoute
+  '/empresas': typeof EmpresasRoute
+  '/servicos': typeof ServicosRouteWithChildren
+  '/sobre': typeof SobreRoute
+  '/unidades': typeof UnidadesRouteWithChildren
+  '/servicos/cnh': typeof ServicosCnhRoute
+  '/servicos/debitos-e-regularizacoes': typeof ServicosDebitosERegularizacoesRoute
+  '/servicos/documentacao-veicular': typeof ServicosDocumentacaoVeicularRoute
+  '/servicos/licenciamento': typeof ServicosLicenciamentoRoute
+  '/servicos/transferencia-de-veiculo': typeof ServicosTransferenciaDeVeiculoRoute
+  '/unidades/carapicuiba': typeof UnidadesCarapicuibaRoute
+  '/unidades/osasco-jardim-conceicao': typeof UnidadesOsascoJardimConceicaoRoute
+  '/unidades/osasco-jardim-dabril': typeof UnidadesOsascoJardimDabrilRoute
+  '/servicos/': typeof ServicosIndexRoute
+  '/unidades/': typeof UnidadesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/cliente'
+    | '/consultas'
+    | '/contato'
+    | '/conteudos'
+    | '/empresas'
+    | '/servicos'
+    | '/sobre'
+    | '/unidades'
+    | '/servicos/cnh'
+    | '/servicos/debitos-e-regularizacoes'
+    | '/servicos/documentacao-veicular'
+    | '/servicos/licenciamento'
+    | '/servicos/transferencia-de-veiculo'
+    | '/unidades/carapicuiba'
+    | '/unidades/osasco-jardim-conceicao'
+    | '/unidades/osasco-jardim-dabril'
+    | '/servicos/'
+    | '/unidades/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/cliente'
+    | '/consultas'
+    | '/contato'
+    | '/conteudos'
+    | '/empresas'
+    | '/sobre'
+    | '/servicos/cnh'
+    | '/servicos/debitos-e-regularizacoes'
+    | '/servicos/documentacao-veicular'
+    | '/servicos/licenciamento'
+    | '/servicos/transferencia-de-veiculo'
+    | '/unidades/carapicuiba'
+    | '/unidades/osasco-jardim-conceicao'
+    | '/unidades/osasco-jardim-dabril'
+    | '/servicos'
+    | '/unidades'
+  id:
+    | '__root__'
+    | '/'
+    | '/cliente'
+    | '/consultas'
+    | '/contato'
+    | '/conteudos'
+    | '/empresas'
+    | '/servicos'
+    | '/sobre'
+    | '/unidades'
+    | '/servicos/cnh'
+    | '/servicos/debitos-e-regularizacoes'
+    | '/servicos/documentacao-veicular'
+    | '/servicos/licenciamento'
+    | '/servicos/transferencia-de-veiculo'
+    | '/unidades/carapicuiba'
+    | '/unidades/osasco-jardim-conceicao'
+    | '/unidades/osasco-jardim-dabril'
+    | '/servicos/'
+    | '/unidades/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ClienteRoute: typeof ClienteRoute
+  ConsultasRoute: typeof ConsultasRoute
+  ContatoRoute: typeof ContatoRoute
+  ConteudosRoute: typeof ConteudosRoute
+  EmpresasRoute: typeof EmpresasRoute
+  ServicosRoute: typeof ServicosRouteWithChildren
+  SobreRoute: typeof SobreRoute
+  UnidadesRoute: typeof UnidadesRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +277,185 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cliente': {
+      id: '/cliente'
+      path: '/cliente'
+      fullPath: '/cliente'
+      preLoaderRoute: typeof ClienteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/consultas': {
+      id: '/consultas'
+      path: '/consultas'
+      fullPath: '/consultas'
+      preLoaderRoute: typeof ConsultasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contato': {
+      id: '/contato'
+      path: '/contato'
+      fullPath: '/contato'
+      preLoaderRoute: typeof ContatoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conteudos': {
+      id: '/conteudos'
+      path: '/conteudos'
+      fullPath: '/conteudos'
+      preLoaderRoute: typeof ConteudosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/empresas': {
+      id: '/empresas'
+      path: '/empresas'
+      fullPath: '/empresas'
+      preLoaderRoute: typeof EmpresasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/servicos': {
+      id: '/servicos'
+      path: '/servicos'
+      fullPath: '/servicos'
+      preLoaderRoute: typeof ServicosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sobre': {
+      id: '/sobre'
+      path: '/sobre'
+      fullPath: '/sobre'
+      preLoaderRoute: typeof SobreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/unidades': {
+      id: '/unidades'
+      path: '/unidades'
+      fullPath: '/unidades'
+      preLoaderRoute: typeof UnidadesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/servicos/': {
+      id: '/servicos/'
+      path: '/'
+      fullPath: '/servicos/'
+      preLoaderRoute: typeof ServicosIndexRouteImport
+      parentRoute: typeof ServicosRoute
+    }
+    '/servicos/cnh': {
+      id: '/servicos/cnh'
+      path: '/cnh'
+      fullPath: '/servicos/cnh'
+      preLoaderRoute: typeof ServicosCnhRouteImport
+      parentRoute: typeof ServicosRoute
+    }
+    '/servicos/debitos-e-regularizacoes': {
+      id: '/servicos/debitos-e-regularizacoes'
+      path: '/debitos-e-regularizacoes'
+      fullPath: '/servicos/debitos-e-regularizacoes'
+      preLoaderRoute: typeof ServicosDebitosERegularizacoesRouteImport
+      parentRoute: typeof ServicosRoute
+    }
+    '/servicos/documentacao-veicular': {
+      id: '/servicos/documentacao-veicular'
+      path: '/documentacao-veicular'
+      fullPath: '/servicos/documentacao-veicular'
+      preLoaderRoute: typeof ServicosDocumentacaoVeicularRouteImport
+      parentRoute: typeof ServicosRoute
+    }
+    '/servicos/licenciamento': {
+      id: '/servicos/licenciamento'
+      path: '/licenciamento'
+      fullPath: '/servicos/licenciamento'
+      preLoaderRoute: typeof ServicosLicenciamentoRouteImport
+      parentRoute: typeof ServicosRoute
+    }
+    '/servicos/transferencia-de-veiculo': {
+      id: '/servicos/transferencia-de-veiculo'
+      path: '/transferencia-de-veiculo'
+      fullPath: '/servicos/transferencia-de-veiculo'
+      preLoaderRoute: typeof ServicosTransferenciaDeVeiculoRouteImport
+      parentRoute: typeof ServicosRoute
+    }
+    '/unidades/': {
+      id: '/unidades/'
+      path: '/'
+      fullPath: '/unidades/'
+      preLoaderRoute: typeof UnidadesIndexRouteImport
+      parentRoute: typeof UnidadesRoute
+    }
+    '/unidades/carapicuiba': {
+      id: '/unidades/carapicuiba'
+      path: '/carapicuiba'
+      fullPath: '/unidades/carapicuiba'
+      preLoaderRoute: typeof UnidadesCarapicuibaRouteImport
+      parentRoute: typeof UnidadesRoute
+    }
+    '/unidades/osasco-jardim-conceicao': {
+      id: '/unidades/osasco-jardim-conceicao'
+      path: '/osasco-jardim-conceicao'
+      fullPath: '/unidades/osasco-jardim-conceicao'
+      preLoaderRoute: typeof UnidadesOsascoJardimConceicaoRouteImport
+      parentRoute: typeof UnidadesRoute
+    }
+    '/unidades/osasco-jardim-dabril': {
+      id: '/unidades/osasco-jardim-dabril'
+      path: '/osasco-jardim-dabril'
+      fullPath: '/unidades/osasco-jardim-dabril'
+      preLoaderRoute: typeof UnidadesOsascoJardimDabrilRouteImport
+      parentRoute: typeof UnidadesRoute
+    }
   }
 }
 
+interface ServicosRouteChildren {
+  ServicosCnhRoute: typeof ServicosCnhRoute
+  ServicosDebitosERegularizacoesRoute: typeof ServicosDebitosERegularizacoesRoute
+  ServicosDocumentacaoVeicularRoute: typeof ServicosDocumentacaoVeicularRoute
+  ServicosLicenciamentoRoute: typeof ServicosLicenciamentoRoute
+  ServicosTransferenciaDeVeiculoRoute: typeof ServicosTransferenciaDeVeiculoRoute
+  ServicosIndexRoute: typeof ServicosIndexRoute
+}
+
+const ServicosRouteChildren: ServicosRouteChildren = {
+  ServicosCnhRoute: ServicosCnhRoute,
+  ServicosDebitosERegularizacoesRoute: ServicosDebitosERegularizacoesRoute,
+  ServicosDocumentacaoVeicularRoute: ServicosDocumentacaoVeicularRoute,
+  ServicosLicenciamentoRoute: ServicosLicenciamentoRoute,
+  ServicosTransferenciaDeVeiculoRoute: ServicosTransferenciaDeVeiculoRoute,
+  ServicosIndexRoute: ServicosIndexRoute,
+}
+
+const ServicosRouteWithChildren = ServicosRoute._addFileChildren(
+  ServicosRouteChildren,
+)
+
+interface UnidadesRouteChildren {
+  UnidadesCarapicuibaRoute: typeof UnidadesCarapicuibaRoute
+  UnidadesOsascoJardimConceicaoRoute: typeof UnidadesOsascoJardimConceicaoRoute
+  UnidadesOsascoJardimDabrilRoute: typeof UnidadesOsascoJardimDabrilRoute
+  UnidadesIndexRoute: typeof UnidadesIndexRoute
+}
+
+const UnidadesRouteChildren: UnidadesRouteChildren = {
+  UnidadesCarapicuibaRoute: UnidadesCarapicuibaRoute,
+  UnidadesOsascoJardimConceicaoRoute: UnidadesOsascoJardimConceicaoRoute,
+  UnidadesOsascoJardimDabrilRoute: UnidadesOsascoJardimDabrilRoute,
+  UnidadesIndexRoute: UnidadesIndexRoute,
+}
+
+const UnidadesRouteWithChildren = UnidadesRoute._addFileChildren(
+  UnidadesRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ClienteRoute: ClienteRoute,
+  ConsultasRoute: ConsultasRoute,
+  ContatoRoute: ContatoRoute,
+  ConteudosRoute: ConteudosRoute,
+  EmpresasRoute: EmpresasRoute,
+  ServicosRoute: ServicosRouteWithChildren,
+  SobreRoute: SobreRoute,
+  UnidadesRoute: UnidadesRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

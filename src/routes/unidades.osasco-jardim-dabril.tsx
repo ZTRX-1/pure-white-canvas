@@ -1,0 +1,3 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { UnitDetail } from "@/components/dhg/page-elements";
+export const Route = createFileRoute("/unidades/osasco-jardim-dabril")({ head: () => ({ meta: [{ title: "Despachante no Jardim D'Abril, Osasco | DHG" }, { name: "description", content: "DHG Despachante em Osasco: Av. Prestes Maia, 817, Jardim D'Abril." }, { property: "og:title", content: "DHG Despachante Jardim D'Abril" }, { property: "og:description", content: "Assessoria documental no Jardim D'Abril, Osasco." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }), component: () => <UnitDetail unitKey="osasco-jardim-dabril" /> });
