@@ -19,6 +19,7 @@ import { Route as InternoRouteImport } from './routes/interno'
 import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as UnidadesRouteImport } from './routes/unidades'
+import { Route as InternoDocumentosRouteImport } from './routes/interno.documentos'
 import { Route as ServicosIndexRouteImport } from './routes/servicos.index'
 import { Route as ServicosCnhRouteImport } from './routes/servicos.cnh'
 import { Route as ServicosDebitosERegularizacoesRouteImport } from './routes/servicos.debitos-e-regularizacoes'
@@ -29,6 +30,7 @@ import { Route as UnidadesIndexRouteImport } from './routes/unidades.index'
 import { Route as UnidadesCarapicuibaRouteImport } from './routes/unidades.carapicuiba'
 import { Route as UnidadesOsascoJardimConceicaoRouteImport } from './routes/unidades.osasco-jardim-conceicao'
 import { Route as UnidadesOsascoJardimDabrilRouteImport } from './routes/unidades.osasco-jardim-dabril'
+import { Route as InternoProcessosIdRouteImport } from './routes/interno.processos.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -79,6 +81,11 @@ const UnidadesRoute = UnidadesRouteImport.update({
   id: '/unidades',
   path: '/unidades',
   getParentRoute: () => rootRouteImport,
+} as any)
+const InternoDocumentosRoute = InternoDocumentosRouteImport.update({
+  id: '/documentos',
+  path: '/documentos',
+  getParentRoute: () => InternoRoute,
 } as any)
 const ServicosIndexRoute = ServicosIndexRouteImport.update({
   id: '/',
@@ -135,6 +142,11 @@ const UnidadesOsascoJardimDabrilRoute =
     path: '/osasco-jardim-dabril',
     getParentRoute: () => UnidadesRoute,
   } as any)
+const InternoProcessosIdRoute = InternoProcessosIdRouteImport.update({
+  id: '/processos/$id',
+  path: '/processos/$id',
+  getParentRoute: () => InternoRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -143,10 +155,11 @@ export interface FileRoutesByFullPath {
   '/contato': typeof ContatoRoute
   '/conteudos': typeof ConteudosRoute
   '/empresas': typeof EmpresasRoute
-  '/interno': typeof InternoRoute
+  '/interno': typeof InternoRouteWithChildren
   '/servicos': typeof ServicosRouteWithChildren
   '/sobre': typeof SobreRoute
   '/unidades': typeof UnidadesRouteWithChildren
+  '/interno/documentos': typeof InternoDocumentosRoute
   '/servicos/cnh': typeof ServicosCnhRoute
   '/servicos/debitos-e-regularizacoes': typeof ServicosDebitosERegularizacoesRoute
   '/servicos/documentacao-veicular': typeof ServicosDocumentacaoVeicularRoute
@@ -157,6 +170,7 @@ export interface FileRoutesByFullPath {
   '/unidades/osasco-jardim-dabril': typeof UnidadesOsascoJardimDabrilRoute
   '/servicos/': typeof ServicosIndexRoute
   '/unidades/': typeof UnidadesIndexRoute
+  '/interno/processos/$id': typeof InternoProcessosIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -165,8 +179,9 @@ export interface FileRoutesByTo {
   '/contato': typeof ContatoRoute
   '/conteudos': typeof ConteudosRoute
   '/empresas': typeof EmpresasRoute
-  '/interno': typeof InternoRoute
+  '/interno': typeof InternoRouteWithChildren
   '/sobre': typeof SobreRoute
+  '/interno/documentos': typeof InternoDocumentosRoute
   '/servicos/cnh': typeof ServicosCnhRoute
   '/servicos/debitos-e-regularizacoes': typeof ServicosDebitosERegularizacoesRoute
   '/servicos/documentacao-veicular': typeof ServicosDocumentacaoVeicularRoute
@@ -177,6 +192,7 @@ export interface FileRoutesByTo {
   '/unidades/osasco-jardim-dabril': typeof UnidadesOsascoJardimDabrilRoute
   '/servicos': typeof ServicosIndexRoute
   '/unidades': typeof UnidadesIndexRoute
+  '/interno/processos/$id': typeof InternoProcessosIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -186,10 +202,11 @@ export interface FileRoutesById {
   '/contato': typeof ContatoRoute
   '/conteudos': typeof ConteudosRoute
   '/empresas': typeof EmpresasRoute
-  '/interno': typeof InternoRoute
+  '/interno': typeof InternoRouteWithChildren
   '/servicos': typeof ServicosRouteWithChildren
   '/sobre': typeof SobreRoute
   '/unidades': typeof UnidadesRouteWithChildren
+  '/interno/documentos': typeof InternoDocumentosRoute
   '/servicos/cnh': typeof ServicosCnhRoute
   '/servicos/debitos-e-regularizacoes': typeof ServicosDebitosERegularizacoesRoute
   '/servicos/documentacao-veicular': typeof ServicosDocumentacaoVeicularRoute
@@ -200,6 +217,7 @@ export interface FileRoutesById {
   '/unidades/osasco-jardim-dabril': typeof UnidadesOsascoJardimDabrilRoute
   '/servicos/': typeof ServicosIndexRoute
   '/unidades/': typeof UnidadesIndexRoute
+  '/interno/processos/$id': typeof InternoProcessosIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -214,6 +232,7 @@ export interface FileRouteTypes {
     | '/servicos'
     | '/sobre'
     | '/unidades'
+    | '/interno/documentos'
     | '/servicos/cnh'
     | '/servicos/debitos-e-regularizacoes'
     | '/servicos/documentacao-veicular'
@@ -224,6 +243,7 @@ export interface FileRouteTypes {
     | '/unidades/osasco-jardim-dabril'
     | '/servicos/'
     | '/unidades/'
+    | '/interno/processos/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -234,6 +254,7 @@ export interface FileRouteTypes {
     | '/empresas'
     | '/interno'
     | '/sobre'
+    | '/interno/documentos'
     | '/servicos/cnh'
     | '/servicos/debitos-e-regularizacoes'
     | '/servicos/documentacao-veicular'
@@ -244,6 +265,7 @@ export interface FileRouteTypes {
     | '/unidades/osasco-jardim-dabril'
     | '/servicos'
     | '/unidades'
+    | '/interno/processos/$id'
   id:
     | '__root__'
     | '/'
@@ -256,6 +278,7 @@ export interface FileRouteTypes {
     | '/servicos'
     | '/sobre'
     | '/unidades'
+    | '/interno/documentos'
     | '/servicos/cnh'
     | '/servicos/debitos-e-regularizacoes'
     | '/servicos/documentacao-veicular'
@@ -266,6 +289,7 @@ export interface FileRouteTypes {
     | '/unidades/osasco-jardim-dabril'
     | '/servicos/'
     | '/unidades/'
+    | '/interno/processos/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -275,7 +299,7 @@ export interface RootRouteChildren {
   ContatoRoute: typeof ContatoRoute
   ConteudosRoute: typeof ConteudosRoute
   EmpresasRoute: typeof EmpresasRoute
-  InternoRoute: typeof InternoRoute
+  InternoRoute: typeof InternoRouteWithChildren
   ServicosRoute: typeof ServicosRouteWithChildren
   SobreRoute: typeof SobreRoute
   UnidadesRoute: typeof UnidadesRouteWithChildren
@@ -353,6 +377,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UnidadesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/interno/documentos': {
+      id: '/interno/documentos'
+      path: '/documentos'
+      fullPath: '/interno/documentos'
+      preLoaderRoute: typeof InternoDocumentosRouteImport
+      parentRoute: typeof InternoRoute
+    }
     '/servicos/': {
       id: '/servicos/'
       path: '/'
@@ -423,8 +454,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UnidadesOsascoJardimDabrilRouteImport
       parentRoute: typeof UnidadesRoute
     }
+    '/interno/processos/$id': {
+      id: '/interno/processos/$id'
+      path: '/processos/$id'
+      fullPath: '/interno/processos/$id'
+      preLoaderRoute: typeof InternoProcessosIdRouteImport
+      parentRoute: typeof InternoRoute
+    }
   }
 }
+
+interface InternoRouteChildren {
+  InternoDocumentosRoute: typeof InternoDocumentosRoute
+  InternoProcessosIdRoute: typeof InternoProcessosIdRoute
+}
+
+const InternoRouteChildren: InternoRouteChildren = {
+  InternoDocumentosRoute: InternoDocumentosRoute,
+  InternoProcessosIdRoute: InternoProcessosIdRoute,
+}
+
+const InternoRouteWithChildren =
+  InternoRoute._addFileChildren(InternoRouteChildren)
 
 interface ServicosRouteChildren {
   ServicosCnhRoute: typeof ServicosCnhRoute
@@ -473,7 +524,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContatoRoute: ContatoRoute,
   ConteudosRoute: ConteudosRoute,
   EmpresasRoute: EmpresasRoute,
-  InternoRoute: InternoRoute,
+  InternoRoute: InternoRouteWithChildren,
   ServicosRoute: ServicosRouteWithChildren,
   SobreRoute: SobreRoute,
   UnidadesRoute: UnidadesRouteWithChildren,

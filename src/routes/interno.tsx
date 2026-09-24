@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
 import {
   Bell,
   BookOpen,
@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
+import { DocumentControlCenter, ProcessDocuments } from "@/components/dhg/document-control-center";
 import { Input } from "@/components/ui/input";
 
 export const Route = createFileRoute("/interno")({
@@ -133,6 +134,7 @@ const processes: {
 ];
 
 function InternalPage() {
+  const location = useLocation();
   const [view, setView] = useState<View>("Visão geral");
   const [unit, setUnit] = useState<Unit>("Carapicuíba");
   const [menuOpen, setMenuOpen] = useState(false);
@@ -145,6 +147,14 @@ function InternalPage() {
   const info = unitInfo[unit];
 
   const selectView = (next: View) => {
+    if (next === "Documentos") {
+      window.location.assign("/interno/documentos");
+      return;
+    }
+    if (location.pathname !== "/interno") {
+      window.location.assign("/interno");
+      return;
+    }
     setView(next);
     setMenuOpen(false);
   };
@@ -265,22 +275,31 @@ function InternalPage() {
           </div>
         </header>
         <section className="px-5 py-7 lg:px-8 lg:py-9">
-          <div className="mx-auto max-w-7xl">
-            <div className="mb-7 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-blue-600">
-                  Painel interno
-                </p>
-                <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-950 lg:text-3xl">
-                  {view}
-                </h1>
-              </div>
-              <UnitSelect unit={unit} onChange={setUnit} />
+            <div className="mx-auto max-w-7xl">
+              {location.pathname === "/interno/documentos" ? (
+                <DocumentControlCenter />
+              ) : location.pathname.startsWith("/interno/processos/") ? (
+                <ProcessDocuments processId={location.pathname.split("/").pop() ?? ""} />
+              ) : (
+                <>
+                  <div className="mb-7 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-blue-600">
+                        Painel interno
+                      </p>
+                      <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-950 lg:text-3xl">
+                        {view}
+                      </h1>
+                    </div>
+                    <UnitSelect unit={unit} onChange={setUnit} />
+                  </div>
+                  {content}
+                </>
+              )}
             </div>
-            {content}
-          </div>
         </section>
       </main>
+      <Outlet />
     </div>
   );
 }
