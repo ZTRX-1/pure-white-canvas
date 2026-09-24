@@ -12,3 +12,9 @@
 - [x] Refinar paleta, tipografia, ritmo e composições editoriais
 - [x] Remover padrões visuais genéricos sem alterar páginas ou funcionalidades
 - [x] Validar todas as páginas em desktop e celular
+- [ ] Padronizar CTAs do WhatsApp e adicionar o ícone oficial
+- [ ] Corrigir contraste solicitado na abertura sem recriar elementos removidos
+- [ ] Normalizar todos os tons de azul aos quatro tokens
+- [ ] Traduzir estados 404 e erro genérico
+- [ ] Corrigir copys, telefone e estrutura dos títulos do rodapé
+- [ ] Validar páginas e concluir auditoria visual
