@@ -89,7 +89,7 @@ function InternalPage() {
     view === "Visão geral" ? (
       <Overview unit={unit} info={info} />
     ) : view === "Clientes" ? (
-      <Clients search={search} />
+      <Clients search={search} onSearch={setSearch} />
     ) : view === "Processos" ? (
       <Processes />
     ) : view === "Documentos" ? (
@@ -399,7 +399,7 @@ function Progress({ label, value, width }: { label: string; value: string; width
   );
 }
 
-function Clients({ search }: { search: string }) {
+function Clients({ search, onSearch }: { search: string; onSearch: (value: string) => void }) {
   const clients = [
     ["Renata Oliveira", "CPF 123.456.789-00", "Transferência em andamento", "Carapicuíba"],
     ["Marcos Ribeiro", "CPF 987.654.321-00", "Licenciamento 2026", "Carapicuíba"],
@@ -409,7 +409,11 @@ function Clients({ search }: { search: string }) {
   return (
     <Panel title="Base de clientes" action="+ Novo cliente">
       <div className="mb-5 flex gap-3 md:hidden">
-        <Input value={search} onChange={() => undefined} placeholder="Buscar cliente" />
+        <Input
+          value={search}
+          onChange={(event) => onSearch(event.target.value)}
+          placeholder="Buscar cliente"
+        />
       </div>
       <div className="overflow-x-auto">
         <table className="w-full min-w-[640px] text-sm">
