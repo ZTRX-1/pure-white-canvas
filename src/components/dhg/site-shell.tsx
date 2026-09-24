@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Lock } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { dhgLogos } from "@/lib/dhg-media";
@@ -147,13 +147,16 @@ export function SiteShell({ children }: { children: ReactNode }) {
               </div>
             </div>
           </div>
-          <div className="flex flex-col justify-between gap-4 pt-6 text-xs text-primary-foreground/45 sm:flex-row">
-            <span>© 2026 DHG Despachante e Assessoria.</span>
-            <div className="flex gap-5">
-              <span>Desde 2012</span>
-              <Link to="/contato">Política de Privacidade</Link>
+<div className="flex flex-col justify-between gap-4 pt-6 text-xs text-primary-foreground/45 sm:flex-row">
+              <span>© 2026 DHG Despachante e Assessoria — CNPJ 16.514.708/0001-09 · Todos os direitos reservados</span>
+              <div className="flex gap-5">
+                <span>Desde 2012</span>
+                <Link to="/contato">Política de Privacidade</Link>
+                <Link to="/login" className="inline-flex items-center gap-1 hover:text-primary-foreground/70">
+                  <Lock className="size-3" /> Área Restrita
+                </Link>
+              </div>
             </div>
-          </div>
         </div>
       </footer>
       <Button
