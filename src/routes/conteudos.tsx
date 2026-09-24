@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { PageHero, SectionTitle, CtaBand } from "@/components/dhg/page-elements";
 import vehicleImage from "@/assets/dhg-veiculo.jpg";
 import { unitImages } from "@/lib/dhg-media";
+
 const posts = [
   {
     category: "Veículos",
@@ -29,6 +30,7 @@ const posts = [
     alt: "Fachada real da unidade DHG no Jardim Conceição",
   },
 ];
+
 export const Route = createFileRoute("/conteudos")({
   head: () => ({
     meta: [
@@ -46,6 +48,7 @@ export const Route = createFileRoute("/conteudos")({
   }),
   component: ConteudosPage,
 });
+
 function ConteudosPage() {
   return (
     <>
@@ -62,28 +65,34 @@ function ConteudosPage() {
             text="Os requisitos podem variar conforme cada caso. Para uma orientação específica, fale diretamente com a equipe."
           />
           <div className="mt-14 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {posts.map((post) => (
+            {posts.map((post, index) => (
               <article
                 key={post.title}
-                className="flex h-full flex-col border border-border bg-background"
+                className="group flex flex-col overflow-hidden rounded-lg border border-border bg-background transition-shadow duration-300 hover:shadow-lg"
               >
-                <img
-                  src={post.image}
-                  alt={post.alt}
-                  className="aspect-[16/10] w-full object-cover"
-                  width="1448"
-                  height="1086"
-                  loading="lazy"
-                />
-                <div className="flex flex-1 flex-col p-6 sm:p-7">
-                  <p className="eyebrow text-primary">{post.category}</p>
-                  <h2 className="mt-4 text-xl font-semibold leading-snug text-brand-deep">
+                <div className="overflow-hidden">
+                  <img
+                    src={post.image}
+                    alt={post.alt}
+                    className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                    width="1448"
+                    height="1086"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="flex flex-1 flex-col p-7">
+                  <span className="text-xs font-bold uppercase tracking-wider text-primary">
+                    {post.category}
+                  </span>
+                  <h2 className="mt-4 text-lg font-semibold leading-snug text-brand-deep">
                     {post.title}
                   </h2>
-                  <p className="mt-4 flex-1 text-sm leading-6 text-muted-foreground">{post.text}</p>
+                  <p className="mt-4 flex-1 text-sm leading-6 text-muted-foreground">
+                    {post.text}
+                  </p>
                   <Link
                     to={post.to}
-                    className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-primary"
+                    className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-primary transition-transform group-hover:translate-x-1"
                   >
                     Ler mais <ArrowRight className="size-4" />
                   </Link>
