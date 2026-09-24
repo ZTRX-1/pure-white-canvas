@@ -108,7 +108,7 @@
   --brand-mid: oklch(0.34 0.15 258);
   --brand-soft: oklch(0.965 0.025 246);
   --whatsapp: oklch(0.67 0.17 150);
-  --brand-overlay: linear-gradient(90deg, oklch(0.18 0.09 260 / 0.92) 0%, oklch(0.2 0.09 260 / 0.72) 42%, oklch(0.2 0.09 260 / 0.08) 78%);
+  --brand-overlay: linear-gradient(90deg, color-mix(in oklch, var(--brand-deep) 94%, transparent) 0%, color-mix(in oklch, var(--brand-deep) 72%, transparent) 42%, color-mix(in oklch, var(--brand-deep) 8%, transparent) 78%);
 }
 
 .dark {
@@ -200,11 +200,11 @@
 }
 
 @utility bg-brand-hero {
-  background: linear-gradient(90deg, oklch(0.18 0.09 260 / 0.94) 0%, oklch(0.2 0.09 260 / 0.7) 42%, oklch(0.2 0.09 260 / 0.08) 78%);
+  background: linear-gradient(90deg, color-mix(in oklch, var(--brand-deep) 94%, transparent) 0%, color-mix(in oklch, var(--brand-deep) 70%, transparent) 42%, color-mix(in oklch, var(--brand-deep) 8%, transparent) 78%);
 }
 
 @utility bg-brand-overlay {
-  background: linear-gradient(0deg, oklch(0.18 0.09 260 / 0.88) 0%, oklch(0.2 0.09 260 / 0.35) 58%, transparent 100%);
+  background: linear-gradient(0deg, color-mix(in oklch, var(--brand-deep) 88%, transparent) 0%, color-mix(in oklch, var(--brand-deep) 35%, transparent) 58%, transparent 100%);
 }
 
 @utility eyebrow {
