@@ -7,3 +7,8 @@
 - [x] Criar três páginas locais de unidades
 - [x] Preparar caminhos Consultas e Cliente sem funcionalidades fictícias
 - [x] Revisar SEO, navegação, WhatsApp, mapas, desktop e celular
+- [ ] Aplicar logos oficiais azul e branca no cabeçalho, rodapé e favicon
+- [ ] Integrar as três fachadas reais à Home e às páginas de unidades
+- [ ] Refinar paleta, tipografia, ritmo e composições editoriais
+- [ ] Remover padrões visuais genéricos sem alterar páginas ou funcionalidades
+- [ ] Validar todas as páginas em desktop e celular
