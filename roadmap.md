@@ -19,8 +19,8 @@
 - [x] Corrigir copys, telefone e estrutura dos títulos do rodapé
 - [x] Validar páginas e concluir auditoria visual
 - [x] Tornar logos e fachadas compatíveis com publicação externa via GitHub
-- [ ] Refinar contraste e remover numeração decorativa da Home
-- [ ] Diferenciar o conteúdo da página Sobre
-- [ ] Remover numeração e aprofundar textos das páginas de serviços
-- [ ] Reformular Conteúdos como grade editorial de blog
-- [ ] Validar os refinamentos em desktop e celular
+- [x] Refinar contraste e remover numeração decorativa da Home
+- [x] Diferenciar o conteúdo da página Sobre
+- [x] Remover numeração e aprofundar textos das páginas de serviços
+- [x] Reformular Conteúdos como grade editorial de blog
+- [x] Validar os refinamentos em desktop e celular
