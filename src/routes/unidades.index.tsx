@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, MapPin, Phone } from "lucide-react";
 import { PageHero, SectionTitle, CtaBand } from "@/components/dhg/page-elements";
 import { unitImages } from "@/lib/dhg-media";
-import { units, type UnitKey } from "@/lib/dhg";
+import { units } from "@/lib/dhg";
+
 export const Route = createFileRoute("/unidades/")({
   head: () => ({
     meta: [
@@ -24,7 +25,9 @@ export const Route = createFileRoute("/unidades/")({
   }),
   component: UnidadesPage,
 });
-const unitKeys: UnitKey[] = ["carapicuiba", "osasco-jardim-dabril", "osasco-jardim-conceicao"];
+
+const unitKeys = ["carapicuiba", "osasco-jardim-dabril", "osasco-jardim-conceicao"] as const;
+
 function UnidadesPage() {
   return (
     <>
@@ -34,45 +37,57 @@ function UnidadesPage() {
         text="Três unidades físicas para atender pessoas e empresas em Carapicuíba e Osasco."
         image={unitImages.carapicuiba}
       />
-      <section className="bg-brand-soft py-20 sm:py-24">
+      <section className="bg-brand-soft py-20 sm:py-28">
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
           <SectionTitle
             eyebrow="Nossas unidades"
             title="Três endereços. A mesma forma de atender."
             text="Escolha a unidade mais conveniente para consultar endereço, contatos e rota."
           />
-          <div className="mt-12 space-y-8">
-            {unitKeys.map((key, index) => {
+          <div className="mt-12 grid gap-8 lg:grid-cols-3">
+            {unitKeys.map((key) => {
               const unit = units[key];
               return (
-                <article
+                <div
                   key={key}
-                  className={`grid overflow-hidden bg-background lg:grid-cols-2 ${index % 2 ? "lg:[&>*:first-child]:order-2" : ""}`}
+                  className="group flex flex-col overflow-hidden rounded-lg bg-background"
                 >
-                  <img
-                    src={unitImages[key]}
-                    alt={`Fachada real da unidade DHG ${unit.area}`}
-                    className="aspect-[4/3] h-full w-full object-cover"
-                    width="1448"
-                    height="1086"
-                    loading="lazy"
-                  />
-                  <div className="flex flex-col justify-center p-7 sm:p-10 lg:p-14">
+                  <div className="relative overflow-hidden">
+                    <img
+                      src={unitImages[key]}
+                      alt={`Fachada real da unidade DHG ${unit.area}`}
+                      className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      width="1448"
+                      height="1086"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-brand-overlay" />
+                  </div>
+                  <div className="flex flex-1 flex-col p-7">
                     <p className="eyebrow text-primary">{unit.city}</p>
-                    <h2 className="mt-3 text-3xl font-semibold text-brand-deep">{unit.area}</h2>
-                    <address className="mt-5 not-italic text-base leading-7 text-muted-foreground">
+                    <h2 className="mt-2 text-xl font-semibold text-brand-deep">{unit.area}</h2>
+                    <address className="mt-4 flex-1 not-italic text-sm leading-6 text-muted-foreground">
                       {unit.address}
                       <br />
                       {unit.zip}
                     </address>
-                    <Link
-                      to={`/unidades/${key}` as "/unidades/carapicuiba"}
-                      className="mt-8 inline-flex items-center gap-2 font-semibold text-primary"
-                    >
-                      Conhecer esta unidade <ArrowRight className="size-4" />
-                    </Link>
+                    <div className="mt-6 space-y-3">
+                      <a
+                        href={`tel:+55${unit.phoneHref}`}
+                        className="flex items-center gap-2 text-sm font-semibold text-brand-deep"
+                      >
+                        <Phone className="size-4 text-primary" />
+                        {unit.phone}
+                      </a>
+                      <Link
+                        to={`/unidades/${key}` as "/unidades/carapicuiba"}
+                        className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary"
+                      >
+                        Ver unidade <ArrowRight className="size-4" />
+                      </Link>
+                    </div>
                   </div>
-                </article>
+                </div>
               );
             })}
           </div>
