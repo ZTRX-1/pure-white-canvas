@@ -41,6 +41,13 @@ type View =
   | "Conteúdos"
   | "Integrações";
 type Unit = "Carapicuíba" | "Osasco - Jd. D'Abril" | "Osasco - Conceição";
+type ProcessStage =
+  | "Aberto"
+  | "Documentos pendentes"
+  | "Protocolado no órgão"
+  | "Aguardando análise"
+  | "Pendência a resolver"
+  | "Concluído";
 
 const navigation: { label: View; icon: typeof LayoutDashboard }[] = [
   { label: "Visão geral", icon: LayoutDashboard },
@@ -59,11 +66,70 @@ const unitInfo: Record<Unit, { code: string; team: number; processes: number; re
   "Osasco - Conceição": { code: "JDC", team: 5, processes: 25, revenue: "R$ 21.940" },
 };
 
-const processes = [
-  ["Transferência de veículo", "Renata Oliveira", "ABC-1D23", "Em análise", "Hoje, 14:30"],
-  ["Licenciamento 2026", "Marcos Ribeiro", "EJX-9F02", "Documentação", "Hoje, 16:00"],
-  ["2ª via de CRLV", "Juliana Costa", "RTA-4C88", "Em andamento", "Amanhã, 09:00"],
-  ["Regularização de débitos", "Paulo Mendes", "GHL-7A61", "Aguardando cliente", "Amanhã, 11:30"],
+const processes: {
+  client: string;
+  plate?: string;
+  type: string;
+  unit: Unit;
+  attendant: string;
+  stage: ProcessStage;
+  deadline?: string;
+  deadlineStatus?: "overdue" | "urgent";
+}[] = [
+  {
+    client: "Renata Oliveira",
+    plate: "ABC-1D23",
+    type: "Transferência",
+    unit: "Carapicuíba",
+    attendant: "Camila Santos",
+    stage: "Documentos pendentes",
+    deadline: "22 set 2026",
+    deadlineStatus: "overdue",
+  },
+  {
+    client: "Marcos Ribeiro",
+    plate: "EJX-9F02",
+    type: "Licenciamento",
+    unit: "Carapicuíba",
+    attendant: "Diego Rodrigues",
+    stage: "Protocolado no órgão",
+    deadline: "26 set 2026",
+    deadlineStatus: "urgent",
+  },
+  {
+    client: "Juliana Costa",
+    plate: "RTA-4C88",
+    type: "2ª via de CRLV",
+    unit: "Osasco - Jd. D'Abril",
+    attendant: "Felipe Nunes",
+    stage: "Aguardando análise",
+    deadline: "30 set 2026",
+  },
+  {
+    client: "Paulo Mendes",
+    plate: "GHL-7A61",
+    type: "Débitos e Regularizações",
+    unit: "Osasco - Conceição",
+    attendant: "Aline Moreira",
+    stage: "Pendência a resolver",
+    deadline: "25 set 2026",
+    deadlineStatus: "urgent",
+  },
+  {
+    client: "Larissa Almeida",
+    type: "CNH",
+    unit: "Osasco - Jd. D'Abril",
+    attendant: "Felipe Nunes",
+    stage: "Aberto",
+  },
+  {
+    client: "Roberto Lima",
+    plate: "KLM-3N45",
+    type: "Transferência",
+    unit: "Osasco - Conceição",
+    attendant: "Aline Moreira",
+    stage: "Concluído",
+  },
 ];
 
 function InternalPage() {
@@ -293,17 +359,17 @@ function Overview({ unit, info }: { unit: Unit; info: (typeof unitInfo)[Unit] })
                 </tr>
               </thead>
               <tbody>
-                {processes.map(([service, client, plate, status, due]) => (
-                  <tr key={plate} className="border-b border-slate-100 last:border-0">
+                {processes.slice(0, 4).map((process) => (
+                  <tr key={`${process.client}-${process.type}`} className="border-b border-slate-100 last:border-0">
                     <td className="py-4">
-                      <p className="font-semibold text-slate-800">{service}</p>
-                      <p className="text-xs text-slate-500">{client}</p>
+                      <p className="font-semibold text-slate-800">{process.type}</p>
+                      <p className="text-xs text-slate-500">{process.client}</p>
                     </td>
-                    <td className="font-mono text-xs font-semibold text-slate-600">{plate}</td>
+                    <td className="font-mono text-xs font-semibold text-slate-600">{process.plate ?? "-"}</td>
                     <td>
-                      <Status>{status}</Status>
+                      <StageBadge stage={process.stage} />
                     </td>
-                    <td className="text-xs font-medium text-slate-600">{due}</td>
+                    <td className="text-xs font-medium text-slate-600">{process.deadline ?? "Sem prazo"}</td>
                   </tr>
                 ))}
               </tbody>
@@ -446,16 +512,75 @@ function Clients({ search, onSearch }: { search: string; onSearch: (value: strin
 function Processes() {
   return (
     <Panel title="Fila de processos" action="+ Novo processo">
-      <div className="grid gap-3 sm:grid-cols-3">
-        <Metric label="Em andamento" value="57" detail="Todas as unidades" color="blue" />
-        <Metric label="Aguardando documento" value="12" detail="Ação necessária" color="amber" />
-        <Metric label="Concluídos no mês" value="143" detail="+9% versus julho" color="emerald" />
+      <div className="mb-5 flex flex-wrap gap-3 text-xs text-slate-500">
+        <span className="inline-flex items-center gap-2 rounded-full bg-red-50 px-3 py-1.5 font-semibold text-red-700">
+          <span className="size-2 rounded-full bg-red-500" /> Prazo vencido
+        </span>
+        <span className="inline-flex items-center gap-2 rounded-full bg-amber-50 px-3 py-1.5 font-semibold text-amber-700">
+          <span className="size-2 rounded-full bg-amber-500" /> Vence em até 3 dias
+        </span>
       </div>
-      <div className="mt-6">
-        <Overview unit="Carapicuíba" info={unitInfo["Carapicuíba"]} />
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[1040px] text-left text-sm">
+          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-400">
+            <tr>
+              <th className="pb-3 font-semibold">Cliente / veículo</th>
+              <th className="pb-3 font-semibold">Tipo</th>
+              <th className="pb-3 font-semibold">Unidade</th>
+              <th className="pb-3 font-semibold">Responsável</th>
+              <th className="pb-3 font-semibold">Etapa atual</th>
+              <th className="pb-3 font-semibold">Prazo / SLA</th>
+              <th />
+            </tr>
+          </thead>
+          <tbody>
+            {processes.map((process) => (
+              <tr
+                key={`${process.client}-${process.type}`}
+                className={`border-b border-slate-100 last:border-0 ${process.deadlineStatus === "overdue" ? "border-l-2 border-l-red-500" : process.deadlineStatus === "urgent" ? "border-l-2 border-l-amber-500" : ""}`}
+              >
+                <td className="py-4">
+                  <p className="font-semibold text-slate-800">{process.client}</p>
+                  <p className="font-mono text-xs font-semibold text-slate-500">{process.plate ?? "Sem veículo relacionado"}</p>
+                </td>
+                <td className="font-medium text-slate-700">{process.type}</td>
+                <td className="text-slate-600">{process.unit}</td>
+                <td className="text-slate-600">{process.attendant}</td>
+                <td><StageBadge stage={process.stage} /></td>
+                <td>
+                  {process.deadline ? (
+                    <span className={`inline-flex items-center gap-2 font-semibold ${process.deadlineStatus === "overdue" ? "text-red-700" : process.deadlineStatus === "urgent" ? "text-amber-700" : "text-slate-700"}`}>
+                      {process.deadlineStatus && <span className={`size-2 rounded-full ${process.deadlineStatus === "overdue" ? "bg-red-500" : "bg-amber-500"}`} />}
+                      {process.deadline}
+                    </span>
+                  ) : (
+                    <span className="text-slate-400">Sem prazo</span>
+                  )}
+                </td>
+                <td>
+                  <button aria-label={`Ações do processo de ${process.client}`}>
+                    <MoreHorizontal className="size-5 text-slate-400" />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </Panel>
   );
+}
+function StageBadge({ stage }: { stage: ProcessStage }) {
+  const styles: Record<ProcessStage, string> = {
+    Aberto: "bg-slate-100 text-slate-700",
+    "Documentos pendentes": "bg-amber-50 text-amber-700",
+    "Protocolado no órgão": "bg-blue-50 text-blue-700",
+    "Aguardando análise": "bg-violet-50 text-violet-700",
+    "Pendência a resolver": "bg-red-50 text-red-700",
+    Concluído: "bg-emerald-50 text-emerald-700",
+  };
+
+  return <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${styles[stage]}`}>{stage}</span>;
 }
 function Documents({ documents, onAdd }: { documents: string[]; onAdd: (name: string) => void }) {
   return (
