@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { PageHero, SectionTitle } from "@/components/dhg/page-elements";
 import { mainWhatsapp, units, whatsapp } from "@/lib/dhg";
 import { WhatsAppIcon } from "@/components/dhg/whatsapp-icon";
+
 export const Route = createFileRoute("/contato")({
   head: () => ({
     meta: [
@@ -20,6 +21,7 @@ export const Route = createFileRoute("/contato")({
   }),
   component: ContatoPage,
 });
+
 function ContatoPage() {
   return (
     <>
@@ -28,7 +30,7 @@ function ContatoPage() {
         title="Fale com quem entende do assunto."
         text="Explique o que você precisa. A equipe da DHG orienta você sobre o atendimento adequado."
       />
-      <section className="py-20 sm:py-28">
+      <section className="bg-brand-soft py-20 sm:py-28">
         <div className="mx-auto grid max-w-7xl gap-14 px-5 lg:grid-cols-[0.7fr_1.3fr] lg:px-8">
           <div>
             <SectionTitle
@@ -46,18 +48,18 @@ function ContatoPage() {
               </a>
             </Button>
           </div>
-          <div className="border-t border-border">
+          <div className="grid gap-6">
             {Object.entries(units).map(([key, unit]) => (
               <div
                 key={key}
-                className="grid gap-5 border-b border-border py-7 md:grid-cols-[1fr_1fr_auto] md:items-center"
+                className="flex flex-col gap-5 rounded-lg border border-border bg-background p-6 sm:flex-row sm:items-center sm:gap-8"
               >
-                <div>
+                <div className="flex-1">
                   <p className="eyebrow text-primary">{unit.city}</p>
                   <h2 className="mt-2 text-xl font-semibold text-brand-deep">{unit.area}</h2>
                   <p className="mt-2 text-sm text-muted-foreground">{unit.address}</p>
                 </div>
-                <div>
+                <div className="flex items-center gap-6">
                   <a
                     href={`tel:+55${unit.phoneHref}`}
                     className="flex items-center gap-2 text-sm font-semibold text-brand-deep"
@@ -65,41 +67,37 @@ function ContatoPage() {
                     <Phone className="size-4 text-primary" />
                     {unit.phone}
                   </a>
-                  {unit.secondary && (
+                  <Button asChild size="sm">
                     <a
-                      href="tel:+551142073543"
-                      className="mt-2 block text-sm text-muted-foreground"
+                      href={whatsapp(
+                        unit.phoneHref,
+                        `Olá, DHG! Gostaria de atendimento na unidade de ${unit.city} — ${unit.area}.`,
+                      )}
+                      target="_blank"
+                      rel="noreferrer"
                     >
-                      {unit.secondary}
+                      <WhatsAppIcon /> Falar
                     </a>
-                  )}
+                  </Button>
                 </div>
-                <Button asChild size="sm" variant="outline">
-                  <a
-                    href={whatsapp(
-                      unit.phoneHref,
-                      `Olá, DHG! Gostaria de atendimento na unidade de ${unit.city} — ${unit.area}.`,
-                    )}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <WhatsAppIcon /> Falar com esta unidade
-                  </a>
-                </Button>
               </div>
             ))}
           </div>
         </div>
       </section>
-      <section className="bg-muted/50 py-16">
-        <div className="mx-auto flex max-w-7xl flex-col justify-between gap-6 px-5 md:flex-row md:items-center lg:px-8">
+      <section className="bg-brand-deep py-20 text-primary-foreground">
+        <div className="mx-auto grid max-w-7xl gap-10 px-5 md:grid-cols-[0.7fr_1.3fr] md:items-center lg:px-8">
           <div>
-            <p className="eyebrow text-primary">Atendimento presencial</p>
-            <h2 className="mt-3 text-2xl font-semibold text-brand-deep">
+            <p className="eyebrow text-primary-foreground/60">Atendimento presencial</p>
+            <h2 className="mt-3 text-3xl font-semibold sm:text-4xl">
               Consulte endereço e rota de cada unidade.
             </h2>
           </div>
-          <Button asChild variant="outline">
+          <Button
+            asChild
+            variant="outline"
+            className="h-12 w-fit border-primary-foreground/45 bg-transparent px-6 text-primary-foreground hover:bg-primary-foreground/10"
+          >
             <Link to="/unidades">
               <MapPin /> Ver todas as unidades
             </Link>
