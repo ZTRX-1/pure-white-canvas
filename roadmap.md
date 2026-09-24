@@ -6,4 +6,4 @@
 - [x] Criar cinco páginas específicas de serviços
 - [x] Criar três páginas locais de unidades
 - [x] Preparar caminhos Consultas e Cliente sem funcionalidades fictícias
-- [ ] Revisar SEO, navegação, WhatsApp, mapas, desktop e celular
+- [x] Revisar SEO, navegação, WhatsApp, mapas, desktop e celular
