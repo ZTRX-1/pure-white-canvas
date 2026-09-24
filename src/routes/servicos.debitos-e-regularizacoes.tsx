@@ -1,0 +1,3 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { ServiceDetail } from "@/components/dhg/page-elements";
+export const Route = createFileRoute("/servicos/debitos-e-regularizacoes")({ head: () => ({ meta: [{ title: "Débitos e Regularizações | DHG" }, { name: "description", content: "Orientação para débitos, taxas, pendências e regularizações documentais." }, { property: "og:title", content: "Débitos e Regularizações | DHG" }, { property: "og:description", content: "Apoio para identificar e conduzir pendências documentais." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }), component: () => <ServiceDetail serviceKey="debitos-e-regularizacoes" /> });
