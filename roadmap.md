@@ -17,4 +17,4 @@
 - [x] Normalizar todos os tons de azul aos quatro tokens
 - [x] Traduzir estados 404 e erro genérico
 - [x] Corrigir copys, telefone e estrutura dos títulos do rodapé
-- [ ] Validar páginas e concluir auditoria visual
+- [x] Validar páginas e concluir auditoria visual
