@@ -44,6 +44,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
         <div className="flex flex-col justify-between gap-4 pt-6 text-xs text-primary-foreground/45 sm:flex-row"><span>© 2026 DHG Despachante e Assessoria.</span><div className="flex gap-5"><span>Desde 2012</span><Link to="/contato">Política de Privacidade</Link></div></div>
       </div>
     </footer>
-    <Button asChild size="icon" className="fixed bottom-5 right-5 z-40 size-14 rounded-full bg-whatsapp text-primary-foreground shadow-lg hover:bg-whatsapp/90 md:hidden"><a href={mainWhatsapp} target="_blank" rel="noreferrer" aria-label="Falar com a DHG pelo WhatsApp"><MessageCircle className="size-6" /></a></Button>
+    <Button asChild size="icon" className="fixed bottom-5 right-5 z-40 size-14 bg-whatsapp text-primary-foreground hover:bg-whatsapp/90 md:hidden"><a href={mainWhatsapp} target="_blank" rel="noreferrer" aria-label="Falar com a DHG pelo WhatsApp"><MessageCircle className="size-6" /></a></Button>
   </div>;
 }
