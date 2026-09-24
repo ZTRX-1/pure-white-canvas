@@ -19,7 +19,7 @@ From the project root, run exactly:
   user says they just took or copied a print.
 - If the user gives a path to an image file, pass it with forward slashes:
 
-  powershell -NoProfile -ExecutionPolicy Bypass -Sta -File ".opencode/skills/kaio-ler-print/ler-print.ps1" -ImagePath "C:/caminho/do/print.png"
+    powershell -NoProfile -ExecutionPolicy Bypass -Sta -File ".opencode/skills/kaio-ler-print/ler-print.ps1" -ImagePath "C:/caminho/do/print.png"
 
 ## How to treat the output
 
