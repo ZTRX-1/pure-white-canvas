@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { LoginForm } from "@/components/dhg/login-form";
 import { dhgLogos } from "@/lib/dhg-media";
+import { Shield } from "lucide-react";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
