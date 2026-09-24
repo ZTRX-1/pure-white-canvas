@@ -360,16 +360,23 @@ function Overview({ unit, info }: { unit: Unit; info: (typeof unitInfo)[Unit] })
               </thead>
               <tbody>
                 {processes.slice(0, 4).map((process) => (
-                  <tr key={`${process.client}-${process.type}`} className="border-b border-slate-100 last:border-0">
+                  <tr
+                    key={`${process.client}-${process.type}`}
+                    className="border-b border-slate-100 last:border-0"
+                  >
                     <td className="py-4">
                       <p className="font-semibold text-slate-800">{process.type}</p>
                       <p className="text-xs text-slate-500">{process.client}</p>
                     </td>
-                    <td className="font-mono text-xs font-semibold text-slate-600">{process.plate ?? "-"}</td>
+                    <td className="font-mono text-xs font-semibold text-slate-600">
+                      {process.plate ?? "-"}
+                    </td>
                     <td>
                       <StageBadge stage={process.stage} />
                     </td>
-                    <td className="text-xs font-medium text-slate-600">{process.deadline ?? "Sem prazo"}</td>
+                    <td className="text-xs font-medium text-slate-600">
+                      {process.deadline ?? "Sem prazo"}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -541,16 +548,26 @@ function Processes() {
               >
                 <td className="py-4">
                   <p className="font-semibold text-slate-800">{process.client}</p>
-                  <p className="font-mono text-xs font-semibold text-slate-500">{process.plate ?? "Sem veículo relacionado"}</p>
+                  <p className="font-mono text-xs font-semibold text-slate-500">
+                    {process.plate ?? "Sem veículo relacionado"}
+                  </p>
                 </td>
                 <td className="font-medium text-slate-700">{process.type}</td>
                 <td className="text-slate-600">{process.unit}</td>
                 <td className="text-slate-600">{process.attendant}</td>
-                <td><StageBadge stage={process.stage} /></td>
+                <td>
+                  <StageBadge stage={process.stage} />
+                </td>
                 <td>
                   {process.deadline ? (
-                    <span className={`inline-flex items-center gap-2 font-semibold ${process.deadlineStatus === "overdue" ? "text-red-700" : process.deadlineStatus === "urgent" ? "text-amber-700" : "text-slate-700"}`}>
-                      {process.deadlineStatus && <span className={`size-2 rounded-full ${process.deadlineStatus === "overdue" ? "bg-red-500" : "bg-amber-500"}`} />}
+                    <span
+                      className={`inline-flex items-center gap-2 font-semibold ${process.deadlineStatus === "overdue" ? "text-red-700" : process.deadlineStatus === "urgent" ? "text-amber-700" : "text-slate-700"}`}
+                    >
+                      {process.deadlineStatus && (
+                        <span
+                          className={`size-2 rounded-full ${process.deadlineStatus === "overdue" ? "bg-red-500" : "bg-amber-500"}`}
+                        />
+                      )}
                       {process.deadline}
                     </span>
                   ) : (
@@ -580,7 +597,11 @@ function StageBadge({ stage }: { stage: ProcessStage }) {
     Concluído: "bg-emerald-50 text-emerald-700",
   };
 
-  return <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${styles[stage]}`}>{stage}</span>;
+  return (
+    <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${styles[stage]}`}>
+      {stage}
+    </span>
+  );
 }
 function Documents({ documents, onAdd }: { documents: string[]; onAdd: (name: string) => void }) {
   return (
