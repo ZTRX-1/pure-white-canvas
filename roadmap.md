@@ -11,4 +11,4 @@
 - [x] Integrar as três fachadas reais à Home e às páginas de unidades
 - [x] Refinar paleta, tipografia, ritmo e composições editoriais
 - [x] Remover padrões visuais genéricos sem alterar páginas ou funcionalidades
-- [ ] Validar todas as páginas em desktop e celular
+- [x] Validar todas as páginas em desktop e celular
