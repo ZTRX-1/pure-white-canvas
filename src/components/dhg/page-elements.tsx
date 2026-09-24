@@ -247,3 +247,20 @@ export function UnitDetail({ unitKey }: { unitKey: UnitKey }) {
 export function EditorialList({ children }: { children: ReactNode }) {
   return <div className="mt-12 border-t border-border">{children}</div>;
 }
+
+export function StatsBar({
+  stats,
+}: {
+  stats: { value: string; label: string }[];
+}) {
+  return (
+    <div className="grid border-t border-border md:grid-cols-3">
+      {stats.map(({ value, label }) => (
+        <div key={label} className="border-b border-border py-8 md:border-r md:px-8 first:pl-0 last:border-r-0">
+          <span className="text-3xl font-semibold text-brand-deep">{value}</span>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">{label}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
