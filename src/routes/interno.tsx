@@ -14,7 +14,6 @@ import {
   Plus,
   Search,
   Settings,
-  ShieldCheck,
   SlidersHorizontal,
   Upload,
   UserCog,
@@ -39,7 +38,6 @@ type View =
   | "Documentos"
   | "Unidades"
   | "Equipe"
-  | "Acessos"
   | "Conteúdos"
   | "Integrações";
 type Unit = "Carapicuíba" | "Osasco - Jd. D'Abril" | "Osasco - Conceição";
@@ -51,7 +49,6 @@ const navigation: { label: View; icon: typeof LayoutDashboard }[] = [
   { label: "Documentos", icon: FolderOpen },
   { label: "Unidades", icon: Building2 },
   { label: "Equipe", icon: UserCog },
-  { label: "Acessos", icon: ShieldCheck },
   { label: "Conteúdos", icon: BookOpen },
   { label: "Integrações", icon: SlidersHorizontal },
 ];
@@ -101,8 +98,6 @@ function InternalPage() {
       <Units unit={unit} />
     ) : view === "Equipe" ? (
       <Team />
-    ) : view === "Acessos" ? (
-      <Access />
     ) : view === "Conteúdos" ? (
       <Content />
     ) : (
@@ -552,44 +547,30 @@ function Team() {
     <Panel title="Equipe DHG" action="+ Convidar membro">
       <div className="grid gap-3">
         {[
-          ["Diego Rodrigues", "Administrador geral", "Todas as unidades", "DR"],
-          ["Camila Santos", "Analista documental", "Carapicuíba", "CS"],
-          ["Felipe Nunes", "Atendimento", "Jd. D'Abril", "FN"],
-          ["Aline Moreira", "Gestora de unidade", "Conceição", "AM"],
-        ].map(([name, role, branch, initials]) => (
+          ["Diego Rodrigues", "Todas as unidades", "Administrador", "DR"],
+          ["Camila Santos", "Carapicuíba", "Operacional", "CS"],
+          ["Felipe Nunes", "Osasco - Jd. D'Abril", "Operacional", "FN"],
+          ["Aline Moreira", "Osasco - Conceição", "Gestor", "AM"],
+        ].map(([name, unit, role, initials]) => (
           <div
             key={name}
-            className="flex items-center gap-4 rounded-md border border-slate-100 p-3"
+            className="flex items-center gap-4 rounded-md border border-slate-100 p-4"
           >
             <span className="grid size-10 place-items-center rounded-full bg-slate-100 text-xs font-bold text-slate-600">
               {initials}
             </span>
             <div className="min-w-0 flex-1">
               <p className="font-semibold">{name}</p>
-              <p className="text-xs text-slate-500">{role}</p>
+              <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500">
+                <span>
+                  Unidade: <strong className="font-semibold text-slate-700">{unit}</strong>
+                </span>
+                <span>
+                  Papel: <strong className="font-semibold text-slate-700">{role}</strong>
+                </span>
+              </div>
             </div>
-            <span className="hidden text-sm text-slate-500 sm:block">{branch}</span>
             <span className="size-2 rounded-full bg-emerald-500" />
-          </div>
-        ))}
-      </div>
-    </Panel>
-  );
-}
-function Access() {
-  return (
-    <Panel title="Perfis e permissões" action="+ Criar perfil">
-      <div className="grid gap-4 md:grid-cols-3">
-        {[
-          ["Administrador", "Acesso completo a unidades e configurações", "2 usuários"],
-          ["Gestor de unidade", "Opera apenas a base da unidade vinculada", "3 usuários"],
-          ["Operacional", "Clientes, processos e documentos autorizados", "14 usuários"],
-        ].map(([role, description, users]) => (
-          <div key={role} className="rounded-md border border-slate-200 p-5">
-            <ShieldCheck className="size-6 text-blue-600" />
-            <h2 className="mt-4 font-bold">{role}</h2>
-            <p className="mt-1 min-h-10 text-sm text-slate-500">{description}</p>
-            <p className="mt-5 text-xs font-bold uppercase tracking-wide text-slate-400">{users}</p>
           </div>
         ))}
       </div>
