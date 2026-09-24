@@ -275,28 +275,28 @@ function InternalPage() {
           </div>
         </header>
         <section className="px-5 py-7 lg:px-8 lg:py-9">
-            <div className="mx-auto max-w-7xl">
-              {location.pathname === "/interno/documentos" ? (
-                <DocumentControlCenter />
-              ) : location.pathname.startsWith("/interno/processos/") ? (
-                <ProcessDocuments processId={location.pathname.split("/").pop() ?? ""} />
-              ) : (
-                <>
-                  <div className="mb-7 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-blue-600">
-                        Painel interno
-                      </p>
-                      <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-950 lg:text-3xl">
-                        {view}
-                      </h1>
-                    </div>
-                    <UnitSelect unit={unit} onChange={setUnit} />
+          <div className="mx-auto max-w-7xl">
+            {location.pathname === "/interno/documentos" ? (
+              <DocumentControlCenter />
+            ) : location.pathname.startsWith("/interno/processos/") ? (
+              <ProcessDocuments processId={location.pathname.split("/").pop() ?? ""} />
+            ) : (
+              <>
+                <div className="mb-7 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-blue-600">
+                      Painel interno
+                    </p>
+                    <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-950 lg:text-3xl">
+                      {view}
+                    </h1>
                   </div>
-                  {content}
-                </>
-              )}
-            </div>
+                  <UnitSelect unit={unit} onChange={setUnit} />
+                </div>
+                {content}
+              </>
+            )}
+          </div>
         </section>
       </main>
       <Outlet />
