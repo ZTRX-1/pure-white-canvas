@@ -15,6 +15,7 @@ import { Route as ConsultasRouteImport } from './routes/consultas'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as ConteudosRouteImport } from './routes/conteudos'
 import { Route as EmpresasRouteImport } from './routes/empresas'
+import { Route as InternoRouteImport } from './routes/interno'
 import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as UnidadesRouteImport } from './routes/unidades'
@@ -57,6 +58,11 @@ const ConteudosRoute = ConteudosRouteImport.update({
 const EmpresasRoute = EmpresasRouteImport.update({
   id: '/empresas',
   path: '/empresas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InternoRoute = InternoRouteImport.update({
+  id: '/interno',
+  path: '/interno',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicosRoute = ServicosRouteImport.update({
@@ -137,6 +143,7 @@ export interface FileRoutesByFullPath {
   '/contato': typeof ContatoRoute
   '/conteudos': typeof ConteudosRoute
   '/empresas': typeof EmpresasRoute
+  '/interno': typeof InternoRoute
   '/servicos': typeof ServicosRouteWithChildren
   '/sobre': typeof SobreRoute
   '/unidades': typeof UnidadesRouteWithChildren
@@ -158,6 +165,7 @@ export interface FileRoutesByTo {
   '/contato': typeof ContatoRoute
   '/conteudos': typeof ConteudosRoute
   '/empresas': typeof EmpresasRoute
+  '/interno': typeof InternoRoute
   '/sobre': typeof SobreRoute
   '/servicos/cnh': typeof ServicosCnhRoute
   '/servicos/debitos-e-regularizacoes': typeof ServicosDebitosERegularizacoesRoute
@@ -178,6 +186,7 @@ export interface FileRoutesById {
   '/contato': typeof ContatoRoute
   '/conteudos': typeof ConteudosRoute
   '/empresas': typeof EmpresasRoute
+  '/interno': typeof InternoRoute
   '/servicos': typeof ServicosRouteWithChildren
   '/sobre': typeof SobreRoute
   '/unidades': typeof UnidadesRouteWithChildren
@@ -201,6 +210,7 @@ export interface FileRouteTypes {
     | '/contato'
     | '/conteudos'
     | '/empresas'
+    | '/interno'
     | '/servicos'
     | '/sobre'
     | '/unidades'
@@ -222,6 +232,7 @@ export interface FileRouteTypes {
     | '/contato'
     | '/conteudos'
     | '/empresas'
+    | '/interno'
     | '/sobre'
     | '/servicos/cnh'
     | '/servicos/debitos-e-regularizacoes'
@@ -241,6 +252,7 @@ export interface FileRouteTypes {
     | '/contato'
     | '/conteudos'
     | '/empresas'
+    | '/interno'
     | '/servicos'
     | '/sobre'
     | '/unidades'
@@ -263,6 +275,7 @@ export interface RootRouteChildren {
   ContatoRoute: typeof ContatoRoute
   ConteudosRoute: typeof ConteudosRoute
   EmpresasRoute: typeof EmpresasRoute
+  InternoRoute: typeof InternoRoute
   ServicosRoute: typeof ServicosRouteWithChildren
   SobreRoute: typeof SobreRoute
   UnidadesRoute: typeof UnidadesRouteWithChildren
@@ -310,6 +323,13 @@ declare module '@tanstack/react-router' {
       path: '/empresas'
       fullPath: '/empresas'
       preLoaderRoute: typeof EmpresasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/interno': {
+      id: '/interno'
+      path: '/interno'
+      fullPath: '/interno'
+      preLoaderRoute: typeof InternoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/servicos': {
@@ -453,6 +473,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContatoRoute: ContatoRoute,
   ConteudosRoute: ConteudosRoute,
   EmpresasRoute: EmpresasRoute,
+  InternoRoute: InternoRoute,
   ServicosRoute: ServicosRouteWithChildren,
   SobreRoute: SobreRoute,
   UnidadesRoute: UnidadesRouteWithChildren,
