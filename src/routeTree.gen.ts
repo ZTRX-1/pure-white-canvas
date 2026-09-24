@@ -10,6 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ClienteRouteImport } from './routes/cliente'
+import { Route as ConsultasRouteImport } from './routes/consultas'
+import { Route as ContatoRouteImport } from './routes/contato'
+import { Route as ConteudosRouteImport } from './routes/conteudos'
 import { Route as EmpresasRouteImport } from './routes/empresas'
 import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as SobreRouteImport } from './routes/sobre'
@@ -26,6 +30,26 @@ import { Route as UnidadesOsascoJardimDabrilRouteImport } from './routes/unidade
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClienteRoute = ClienteRouteImport.update({
+  id: '/cliente',
+  path: '/cliente',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConsultasRoute = ConsultasRouteImport.update({
+  id: '/consultas',
+  path: '/consultas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContatoRoute = ContatoRouteImport.update({
+  id: '/contato',
+  path: '/contato',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConteudosRoute = ConteudosRouteImport.update({
+  id: '/conteudos',
+  path: '/conteudos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EmpresasRoute = EmpresasRouteImport.update({
@@ -96,6 +120,10 @@ const UnidadesOsascoJardimDabrilRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/cliente': typeof ClienteRoute
+  '/consultas': typeof ConsultasRoute
+  '/contato': typeof ContatoRoute
+  '/conteudos': typeof ConteudosRoute
   '/empresas': typeof EmpresasRoute
   '/servicos': typeof ServicosRouteWithChildren
   '/sobre': typeof SobreRoute
@@ -111,6 +139,10 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/cliente': typeof ClienteRoute
+  '/consultas': typeof ConsultasRoute
+  '/contato': typeof ContatoRoute
+  '/conteudos': typeof ConteudosRoute
   '/empresas': typeof EmpresasRoute
   '/servicos': typeof ServicosRouteWithChildren
   '/sobre': typeof SobreRoute
@@ -127,6 +159,10 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/cliente': typeof ClienteRoute
+  '/consultas': typeof ConsultasRoute
+  '/contato': typeof ContatoRoute
+  '/conteudos': typeof ConteudosRoute
   '/empresas': typeof EmpresasRoute
   '/servicos': typeof ServicosRouteWithChildren
   '/sobre': typeof SobreRoute
@@ -144,6 +180,10 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/cliente'
+    | '/consultas'
+    | '/contato'
+    | '/conteudos'
     | '/empresas'
     | '/servicos'
     | '/sobre'
@@ -159,6 +199,10 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/cliente'
+    | '/consultas'
+    | '/contato'
+    | '/conteudos'
     | '/empresas'
     | '/servicos'
     | '/sobre'
@@ -174,6 +218,10 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/cliente'
+    | '/consultas'
+    | '/contato'
+    | '/conteudos'
     | '/empresas'
     | '/servicos'
     | '/sobre'
@@ -190,6 +238,10 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ClienteRoute: typeof ClienteRoute
+  ConsultasRoute: typeof ConsultasRoute
+  ContatoRoute: typeof ContatoRoute
+  ConteudosRoute: typeof ConteudosRoute
   EmpresasRoute: typeof EmpresasRoute
   ServicosRoute: typeof ServicosRouteWithChildren
   SobreRoute: typeof SobreRoute
@@ -203,6 +255,34 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cliente': {
+      id: '/cliente'
+      path: '/cliente'
+      fullPath: '/cliente'
+      preLoaderRoute: typeof ClienteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/consultas': {
+      id: '/consultas'
+      path: '/consultas'
+      fullPath: '/consultas'
+      preLoaderRoute: typeof ConsultasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contato': {
+      id: '/contato'
+      path: '/contato'
+      fullPath: '/contato'
+      preLoaderRoute: typeof ContatoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conteudos': {
+      id: '/conteudos'
+      path: '/conteudos'
+      fullPath: '/conteudos'
+      preLoaderRoute: typeof ConteudosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/empresas': {
@@ -330,6 +410,10 @@ const UnidadesRouteWithChildren = UnidadesRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ClienteRoute: ClienteRoute,
+  ConsultasRoute: ConsultasRoute,
+  ContatoRoute: ContatoRoute,
+  ConteudosRoute: ConteudosRoute,
   EmpresasRoute: EmpresasRoute,
   ServicosRoute: ServicosRouteWithChildren,
   SobreRoute: SobreRoute,
