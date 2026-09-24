@@ -18,3 +18,4 @@
 - [x] Traduzir estados 404 e erro genérico
 - [x] Corrigir copys, telefone e estrutura dos títulos do rodapé
 - [x] Validar páginas e concluir auditoria visual
+- [x] Tornar logos e fachadas compatíveis com publicação externa via GitHub
