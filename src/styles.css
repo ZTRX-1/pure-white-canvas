@@ -63,6 +63,7 @@
   --color-sidebar-ring: var(--sidebar-ring);
   --color-brand-deep: var(--brand-deep);
   --color-brand-blue: var(--brand-blue);
+  --color-brand-mid: var(--brand-mid);
   --color-brand-soft: var(--brand-soft);
   --color-whatsapp: var(--whatsapp);
   --color-brand-overlay: var(--brand-overlay);
@@ -70,17 +71,17 @@
 
 :root {
   --radius: 0.5rem;
-  --background: oklch(0.995 0.002 247);
+  --background: oklch(0.985 0.008 242);
   --foreground: oklch(0.2 0.035 256);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.129 0.042 264.695);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.31 0.13 256);
+  --primary: oklch(0.43 0.2 258);
   --primary-foreground: oklch(0.984 0.003 247.858);
   --secondary: oklch(0.965 0.012 248);
   --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.009 248);
+  --muted: oklch(0.965 0.012 242);
   --muted-foreground: oklch(0.48 0.025 255);
   --accent: oklch(0.968 0.007 247.896);
   --accent-foreground: oklch(0.208 0.042 265.755);
@@ -102,11 +103,12 @@
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
-  --brand-deep: oklch(0.23 0.09 256);
-  --brand-blue: oklch(0.42 0.18 256);
-  --brand-soft: oklch(0.955 0.025 250);
+  --brand-deep: oklch(0.2 0.09 260);
+  --brand-blue: oklch(0.43 0.2 258);
+  --brand-mid: oklch(0.34 0.15 258);
+  --brand-soft: oklch(0.965 0.025 246);
   --whatsapp: oklch(0.67 0.17 150);
-  --brand-overlay: linear-gradient(90deg, oklch(0.18 0.08 256 / 0.98) 0%, oklch(0.2 0.08 256 / 0.86) 45%, oklch(0.2 0.08 256 / 0.2) 100%);
+  --brand-overlay: linear-gradient(90deg, oklch(0.18 0.09 260 / 0.92) 0%, oklch(0.2 0.09 260 / 0.72) 42%, oklch(0.2 0.09 260 / 0.08) 78%);
 }
 
 .dark {
@@ -154,6 +156,8 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     text-rendering: optimizeLegibility;
+    font-size: 1rem;
+    line-height: 1.65;
   }
 
   a {
@@ -178,11 +182,11 @@
 }
 
 @utility bg-brand-hero {
-  background: linear-gradient(90deg, oklch(0.18 0.08 256 / 0.98) 0%, oklch(0.2 0.08 256 / 0.86) 44%, oklch(0.2 0.08 256 / 0.16) 100%);
+  background: linear-gradient(90deg, oklch(0.18 0.09 260 / 0.94) 0%, oklch(0.2 0.09 260 / 0.7) 42%, oklch(0.2 0.09 260 / 0.08) 78%);
 }
 
 @utility bg-brand-overlay {
-  background: linear-gradient(0deg, oklch(0.18 0.08 256 / 0.98) 0%, oklch(0.2 0.08 256 / 0.7) 55%, oklch(0.2 0.08 256 / 0.25) 100%);
+  background: linear-gradient(0deg, oklch(0.18 0.09 260 / 0.88) 0%, oklch(0.2 0.09 260 / 0.35) 58%, transparent 100%);
 }
 
 @utility eyebrow {
@@ -190,11 +194,25 @@
   line-height: 1rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.12em;
+}
+
+@utility editorial-link {
+  transition: color 180ms ease, transform 180ms ease;
+}
+
+@utility reveal-in {
+  animation: reveal-in 700ms ease-out both;
+}
+
+@keyframes reveal-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
+  .reveal-in { animation: none; }
 }
