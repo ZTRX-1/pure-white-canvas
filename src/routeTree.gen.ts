@@ -18,11 +18,13 @@ import { Route as EmpresasRouteImport } from './routes/empresas'
 import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as UnidadesRouteImport } from './routes/unidades'
+import { Route as ServicosIndexRouteImport } from './routes/servicos.index'
 import { Route as ServicosCnhRouteImport } from './routes/servicos.cnh'
 import { Route as ServicosDebitosERegularizacoesRouteImport } from './routes/servicos.debitos-e-regularizacoes'
 import { Route as ServicosDocumentacaoVeicularRouteImport } from './routes/servicos.documentacao-veicular'
 import { Route as ServicosLicenciamentoRouteImport } from './routes/servicos.licenciamento'
 import { Route as ServicosTransferenciaDeVeiculoRouteImport } from './routes/servicos.transferencia-de-veiculo'
+import { Route as UnidadesIndexRouteImport } from './routes/unidades.index'
 import { Route as UnidadesCarapicuibaRouteImport } from './routes/unidades.carapicuiba'
 import { Route as UnidadesOsascoJardimConceicaoRouteImport } from './routes/unidades.osasco-jardim-conceicao'
 import { Route as UnidadesOsascoJardimDabrilRouteImport } from './routes/unidades.osasco-jardim-dabril'
@@ -72,6 +74,11 @@ const UnidadesRoute = UnidadesRouteImport.update({
   path: '/unidades',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ServicosIndexRoute = ServicosIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ServicosRoute,
+} as any)
 const ServicosCnhRoute = ServicosCnhRouteImport.update({
   id: '/cnh',
   path: '/cnh',
@@ -100,6 +107,11 @@ const ServicosTransferenciaDeVeiculoRoute =
     path: '/transferencia-de-veiculo',
     getParentRoute: () => ServicosRoute,
   } as any)
+const UnidadesIndexRoute = UnidadesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => UnidadesRoute,
+} as any)
 const UnidadesCarapicuibaRoute = UnidadesCarapicuibaRouteImport.update({
   id: '/carapicuiba',
   path: '/carapicuiba',
@@ -136,6 +148,8 @@ export interface FileRoutesByFullPath {
   '/unidades/carapicuiba': typeof UnidadesCarapicuibaRoute
   '/unidades/osasco-jardim-conceicao': typeof UnidadesOsascoJardimConceicaoRoute
   '/unidades/osasco-jardim-dabril': typeof UnidadesOsascoJardimDabrilRoute
+  '/servicos/': typeof ServicosIndexRoute
+  '/unidades/': typeof UnidadesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -144,9 +158,7 @@ export interface FileRoutesByTo {
   '/contato': typeof ContatoRoute
   '/conteudos': typeof ConteudosRoute
   '/empresas': typeof EmpresasRoute
-  '/servicos': typeof ServicosRouteWithChildren
   '/sobre': typeof SobreRoute
-  '/unidades': typeof UnidadesRouteWithChildren
   '/servicos/cnh': typeof ServicosCnhRoute
   '/servicos/debitos-e-regularizacoes': typeof ServicosDebitosERegularizacoesRoute
   '/servicos/documentacao-veicular': typeof ServicosDocumentacaoVeicularRoute
@@ -155,6 +167,8 @@ export interface FileRoutesByTo {
   '/unidades/carapicuiba': typeof UnidadesCarapicuibaRoute
   '/unidades/osasco-jardim-conceicao': typeof UnidadesOsascoJardimConceicaoRoute
   '/unidades/osasco-jardim-dabril': typeof UnidadesOsascoJardimDabrilRoute
+  '/servicos': typeof ServicosIndexRoute
+  '/unidades': typeof UnidadesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -175,6 +189,8 @@ export interface FileRoutesById {
   '/unidades/carapicuiba': typeof UnidadesCarapicuibaRoute
   '/unidades/osasco-jardim-conceicao': typeof UnidadesOsascoJardimConceicaoRoute
   '/unidades/osasco-jardim-dabril': typeof UnidadesOsascoJardimDabrilRoute
+  '/servicos/': typeof ServicosIndexRoute
+  '/unidades/': typeof UnidadesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -196,6 +212,8 @@ export interface FileRouteTypes {
     | '/unidades/carapicuiba'
     | '/unidades/osasco-jardim-conceicao'
     | '/unidades/osasco-jardim-dabril'
+    | '/servicos/'
+    | '/unidades/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -204,9 +222,7 @@ export interface FileRouteTypes {
     | '/contato'
     | '/conteudos'
     | '/empresas'
-    | '/servicos'
     | '/sobre'
-    | '/unidades'
     | '/servicos/cnh'
     | '/servicos/debitos-e-regularizacoes'
     | '/servicos/documentacao-veicular'
@@ -215,6 +231,8 @@ export interface FileRouteTypes {
     | '/unidades/carapicuiba'
     | '/unidades/osasco-jardim-conceicao'
     | '/unidades/osasco-jardim-dabril'
+    | '/servicos'
+    | '/unidades'
   id:
     | '__root__'
     | '/'
@@ -234,6 +252,8 @@ export interface FileRouteTypes {
     | '/unidades/carapicuiba'
     | '/unidades/osasco-jardim-conceicao'
     | '/unidades/osasco-jardim-dabril'
+    | '/servicos/'
+    | '/unidades/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -313,6 +333,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UnidadesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/servicos/': {
+      id: '/servicos/'
+      path: '/'
+      fullPath: '/servicos/'
+      preLoaderRoute: typeof ServicosIndexRouteImport
+      parentRoute: typeof ServicosRoute
+    }
     '/servicos/cnh': {
       id: '/servicos/cnh'
       path: '/cnh'
@@ -348,6 +375,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicosTransferenciaDeVeiculoRouteImport
       parentRoute: typeof ServicosRoute
     }
+    '/unidades/': {
+      id: '/unidades/'
+      path: '/'
+      fullPath: '/unidades/'
+      preLoaderRoute: typeof UnidadesIndexRouteImport
+      parentRoute: typeof UnidadesRoute
+    }
     '/unidades/carapicuiba': {
       id: '/unidades/carapicuiba'
       path: '/carapicuiba'
@@ -378,6 +412,7 @@ interface ServicosRouteChildren {
   ServicosDocumentacaoVeicularRoute: typeof ServicosDocumentacaoVeicularRoute
   ServicosLicenciamentoRoute: typeof ServicosLicenciamentoRoute
   ServicosTransferenciaDeVeiculoRoute: typeof ServicosTransferenciaDeVeiculoRoute
+  ServicosIndexRoute: typeof ServicosIndexRoute
 }
 
 const ServicosRouteChildren: ServicosRouteChildren = {
@@ -386,6 +421,7 @@ const ServicosRouteChildren: ServicosRouteChildren = {
   ServicosDocumentacaoVeicularRoute: ServicosDocumentacaoVeicularRoute,
   ServicosLicenciamentoRoute: ServicosLicenciamentoRoute,
   ServicosTransferenciaDeVeiculoRoute: ServicosTransferenciaDeVeiculoRoute,
+  ServicosIndexRoute: ServicosIndexRoute,
 }
 
 const ServicosRouteWithChildren = ServicosRoute._addFileChildren(
@@ -396,12 +432,14 @@ interface UnidadesRouteChildren {
   UnidadesCarapicuibaRoute: typeof UnidadesCarapicuibaRoute
   UnidadesOsascoJardimConceicaoRoute: typeof UnidadesOsascoJardimConceicaoRoute
   UnidadesOsascoJardimDabrilRoute: typeof UnidadesOsascoJardimDabrilRoute
+  UnidadesIndexRoute: typeof UnidadesIndexRoute
 }
 
 const UnidadesRouteChildren: UnidadesRouteChildren = {
   UnidadesCarapicuibaRoute: UnidadesCarapicuibaRoute,
   UnidadesOsascoJardimConceicaoRoute: UnidadesOsascoJardimConceicaoRoute,
   UnidadesOsascoJardimDabrilRoute: UnidadesOsascoJardimDabrilRoute,
+  UnidadesIndexRoute: UnidadesIndexRoute,
 }
 
 const UnidadesRouteWithChildren = UnidadesRoute._addFileChildren(
