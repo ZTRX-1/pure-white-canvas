@@ -195,7 +195,7 @@ export const milestones = [
   },
   {
     year: "2024",
-    label "Hoje",
+    label: "Hoje",
     title: "Mais de 5.000 atendimentos realizados",
     description:
       "Carapicuíba e Osasco. Pessoas e empresas. Documentos resolvidos com tranquilidade. A jornada continua, mas a missão permanece a mesma: facilitar a sua vida documental.",
