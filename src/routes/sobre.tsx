@@ -1,48 +1,55 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Calendar, MapPin, Phone } from "lucide-react";
+import { ArrowRight, Calendar, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SectionTitle, CtaBand } from "@/components/dhg/page-elements";
-import { mainWhatsapp, milestones, story, units, whatsapp } from "@/lib/dhg";
-import { unitImages } from "@/lib/dhg-media";
+import { mainWhatsapp, milestones, story, units } from "@/lib/dhg";
 import { WhatsAppIcon } from "@/components/dhg/whatsapp-icon";
 import vehicleImage from "@/assets/dhg-veiculo.jpg";
 import atendimentoImage from "@/assets/dhg-atendimento.jpg";
 import consultoriaImage from "@/assets/dhg-consultoria.jpg";
 
-export const Route = createFileRoute("/sobre")({
-  head: () => ({
-    meta: [
-      { title: "A DHG | A história por trás da assessoria desde 2012" },
-      {
-        name: "description",
-        content:
-          "Conheça a trajetória da DHG: como nasceu para facilitar processos documentais e hoje atende pessoas e empresas em Carapicuíba e Osasco.",
-      },
-      { property: "og:title", content: "A DHG — História e Trajetória" },
-      {
-        property: "og:description",
-        content:
-          "Desde 2012, a DHG transforma documentação complicada em tarefas simples para pessoas e empresas.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "ProfessionalService",
-          name: "DHG Despachante e Assessoria",
-          foundingDate: "2012",
-          areaServed: ["Carapicuíba", "Osasco"],
-          description: "Assessoria documental para pessoas e empresas desde 2012.",
-        }),
-      },
-    ],
-  }),
-  component: SobrePage,
-});
+type LinkTarget =
+  | { type: "route"; to: string }
+  | { type: "anchor"; href: string }
+  | { type: "external"; href: string };
+
+const isAnchor = (t: LinkTarget): t is { type: "anchor"; href: string } =>
+  t.type === "anchor";
+const isExternal = (t: LinkTarget): t is { type: "external"; href: string } =>
+  t.type === "external";
+
+function CtaLink({ target, children }: { target: LinkTarget; children: React.ReactNode }) {
+  if (isAnchor(target)) {
+    return (
+      <a
+        href={target.href}
+        className="inline-flex items-center gap-2 rounded-md bg-brand-deep px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-brand-deep/85"
+      >
+        {children}
+      </a>
+    );
+  }
+  if (isExternal(target)) {
+    return (
+      <a
+        href={target.href}
+        target="_blank"
+        rel="noreferrer"
+        className="inline-flex items-center gap-2 rounded-md bg-brand-deep px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-brand-deep/85"
+      >
+        {children}
+      </a>
+    );
+  }
+  return (
+    <Link
+      to={target.to as "/contato"}
+      className="inline-flex items-center gap-2 rounded-md bg-brand-deep px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-brand-deep/85"
+    >
+      {children}
+    </Link>
+  );
+}
 
 function StoryHero() {
   return (
@@ -104,12 +111,8 @@ function OriginStory() {
             text="Tudo começou com uma pergunta simples: por que lidar com documentação precisa ser tão complicado?"
           />
           <div className="mt-10 space-y-6 text-lg leading-8 text-muted-foreground">
-            <p>
-              {story.origin.problem}
-            </p>
-            <p>
-              {story.origin.solution}
-            </p>
+            <p>{story.origin.problem}</p>
+            <p>{story.origin.solution}</p>
             <p>
               Hoje, com três unidades físicas em Carapicuíba e Osasco, a DHG atende pessoas e
               empresas com a mesma atenção de sempre: entender antes de agir, orientar antes de
@@ -148,6 +151,15 @@ function OriginStory() {
   );
 }
 
+const milestoneTargets: LinkTarget[] = [
+  { type: "route", to: "/contato" },
+  { type: "route", to: "/unidades/osasco-jardim-dabril" },
+  { type: "route", to: "/servicos/documentacao-veicular" },
+  { type: "route", to: "/unidades" },
+  { type: "route", to: "/empresas" },
+  { type: "anchor", href: "#contato-imediato" },
+];
+
 function StoryTimeline() {
   return (
     <section className="bg-brand-soft py-20 sm:py-28">
@@ -183,13 +195,10 @@ function StoryTimeline() {
                     <p className="max-w-2xl text-lg leading-8 text-muted-foreground">
                       {milestone.description}
                     </p>
-                    <Link
-                      to={milestone.ctaTo as "/contato"}
-                      className="inline-flex items-center gap-2 rounded-md bg-brand-deep px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-brand-deep/85"
-                    >
+                    <CtaLink target={milestoneTargets[index]}>
                       {milestone.ctaLabel}
                       <ArrowRight className="size-4" />
-                    </Link>
+                    </CtaLink>
                   </div>
                 </div>
                 {index < milestones.length - 1 && (
@@ -206,27 +215,28 @@ function StoryTimeline() {
 
 function WorkingMethod() {
   const steps = [
-    [
-      "01",
-      "Entendemos seu caso",
-      "Explicamos brevemente o que você precisa e identificamos os próximos passos aplicáveis.",
-      "Falar com a DHG",
-    ],
-    [
-      "02",
-      "Orientação clara",
-      "Preparamos a documentação necessária e orientamos sobre cada etapa do processo.",
-      "Ver serviços",
-    ],
-    [
-      "03",
-      "Acompanhamento até o fim",
-      "Conduzimos o processo, respondemos dúvidas e confirmamos a conclusão junto ao órgão competente.",
-      "WhatsApp direto",
-    ],
+    {
+      n: "01",
+      title: "Entendemos seu caso",
+      desc: "Explicamos brevemente o que você precisa e identificamos os próximos passos aplicáveis.",
+      target: { type: "route" as const, to: "/contato" },
+      cta: "Falar com a DHG",
+    },
+    {
+      n: "02",
+      title: "Orientação clara",
+      desc: "Preparamos a documentação necessária e orientamos sobre cada etapa do processo.",
+      target: { type: "route" as const, to: "/servicos" },
+      cta: "Ver serviços",
+    },
+    {
+      n: "03",
+      title: "Acompanhamento até o fim",
+      desc: "Conduzimos o processo, respondemos dúvidas e confirmamos a conclusão junto ao órgão competente.",
+      target: { type: "external" as const, href: mainWhatsapp },
+      cta: "WhatsApp direto",
+    },
   ];
-
-  const stepLinks = ["/contato", "/servicos", mainWhatsapp];
 
   return (
     <section className="py-20 sm:py-28">
@@ -237,20 +247,32 @@ function WorkingMethod() {
           text="Do primeiro contato à conclusão do processo, cada etapa é feita para você ter clareza e tranquilidade."
         />
         <div className="mt-16 grid gap-8 md:grid-cols-3">
-          {steps.map(([n, t, d, cta], i) => (
+          {steps.map((step) => (
             <div
-              key={n}
+              key={step.n}
               className="flex flex-col rounded-lg border border-border bg-background p-8"
             >
-              <span className="text-sm font-bold text-primary">{n}</span>
-              <h3 className="mt-5 text-xl font-semibold text-brand-deep">{t}</h3>
-              <p className="mt-4 flex-1 text-base leading-7 text-muted-foreground">{d}</p>
-              <Link
-                to={stepLinks[i] as "/contato"}
-                className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:translate-x-1"
-              >
-                {cta} <ArrowRight className="size-4" />
-              </Link>
+              <span className="text-sm font-bold text-primary">{step.n}</span>
+              <h3 className="mt-5 text-xl font-semibold text-brand-deep">{step.title}</h3>
+              <p className="mt-4 flex-1 text-base leading-7 text-muted-foreground">{step.desc}</p>
+              {isExternal(step.target) ? (
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="mt-6 h-auto justify-start p-0 text-sm font-semibold text-primary hover:text-primary/80"
+                >
+                  <a href={step.target.href} target="_blank" rel="noreferrer">
+                    {step.cta} <ArrowRight className="ml-1 size-4" />
+                  </a>
+                </Button>
+              ) : (
+                <Link
+                  to={step.target.to as "/contato"}
+                  className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:translate-x-1"
+                >
+                  {step.cta} <ArrowRight className="size-4" />
+                </Link>
+              )}
             </div>
           ))}
         </div>
@@ -261,21 +283,24 @@ function WorkingMethod() {
 
 function ValuesInAction() {
   const values = [
-    [
-      "Atendimento",
-      "Escuta ativa para entender seu caso antes de propor a solução. Porque cada processo é único.",
-      "Quero essa atenção",
-    ],
-    [
-      "Transparência",
-      "Documentos, etapas e prazos explicados sem rodeios. Você sabe exatamente o que está acontecendo.",
-      "Entender meu processo",
-    ],
-    [
-      "Experiência",
-      "Mais de uma década de prática em documentos verícolas e empresariais. Conhecimento que evita erros.",
-      "Conheça nossa experiência",
-    ],
+    {
+      title: "Atendimento",
+      desc: "Escuta ativa para entender seu caso antes de propor a solução. Porque cada processo é único.",
+      cta: "Fale com a gente",
+      target: { type: "route" as const, to: "/contato" },
+    },
+    {
+      title: "Transparência",
+      desc: "Documentos, etapas e prazos explicados sem rodeios. Você sabe exatamente o que está acontecendo.",
+      cta: "Entenda os serviços",
+      target: { type: "route" as const, to: "/servicos" },
+    },
+    {
+      title: "Experiência",
+      desc: "Mais de uma década de prática em documentos verícolas e empresariais. Conhecimento que evita erros.",
+      cta: "Veja nossa trajetória",
+      target: { type: "anchor" as const, href: "#historia" },
+    },
   ];
 
   return (
@@ -288,19 +313,17 @@ function ValuesInAction() {
           </h2>
         </div>
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {values.map(([title, desc, cta]) => (
+          {values.map((v) => (
             <div
-              key={title}
+              key={v.title}
               className="rounded-lg border border-primary-foreground/15 bg-brand-deep/60 p-7 transition-transform duration-300 hover:translate-y-[-2px]"
             >
-              <h3 className="text-xl font-semibold">{title}</h3>
-              <p className="mt-4 text-base leading-7 text-primary-foreground/70">{desc}</p>
-              <Link
-                to={cta === "Entender meu processo" ? "/servicos" : cta === "Conheça nossa experiência" ? "/sobre" : "/contato"}
-                className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary-foreground hover:translate-x-1"
-              >
-                {cta} <ArrowRight className="size-4" />
-              </Link>
+              <h3 className="text-xl font-semibold">{v.title}</h3>
+              <p className="mt-4 text-base leading-7 text-primary-foreground/70">{v.desc}</p>
+              <CtaLink target={v.target} childrenClassName="mt-6">
+                {v.cta}
+                <ArrowRight className="size-4" />
+              </CtaLink>
             </div>
           ))}
         </div>
@@ -350,7 +373,10 @@ function SocialProof() {
             >
               <div>
                 <p className="text-xl text-primary" aria-label="5 estrelas">
-                  ★★★★★
+                  ★★★★
+                  <span aria-hidden="true">
+                    ★
+                  </span>
                 </p>
                 <p className="mt-1 font-semibold text-brand-deep">{r.phone}</p>
                 <p className="text-sm text-muted-foreground">
