@@ -195,7 +195,7 @@ function StoryTimeline() {
                     <p className="max-w-2xl text-lg leading-8 text-muted-foreground">
                       {milestone.description}
                     </p>
-                    <CtaLink target={milestoneTargets[index]}>
+                    <CtaLink target={milestoneTargets[index]!}>
                       {milestone.ctaLabel}
                       <ArrowRight className="size-4" />
                     </CtaLink>
