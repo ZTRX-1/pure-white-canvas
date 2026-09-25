@@ -9,6 +9,8 @@ import vehicleImage from "@/assets/dhg-veiculo.jpg";
 import atendimentoImage from "@/assets/dhg-atendimento.jpg";
 import consultoriaImage from "@/assets/dhg-consultoria.jpg";
 
+import type { ReactNode } from "react";
+
 type LinkTarget =
   | { type: "route"; to: string }
   | { type: "anchor"; href: string }
@@ -19,34 +21,33 @@ const isAnchor = (t: LinkTarget): t is { type: "anchor"; href: string } =>
 const isExternal = (t: LinkTarget): t is { type: "external"; href: string } =>
   t.type === "external";
 
-function CtaLink({ target, children }: { target: LinkTarget; children: React.ReactNode }) {
+function CtaLink({
+  target,
+  children,
+  className = "",
+}: {
+  target: LinkTarget;
+  children: ReactNode;
+  className?: string;
+}) {
+  const baseClasses = "inline-flex items-center gap-2 rounded-md bg-brand-deep px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-brand-deep/85";
+  const merged = `${baseClasses} ${className}`;
   if (isAnchor(target)) {
     return (
-      <a
-        href={target.href}
-        className="inline-flex items-center gap-2 rounded-md bg-brand-deep px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-brand-deep/85"
-      >
+      <a href={target.href} className={merged}>
         {children}
       </a>
     );
   }
   if (isExternal(target)) {
     return (
-      <a
-        href={target.href}
-        target="_blank"
-        rel="noreferrer"
-        className="inline-flex items-center gap-2 rounded-md bg-brand-deep px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-brand-deep/85"
-      >
+      <a href={target.href} target="_blank" rel="noreferrer" className={merged}>
         {children}
       </a>
     );
   }
   return (
-    <Link
-      to={target.to as "/contato"}
-      className="inline-flex items-center gap-2 rounded-md bg-brand-deep px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-brand-deep/85"
-    >
+    <Link to={target.to as "/contato"} className={merged}>
       {children}
     </Link>
   );
@@ -321,7 +322,7 @@ function ValuesInAction() {
             >
               <h3 className="text-xl font-semibold">{v.title}</h3>
               <p className="mt-4 text-base leading-7 text-primary-foreground/70">{v.desc}</p>
-              <CtaLink target={v.target} childrenClassName="mt-6">
+              <CtaLink target={v.target} className="mt-6">
                 {v.cta}
                 <ArrowRight className="size-4" />
               </CtaLink>
