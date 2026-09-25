@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Calendar, Phone } from "lucide-react";
+import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { SectionTitle, CtaBand } from "@/components/dhg/page-elements";
 import { mainWhatsapp, milestones, story, units } from "@/lib/dhg";
