@@ -282,24 +282,24 @@ function WorkingMethod() {
 }
 
 function ValuesInAction() {
-  const values = [
+  const values: { title: string; desc: string; cta: string; target: LinkTarget }[] = [
     {
       title: "Atendimento",
       desc: "Escuta ativa para entender seu caso antes de propor a solução. Porque cada processo é único.",
       cta: "Fale com a gente",
-      target: { type: "route" as const, to: "/contato" },
+      target: { type: "route", to: "/contato" },
     },
     {
       title: "Transparência",
       desc: "Documentos, etapas e prazos explicados sem rodeios. Você sabe exatamente o que está acontecendo.",
       cta: "Entenda os serviços",
-      target: { type: "route" as const, to: "/servicos" },
+      target: { type: "route", to: "/servicos" },
     },
     {
       title: "Experiência",
-      desc: "Mais de uma década de prática em documentos verícolas e empresariais. Conhecimento que evita erros.",
+      desc: "Mais de uma décade de prática em documentos verícolas e empresariais. Conhecimento que evita erros.",
       cta: "Veja nossa trajetória",
-      target: { type: "anchor" as const, href: "#historia" },
+      target: { type: "anchor", href: "#historia" },
     },
   ];
 
@@ -320,25 +320,7 @@ function ValuesInAction() {
             >
               <h3 className="text-xl font-semibold">{v.title}</h3>
               <p className="mt-4 text-base leading-7 text-primary-foreground/70">{v.desc}</p>
-              {isAnchor(v.target) ? (
-                <a
-                  href={v.target.href}
-                  className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary-foreground hover:translate-x-1"
-                >
-                  {v.cta}
-                  <ArrowRight className="size-4" />
-                </a>
-              ) : isExternal(v.target) ? (
-                <a
-                  href={v.target.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary-foreground hover:translate-x-1"
-                >
-                  {v.cta}
-                  <ArrowRight className="size-4" />
-                </a>
-              ) : (
+              {v.target.type === "route" ? (
                 <Link
                   to={v.target.to as "/contato"}
                   className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary-foreground hover:translate-x-1"
@@ -346,6 +328,14 @@ function ValuesInAction() {
                   {v.cta}
                   <ArrowRight className="size-4" />
                 </Link>
+              ) : (
+                <a
+                  href={v.target.href}
+                  className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary-foreground hover:translate-x-1"
+                >
+                  {v.cta}
+                  <ArrowRight className="size-4" />
+                </a>
               )}
             </div>
           ))}
