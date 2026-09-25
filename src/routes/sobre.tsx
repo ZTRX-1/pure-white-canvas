@@ -297,7 +297,7 @@ function ValuesInAction() {
     },
     {
       title: "Experiência",
-      desc: "Mais de uma décade de prática em documentos verícolas e empresariais. Conhecimento que evita erros.",
+      desc: "Mais de uma década de prática em documentos verícolas e empresariais. Conhecimento que evita erros.",
       cta: "Veja nossa trajetória",
       target: { type: "anchor", href: "#historia" },
     },
