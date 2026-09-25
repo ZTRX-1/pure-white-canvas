@@ -9,8 +9,6 @@ import vehicleImage from "@/assets/dhg-veiculo.jpg";
 import atendimentoImage from "@/assets/dhg-atendimento.jpg";
 import consultoriaImage from "@/assets/dhg-consultoria.jpg";
 
-import type { ReactNode } from "react";
-
 type LinkTarget =
   | { type: "route"; to: string }
   | { type: "anchor"; href: string }
