@@ -398,10 +398,7 @@ function SocialProof() {
             >
               <div>
                 <p className="text-xl text-primary" aria-label="5 estrelas">
-                  ★★★★
-                  <span aria-hidden="true">
-                    ★
-                  </span>
+                  ★★★★★
                 </p>
                 <p className="mt-1 font-semibold text-brand-deep">{r.phone}</p>
                 <p className="text-sm text-muted-foreground">
