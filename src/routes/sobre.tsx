@@ -322,10 +322,33 @@ function ValuesInAction() {
             >
               <h3 className="text-xl font-semibold">{v.title}</h3>
               <p className="mt-4 text-base leading-7 text-primary-foreground/70">{v.desc}</p>
-              <CtaLink target={v.target} className="mt-6">
-                {v.cta}
-                <ArrowRight className="size-4" />
-              </CtaLink>
+              {isAnchor(v.target) ? (
+                <a
+                  href={v.target.href}
+                  className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary-foreground hover:translate-x-1"
+                >
+                  {v.cta}
+                  <ArrowRight className="size-4" />
+                </a>
+              ) : isExternal(v.target) ? (
+                <a
+                  href={v.target.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary-foreground hover:translate-x-1"
+                >
+                  {v.cta}
+                  <ArrowRight className="size-4" />
+                </a>
+              ) : (
+                <Link
+                  to={v.target.to as "/contato"}
+                  className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary-foreground hover:translate-x-1"
+                >
+                  {v.cta}
+                  <ArrowRight className="size-4" />
+                </Link>
+              )}
             </div>
           ))}
         </div>
