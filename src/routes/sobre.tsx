@@ -14,8 +14,7 @@ type LinkTarget =
   | { type: "anchor"; href: string }
   | { type: "external"; href: string };
 
-const isAnchor = (t: LinkTarget): t is { type: "anchor"; href: string } =>
-  t.type === "anchor";
+const isAnchor = (t: LinkTarget): t is { type: "anchor"; href: string } => t.type === "anchor";
 const isExternal = (t: LinkTarget): t is { type: "external"; href: string } =>
   t.type === "external";
 
@@ -28,7 +27,8 @@ function CtaLink({
   children: ReactNode;
   className?: string;
 }) {
-  const baseClasses = "inline-flex items-center gap-2 rounded-md bg-brand-deep px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-brand-deep/85";
+  const baseClasses =
+    "inline-flex items-center gap-2 rounded-md bg-brand-deep px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-brand-deep/85";
   const merged = `${baseClasses} ${className}`;
   if (isAnchor(target)) {
     return (
@@ -71,9 +71,9 @@ function StoryHero() {
             Documentação complicada? A DHG nasceu para resolver isso.
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-8 text-primary-foreground/80">
-            Em 2012, três profissionais uniram experiência para criar uma assessoria documental
-            que elimina atritos e traz tranquilidade a quem lida com burocracia. Mais de uma
-            década depois, a missão continua a mesma.
+            Em 2012, três profissionais uniram experiência para criar uma assessoria documental que
+            elimina atritos e traz tranquilidade a quem lida com burocracia. Mais de uma década
+            depois, a missão continua a mesma.
           </p>
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <Button
@@ -189,9 +189,7 @@ function StoryTimeline() {
                     </div>
                   </div>
                   <div className="space-y-5">
-                    <h3 className="text-2xl font-semibold text-brand-deep">
-                      {milestone.title}
-                    </h3>
+                    <h3 className="text-2xl font-semibold text-brand-deep">{milestone.title}</h3>
                     <p className="max-w-2xl text-lg leading-8 text-muted-foreground">
                       {milestone.description}
                     </p>
@@ -347,9 +345,24 @@ function ValuesInAction() {
 
 function SocialProof() {
   const ratings = [
-    { unit: "Carapicuíba", area: "Parque Santa Teresa", phone: units.carapicuiba.phone, href: units.carapicuiba.phoneHref },
-    { unit: "Osasco", area: "Jardim Conceição", phone: units["osasco-jardim-conceicao"].phone, href: units["osasco-jardim-conceicao"].phoneHref },
-    { unit: "Osasco", area: "Jardim D'Abril", phone: units["osasco-jardim-dabril"].phone, href: units["osasco-jardim-dabril"].phoneHref },
+    {
+      unit: "Carapicuíba",
+      area: "Parque Santa Teresa",
+      phone: units.carapicuiba.phone,
+      href: units.carapicuiba.phoneHref,
+    },
+    {
+      unit: "Osasco",
+      area: "Jardim Conceição",
+      phone: units["osasco-jardim-conceicao"].phone,
+      href: units["osasco-jardim-conceicao"].phoneHref,
+    },
+    {
+      unit: "Osasco",
+      area: "Jardim D'Abril",
+      phone: units["osasco-jardim-dabril"].phone,
+      href: units["osasco-jardim-dabril"].phoneHref,
+    },
   ];
 
   return (
