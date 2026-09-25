@@ -146,3 +146,71 @@ export const units: Record<
 
 export const mapUrl = (unit: (typeof units)[UnitKey]) =>
   `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${unit.address}, ${unit.zip}`)}`;
+
+export const milestones = [
+  {
+    year: "2012",
+    label: "Fundação",
+    title: "A DHG nasce em Carapicuíba",
+    description:
+      "Criada para resolver a frustração de quem enfrenta a burocracia documental sozinho. Três partners fundadores começaram com uma missão simples: transformar processos complicados em tarefas simples.",
+    ctaLabel: "Conheça nosso atendimento",
+    ctaTo: "/contato",
+  },
+  {
+    year: "2014",
+    label: "Primeira expansão",
+    title: "Abertura da unidade em Osasco",
+    description:
+      "A pequena equipe já atendia clientes de toda a região. Decidimos estender a DHG a Osasco, no Jardim D'Abril, para estar onde mais pessoas precisavam.",
+    ctaLabel: "Veja nossa unidade em Osasco",
+    ctaTo: "/unidades/osasco-jardim-dabril",
+  },
+  {
+    year: "2017",
+    label: "Consolidação",
+    title: "Especialização em documentos vericulares",
+    description:
+      "Com mais de 2 mil atendimentos, a DHG aprofundou a expertise em transferências, licenciamento e regularizações. Cada caso se tornava um aprendizado para o próximo cliente.",
+    ctaLabel: "Entenda como trabalhamos",
+    ctaTo: "/servicos/documentacao-veicular",
+  },
+  {
+    year: "2019",
+    label: "Nova unidade",
+    title: "Jardim Conceição também tem DHG",
+    description:
+      "Mais uma unidade física em Osasco — desta vez no Jardim Conceição — para reduzir a distância entre a DHG e quem precisa de nós.",
+    ctaLabel: "Conheça todas as unidades",
+    ctaTo: "/unidades",
+  },
+  {
+    year: "2021",
+    label: "Clientes corporativos",
+    title: "Assessoria para empresas",
+    description:
+      "Empresas passaram a confiar na DHG para gestão documental, controle de vencimentos e protocolização de processos. Um novo tipo de cliente, mas a mesma filosofia: clareza e organização.",
+    ctaLabel: "Conheça nossas soluções B2B",
+    ctaTo: "/empresas",
+  },
+  {
+    year: "2024",
+    label "Hoje",
+    title: "Mais de 5.000 atendimentos realizados",
+    description:
+      "Carapicuíba e Osasco. Pessoas e empresas. Documentos resolvidos com tranquilidade. A jornada continua, mas a missão permanece a mesma: facilitar a sua vida documental.",
+    ctaLabel: "Fale com a DHG agora",
+    ctaTo: "#contato-imediato",
+  },
+] as const;
+
+export type Milestone = (typeof milestones)[number];
+
+export const story = {
+  origin: {
+    problem:
+      "Documentação, veículos e trámites junto a órgãos públicos são uma fonte constante de frustração: filas, documentos perdidos, informações conflitantes e etapas que não parecem ter fim.",
+    solution:
+      "A DHG nasceu para ser o guia que falta nessa jornada. Nossa equipe entende cada processo, orienta sobre os próximos passos e acompanha tudo até a conclusão — para você não perder tempo, nem dinheiro.",
+  },
+} as const;
