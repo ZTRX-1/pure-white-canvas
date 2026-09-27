@@ -1,6 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PageHero, SectionTitle, CtaBand } from "@/components/dhg/page-elements";
-import { unitImages } from "@/lib/dhg-media";
+import {
+  PageHero,
+  SectionTitle,
+  CtaBand,
+  StatsBar,
+} from "@/components/dhg/page-elements";
 
 const items = [
   "Gestão de documentos e vencimentos",
@@ -9,6 +13,12 @@ const items = [
   "Regularizações, alvarás e licenças",
   "Laudos, perícias, vistorias e avaliações",
   "Certificações, registros e cadastros",
+];
+
+const empresaStats = [
+  { value: "+5.000", label: "atendimentos realizados" },
+  { value: "3", label: "unidades em Carapicuíba e Osasco" },
+  { value: "Desde 2021", label: "assessoria documental para empresas" },
 ];
 
 export const Route = createFileRoute("/empresas")({
@@ -39,8 +49,13 @@ function EmpresasPage() {
         eyebrow="Soluções para empresas"
         title="Organização documental para sua operação avançar."
         text="Acompanhamento profissional para empresas que precisam de clareza, organização e continuidade em seus processos."
-        image={unitImages["osasco-jardim-conceicao"]}
+        compact
       />
+      <section className="bg-background py-12 sm:py-14">
+        <div className="mx-auto max-w-7xl px-5 lg:px-8">
+          <StatsBar stats={empresaStats} />
+        </div>
+      </section>
       <section className="bg-brand-soft py-20 sm:py-28">
         <div className="mx-auto grid max-w-7xl gap-16 px-5 lg:grid-cols-[0.75fr_1.25fr] lg:px-8">
           <SectionTitle
