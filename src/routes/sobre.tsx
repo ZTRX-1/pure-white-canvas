@@ -480,3 +480,7 @@ function SobrePage() {
     </>
   );
 }
+
+export const Route = createFileRoute("/sobre")({
+  component: SobrePage,
+});
