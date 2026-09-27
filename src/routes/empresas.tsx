@@ -1,10 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  PageHero,
-  SectionTitle,
-  CtaBand,
-  StatsBar,
-} from "@/components/dhg/page-elements";
+import { PageHero, SectionTitle, CtaBand, StatsBar } from "@/components/dhg/page-elements";
 
 const items = [
   "Gestão de documentos e vencimentos",
