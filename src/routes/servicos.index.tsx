@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { PageHero, SectionTitle, CtaBand } from "@/components/dhg/page-elements";
-import vehicleImage from "@/assets/dhg-veiculo.jpg";
 
 const categories = [
   ["Documentação Veicular", "Emplacamento, atualizações, segunda via e outros processos documentais.", "/servicos/documentacao-veicular"],
@@ -40,7 +39,7 @@ function ServicosPage() {
         eyebrow="Serviços"
         title="Soluções documentais para cada necessidade."
         text="Atendimento para pessoas e empresas, com orientação clara e acompanhamento de processos."
-        image={vehicleImage}
+        compact
       />
       <section className="bg-brand-soft py-20 sm:py-28">
         <div className="mx-auto max-w-7xl px-5 lg:px-8">

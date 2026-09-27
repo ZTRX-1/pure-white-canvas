@@ -20,12 +20,31 @@ export function PageHero({
   title,
   text,
   image = vehicleImage,
+  compact = false,
 }: {
   eyebrow: string;
   title: string;
   text: string;
   image?: string;
+  compact?: boolean;
 }) {
+  if (compact) {
+    return (
+      <section className="bg-brand-deep text-primary-foreground">
+        <div className="mx-auto max-w-7xl px-5 py-12 lg:px-8 lg:py-14">
+          <div className="max-w-3xl reveal-in">
+            <p className="eyebrow text-primary-foreground/70">{eyebrow}</p>
+            <h1 className="mt-4 text-3xl font-semibold leading-[1.05] sm:text-4xl lg:text-5xl">
+              {title}
+            </h1>
+            <p className="mt-5 max-w-2xl text-base leading-7 text-primary-foreground/80 sm:text-lg sm:leading-8">
+              {text}
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
   return (
     <section className="relative min-h-[500px] overflow-hidden bg-brand-deep text-primary-foreground lg:min-h-[620px]">
       <img
