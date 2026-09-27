@@ -7,6 +7,7 @@ import { mainWhatsapp } from "@/lib/dhg";
 import { WhatsAppIcon } from "@/components/dhg/whatsapp-icon";
 
 const nav = [
+  ["Início", "/"],
   ["A DHG", "/sobre"],
   ["Serviços", "/servicos"],
   ["Empresas", "/empresas"],
