@@ -13,7 +13,7 @@ const items = [
 const empresaStats = [
   { value: "+5.000", label: "atendimentos realizados" },
   { value: "3", label: "unidades em Carapicuíba e Osasco" },
-  { value: "Desde 2021", label: "assessoria documental para empresas" },
+  { value: "Desde 2012", label: "no mercado" },
 ];
 
 export const Route = createFileRoute("/empresas")({
