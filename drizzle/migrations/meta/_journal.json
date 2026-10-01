@@ -22,6 +22,13 @@
       "when": 1790889741886,
       "tag": "0002_restrict_internal_security_functions",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1790889815200,
+      "tag": "0003_manage_active_staff_access",
+      "breakpoints": true
     }
   ]
 }

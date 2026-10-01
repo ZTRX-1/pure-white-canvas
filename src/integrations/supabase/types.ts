@@ -122,6 +122,7 @@ export type Database = {
       dhg_invitations: {
         Row: {
           claimed_at: string | null
+          claimed_by: string | null
           created_at: string
           created_by: string
           email: string
@@ -130,6 +131,7 @@ export type Database = {
         }
         Insert: {
           claimed_at?: string | null
+          claimed_by?: string | null
           created_at?: string
           created_by?: string
           email: string
@@ -138,6 +140,7 @@ export type Database = {
         }
         Update: {
           claimed_at?: string | null
+          claimed_by?: string | null
           created_at?: string
           created_by?: string
           email?: string
@@ -231,6 +234,7 @@ export type Database = {
         Returns: boolean
       }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
+      revoke_dhg_staff: { Args: { _invitation_id: string }; Returns: undefined }
     }
     Enums: {
       app_role: "admin" | "staff"
