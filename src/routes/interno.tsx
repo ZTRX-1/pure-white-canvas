@@ -129,8 +129,8 @@ function InternalPage() {
   </div>;
 }
 
-function ClientForm({initial,busy,onSave}:{initial?:Client;busy:boolean;onSave:(data:Database['public']['Tables']['dhg_clients']['Insert'])=>void}) {
-  return <form className="grid gap-4 sm:grid-cols-2" onSubmit={(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();const d=new FormData(e.currentTarget);const value=(key:string)=>d.get(key)?.toString().trim()||null;onSave({name:value('name')||'',person_type:value('person_type')||'PF',cpf:value('cpf'),cnpj:value('cnpj'),rg:value('rg'),cnh:value('cnh'),phone:value('phone'),email:value('email'),unit:value('unit')||units[0],notes:value('notes')});}}>
+function ClientForm({initial,busy,onSave}:{initial:Client|undefined;busy:boolean;onSave:(data:Database['public']['Tables']['dhg_clients']['Insert'])=>void}) {
+  return <form className="grid gap-4 sm:grid-cols-2" onSubmit={(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();const d=new FormData(e.currentTarget);const value=(key:string)=>d.get(key)?.toString().trim()||null;onSave({name:value('name')||'',person_type:value('person_type')||'PF',cpf:value('cpf'),cnpj:value('cnpj'),rg:value('rg'),cnh:value('cnh'),phone:value('phone'),email:value('email'),unit:value('unit')||units[0]||'Carapicuíba',notes:value('notes')});}}>
     <label className={`${label} sm:col-span-2`}>Nome completo / razão social<Input name="name" required defaultValue={initial?.name}/></label>
     <label className={label}>Tipo<select className={field} name="person_type" defaultValue={initial?.person_type||'PF'}><option>PF</option><option>PJ</option></select></label>
     <label className={label}>Unidade<select className={field} name="unit" defaultValue={initial?.unit||units[0]}>{units.map(u=><option key={u}>{u}</option>)}</select></label>
@@ -138,8 +138,8 @@ function ClientForm({initial,busy,onSave}:{initial?:Client;busy:boolean;onSave:(
     <label className={`${label} sm:col-span-2`}>Observações<Textarea name="notes" defaultValue={initial?.notes||''}/></label><Button type="submit" disabled={busy} className="sm:col-span-2">Salvar cliente</Button>
   </form>;
 }
-function ProcessForm({initial,clients,initialClient,busy,onSave}:{initial?:Process;clients:Client[];initialClient:string;busy:boolean;onSave:(data:Database['public']['Tables']['dhg_processes']['Insert'])=>void}) {
-  return <form className="grid gap-4 sm:grid-cols-2" onSubmit={e=>{e.preventDefault();const d=new FormData(e.currentTarget);const v=(key:string)=>d.get(key)?.toString().trim()||null;const client=clients.find(c=>c.id===v('client_id'));onSave({client_id:client?.id||'',unit:v('unit')||client?.unit||units[0],service:v('service')||'',stage:v('stage')||'Aberto',plate:v('plate'),protocol:v('protocol'),deadline:v('deadline'),notes:v('notes')});}}>
+function ProcessForm({initial,clients,initialClient,busy,onSave}:{initial:Process|undefined;clients:Client[];initialClient:string;busy:boolean;onSave:(data:Database['public']['Tables']['dhg_processes']['Insert'])=>void}) {
+  return <form className="grid gap-4 sm:grid-cols-2" onSubmit={e=>{e.preventDefault();const d=new FormData(e.currentTarget);const v=(key:string)=>d.get(key)?.toString().trim()||null;const client=clients.find(c=>c.id===v('client_id'));onSave({client_id:client?.id||'',unit:v('unit')||client?.unit||units[0]||'Carapicuíba',service:v('service')||'',stage:v('stage')||'Aberto',plate:v('plate'),protocol:v('protocol'),deadline:v('deadline'),notes:v('notes')});}}>
     <label className={`${label} sm:col-span-2`}>Cliente<select className={field} name="client_id" required defaultValue={initial?.client_id||initialClient}>{!initial?.client_id&&!initialClient&&<option value="">Selecione</option>}{clients.map(c=><option key={c.id} value={c.id}>{c.name}</option>)}</select></label>
     <label className={label}>Serviço<select className={field} name="service" defaultValue={initial?.service||''} required><option value="">Selecione</option>{services.map(s=><option key={s}>{s}</option>)}</select></label>
     <label className={label}>Etapa<select className={field} name="stage" defaultValue={initial?.stage||'Aberto'}>{stages.map(s=><option key={s}>{s}</option>)}</select></label>
