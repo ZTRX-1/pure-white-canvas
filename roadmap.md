@@ -24,3 +24,6 @@
 - [x] Remover numeração e aprofundar textos das páginas de serviços
 - [x] Reformular Conteúdos como grade editorial de blog
 - [x] Validar os refinamentos em desktop e celular
+- [x] Tornar as categorias de serviços da Home evidentemente clicáveis
+- [x] Reutilizar os mesmos cards editoriais em Home e Conteúdos
+- [x] Diferenciar a apresentação das páginas individuais de serviços sem alterar as rotas

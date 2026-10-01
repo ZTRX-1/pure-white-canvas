@@ -10,3 +10,6 @@
 > the editor, so keep the branch in a working state.
 
 <!-- LOVABLE:END -->
+
+- Keep editorial content previews in a shared posts module and card component so Home and Conteúdos stay synchronized; duplicated entries create mismatched links and text.
+- Keep individual service pages on the existing shared detail component with per-service presentation data; this preserves route architecture while allowing distinct editorial layouts.

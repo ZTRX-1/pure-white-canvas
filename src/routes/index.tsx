@@ -5,6 +5,8 @@ import vehicleImage from "@/assets/dhg-veiculo.jpg";
 import { mainWhatsapp } from "@/lib/dhg";
 import { unitImages } from "@/lib/dhg-media";
 import { WhatsAppIcon } from "@/components/dhg/whatsapp-icon";
+import { PostCard } from "@/components/dhg/post-card";
+import { posts } from "@/lib/dhg-posts";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -132,7 +134,7 @@ function HomePage() {
             title="Soluções para cada necessidade"
             text="Uma estrutura de atendimento preparada para diferentes momentos da vida documental."
           />
-          <div className="mt-12 grid gap-10">
+          <div className="mt-12 grid gap-3 md:grid-cols-2">
             {[
               [
                 "Documentação Veicular",
@@ -158,12 +160,14 @@ function HomePage() {
               <Link
                 key={title}
                 to={to as "/empresas"}
-                className="group grid gap-4 transition-colors hover:bg-brand-soft sm:grid-cols-[1fr_1fr_auto] sm:items-center sm:px-5"
+                className="group flex min-h-[190px] flex-col justify-between border border-border bg-brand-soft p-6 transition-colors hover:border-primary hover:bg-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:p-8"
               >
-                <h3 className="text-xl font-semibold text-brand-deep sm:text-2xl">{title}</h3>
-                <p className="text-base leading-7 text-muted-foreground">{text}</p>
-                <span className="inline-flex items-center text-sm font-semibold text-primary">
-                  Explorar serviço
+                <div>
+                  <h3 className="text-xl font-semibold text-brand-deep sm:text-2xl">{title}</h3>
+                  <p className="mt-3 text-base leading-7 text-muted-foreground">{text}</p>
+                </div>
+                <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary group-hover:underline">
+                  Ver detalhes <span aria-hidden="true">→</span>
                 </span>
               </Link>
             ))}
@@ -336,30 +340,8 @@ function HomePage() {
               Ver todos os conteúdos
             </Link>
           </div>
-          <div className="mt-12 grid gap-6 md:grid-cols-[1.2fr_0.8fr] md:grid-rows-2">
-            {[
-              "Transferência de veículo: entenda o processo",
-              "Licenciamento: o que observar",
-              "Organização documental para empresas",
-            ].map((title, index) => (
-              <article
-                key={title}
-                className={`group bg-brand-soft p-7 sm:p-9 ${index === 0 ? "md:row-span-2 md:flex md:flex-col md:justify-end" : ""}`}
-              >
-                <span className="text-sm font-bold text-primary">0{index + 1}</span>
-                <h3
-                  className={`mt-8 font-semibold leading-tight text-brand-deep ${index === 0 ? "text-3xl sm:text-4xl" : "text-xl"}`}
-                >
-                  {title}
-                </h3>
-                <Link
-                  to="/conteudos"
-                  className="mt-7 inline-flex items-center text-sm font-semibold text-primary"
-                >
-                  Ler conteúdo
-                </Link>
-              </article>
-            ))}
+          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {posts.map((post) => <PostCard key={post.title} post={post} />)}
           </div>
         </div>
       </section>
