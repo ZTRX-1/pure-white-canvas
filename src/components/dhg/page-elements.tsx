@@ -3,6 +3,7 @@ import { ArrowRight, MapPin, Phone } from "lucide-react";
 import type { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import vehicleImage from "@/assets/dhg-veiculo.jpg";
+import atendimentoImage from "@/assets/dhg-atendimento.jpg";
 import {
   mainWhatsapp,
   mapUrl,
@@ -119,13 +120,65 @@ export function CtaBand({
 
 export function ServiceDetail({ serviceKey }: { serviceKey: ServiceKey }) {
   const service = services[serviceKey];
+  const presentation: Record<ServiceKey, { image: string; alt: string; theme: string; imageSide: string; imageShape: string }> = {
+    "documentacao-veicular": {
+      image: vehicleImage,
+      alt: "Profissional junto a veículo em atendimento documental",
+      theme: "bg-brand-deep text-primary-foreground",
+      imageSide: "lg:order-2",
+      imageShape: "aspect-[4/3]",
+    },
+    "transferencia-de-veiculo": {
+      image: vehicleImage,
+      alt: "Profissional junto a veículo em atendimento documental",
+      theme: "bg-brand-soft text-brand-deep",
+      imageSide: "lg:order-1",
+      imageShape: "aspect-[3/2]",
+    },
+    licenciamento: {
+      image: unitImages.carapicuiba,
+      alt: "Fachada real da unidade DHG em Carapicuíba",
+      theme: "bg-brand-blue text-primary-foreground",
+      imageSide: "lg:order-2",
+      imageShape: "aspect-[3/2]",
+    },
+    "debitos-e-regularizacoes": {
+      image: unitImages["osasco-jardim-dabril"],
+      alt: "Fachada real da unidade DHG no Jardim D'Abril",
+      theme: "bg-brand-soft text-brand-deep",
+      imageSide: "lg:order-1",
+      imageShape: "aspect-[4/3]",
+    },
+    cnh: {
+      image: atendimentoImage,
+      alt: "Atendimento profissional da DHG",
+      theme: "bg-brand-mid text-primary-foreground",
+      imageSide: "lg:order-2",
+      imageShape: "aspect-[4/3]",
+    },
+  };
+  const view = presentation[serviceKey];
+  const onDark = serviceKey === "documentacao-veicular" || serviceKey === "licenciamento" || serviceKey === "cnh";
   const ctaTitle =
     serviceKey === "cnh"
       ? "Precisa de ajuda com sua CNH?"
       : `Precisa de ajuda com ${service.title.toLowerCase()}?`;
   return (
     <>
-      <PageHero eyebrow={service.eyebrow} title={service.title} text={service.summary} />
+      <section className={view.theme}>
+        <div className="mx-auto grid max-w-7xl items-center gap-10 px-5 py-12 sm:py-16 lg:grid-cols-2 lg:gap-16 lg:px-8 lg:py-20">
+          <div className={view.imageSide === "lg:order-1" ? "lg:order-2" : "lg:order-1"}>
+            <p className={`eyebrow ${onDark ? "text-primary-foreground/70" : "text-primary"}`}>{service.eyebrow}</p>
+            <h1 className="mt-5 text-4xl font-semibold leading-[1.05] sm:text-5xl lg:text-6xl">{service.title}</h1>
+            <p className={`mt-6 max-w-xl text-lg leading-8 ${onDark ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
+              {service.summary}
+            </p>
+          </div>
+          <div className={view.imageSide}>
+            <img src={view.image} alt={view.alt} className={`${view.imageShape} w-full object-cover`} width="1448" height="1086" fetchPriority="high" />
+          </div>
+        </div>
+      </section>
       <section className="py-20 sm:py-28">
         <div className="mx-auto grid max-w-7xl gap-12 px-5 lg:grid-cols-[0.75fr_1.25fr] lg:px-8">
           <SectionTitle
