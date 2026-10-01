@@ -149,6 +149,24 @@ export type Database = {
         }
         Relationships: []
       }
+      dhg_master_access: {
+        Row: {
+          claimed_at: string | null
+          claimed_by: string | null
+          email: string
+        }
+        Insert: {
+          claimed_at?: string | null
+          claimed_by?: string | null
+          email: string
+        }
+        Update: {
+          claimed_at?: string | null
+          claimed_by?: string | null
+          email?: string
+        }
+        Relationships: []
+      }
       dhg_processes: {
         Row: {
           client_id: string

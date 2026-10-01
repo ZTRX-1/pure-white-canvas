@@ -29,6 +29,13 @@
       "when": 1790889815200,
       "tag": "0003_manage_active_staff_access",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1790890003009,
+      "tag": "0004_allow_verified_master_access",
+      "breakpoints": true
     }
   ]
 }
