@@ -159,6 +159,14 @@ export function ServiceDetail({ serviceKey }: { serviceKey: ServiceKey }) {
   };
   const view = presentation[serviceKey];
   const onDark = serviceKey === "documentacao-veicular" || serviceKey === "licenciamento" || serviceKey === "cnh";
+  const detailHeadings: Record<ServiceKey, string> = {
+    "documentacao-veicular": "Do primeiro emplacamento às atualizações",
+    "transferencia-de-veiculo": "Compra, venda ou mudança de localidade",
+    licenciamento: "Licenciamento e pendências relacionadas",
+    "debitos-e-regularizacoes": "Entenda o caminho para regularizar",
+    cnh: "Sua habilitação, com a orientação certa",
+  };
+  const wideList = serviceKey === "transferencia-de-veiculo" || serviceKey === "cnh";
   const ctaTitle =
     serviceKey === "cnh"
       ? "Precisa de ajuda com sua CNH?"
@@ -179,19 +187,19 @@ export function ServiceDetail({ serviceKey }: { serviceKey: ServiceKey }) {
           </div>
         </div>
       </section>
-      <section className="py-20 sm:py-28">
-        <div className="mx-auto grid max-w-7xl gap-12 px-5 lg:grid-cols-[0.75fr_1.25fr] lg:px-8">
+      <section className={`py-20 sm:py-28 ${wideList ? "bg-brand-soft" : "bg-background"}`}>
+        <div className={`mx-auto grid max-w-7xl gap-12 px-5 lg:px-8 ${wideList ? "lg:grid-cols-[1.1fr_0.9fr] lg:gap-20" : "lg:grid-cols-[0.75fr_1.25fr]"}`}>
           <SectionTitle
             eyebrow="Atendimento especializado"
-            title={`O que a DHG atende em ${service.title.toLowerCase()}`}
+            title={detailHeadings[serviceKey]}
           />
           <div>
             <p className="text-lg leading-8 text-muted-foreground">{service.description}</p>
-            <ul className="mt-10 border-t border-border">
+            <ul className={`mt-10 ${wideList ? "grid gap-x-8 gap-y-5 sm:grid-cols-2" : "border-t border-border"}`}>
               {service.items.map((item) => (
                 <li
                   key={item}
-                  className="border-b border-border py-5 text-base font-semibold text-brand-deep"
+                  className={wideList ? "border-l-2 border-primary pl-4 text-base font-semibold leading-7 text-brand-deep" : "border-b border-border py-5 text-base font-semibold text-brand-deep"}
                 >
                   {item}
                 </li>
