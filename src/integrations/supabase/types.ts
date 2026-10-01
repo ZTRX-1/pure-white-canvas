@@ -119,6 +119,33 @@ export type Database = {
           },
         ]
       }
+      dhg_invitations: {
+        Row: {
+          claimed_at: string | null
+          created_at: string
+          created_by: string
+          email: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+        }
+        Insert: {
+          claimed_at?: string | null
+          created_at?: string
+          created_by?: string
+          email: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+        }
+        Update: {
+          claimed_at?: string | null
+          created_at?: string
+          created_by?: string
+          email?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+        }
+        Relationships: []
+      }
       dhg_processes: {
         Row: {
           client_id: string
@@ -195,6 +222,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      claim_dhg_access: { Args: never; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

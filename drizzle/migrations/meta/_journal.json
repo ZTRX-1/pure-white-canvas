@@ -8,6 +8,13 @@
       "when": 1790889546177,
       "tag": "0000_dhg_internal_operations",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790889566450,
+      "tag": "0001_dhg_staff_invitations",
+      "breakpoints": true
     }
   ]
 }
