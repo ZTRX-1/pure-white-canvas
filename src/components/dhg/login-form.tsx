@@ -11,7 +11,7 @@ export function LoginForm() {
   const [password,setPassword] = useState('');
   const [message,setMessage] = useState('');
   const [busy,setBusy] = useState(false);
-  useEffect(()=>{let recovery=false;const {data:{subscription}}=supabase.auth.onAuthStateChange(event=>{if(event==='PASSWORD_RECOVERY'){recovery=true;setMode('update');}});void supabase.auth.getUser().then(({data})=>{if(data.user&&!recovery)void navigate({to:'/interno'});});return ()=>subscription.unsubscribe();},[navigate]);
+  useEffect(()=>{const {data:{subscription}}=supabase.auth.onAuthStateChange(event=>{if(event==='PASSWORD_RECOVERY')setMode('update');});return ()=>subscription.unsubscribe();},[]);
   async function submit(event:FormEvent<HTMLFormElement>) {
     event.preventDefault();setBusy(true);setMessage('');
     try {
@@ -24,7 +24,7 @@ export function LoginForm() {
   }
   return <div className="space-y-5"><form className="space-y-5" onSubmit={submit}>
     <h2 className="text-lg font-semibold text-foreground">{mode==='login'?'Entrar':mode==='signup'?'Criar conta':mode==='update'?'Nova senha':'Recuperar senha'}</h2>
-    <label className="grid gap-1 text-sm text-foreground">E-mail<Input type="email" required autoComplete="email" value={email} onChange={e=>setEmail(e.target.value)}/></label>
+    {mode!=='update'&&<label className="grid gap-1 text-sm text-foreground">E-mail<Input type="email" required autoComplete="email" value={email} onChange={e=>setEmail(e.target.value)}/></label>}
     {mode!=='reset'&&<label className="grid gap-1 text-sm text-foreground">Senha<Input type="password" required minLength={8} autoComplete={mode==='signup'||mode==='update'?'new-password':'current-password'} value={password} onChange={e=>setPassword(e.target.value)}/></label>}
     {message&&<p role="status" className="text-sm text-foreground">{message}</p>}
     <Button disabled={busy} className="w-full" type="submit">{busy?'Aguarde…':mode==='login'?'Entrar':mode==='signup'?'Cadastrar e confirmar por e-mail':mode==='update'?'Salvar nova senha':'Enviar instruções'}</Button>
