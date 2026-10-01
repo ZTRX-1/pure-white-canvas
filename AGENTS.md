@@ -13,3 +13,5 @@
 
 - Keep editorial content previews in a shared posts module and card component so Home and Conteúdos stay synchronized; duplicated entries create mismatched links and text.
 - Keep individual service pages on the existing shared detail component with per-service presentation data; this preserves route architecture while allowing distinct editorial layouts.
+- Keep internal operational records in Lovable Cloud tables with role-based RLS and private document storage; the browser is only a presentation layer, never an authorization boundary.
+- Keep the existing internal child URLs under the shared internal parent, which owns the unified operational workspace; avoids duplicate mock workflows.
