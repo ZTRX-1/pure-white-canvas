@@ -31,4 +31,4 @@
 - [x] Conectar Lovable Cloud, confirmação de e-mail e políticas de acesso
 - [x] Substituir cadastros fictícios por clientes, processos e documentos reais
 - [x] Consolidar as telas internas duplicadas em uma área operacional
-- [ ] Conceder o primeiro acesso master após o usuário informar e confirmar seu login (aguardando usuário)
+- [x] Pré-autorizar o primeiro acesso master para o e-mail informado, com ativação após confirmação da conta

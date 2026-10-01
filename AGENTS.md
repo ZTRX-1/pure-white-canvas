@@ -15,3 +15,4 @@
 - Keep individual service pages on the existing shared detail component with per-service presentation data; this preserves route architecture while allowing distinct editorial layouts.
 - Keep internal operational records in Lovable Cloud tables with role-based RLS and private document storage; the browser is only a presentation layer, never an authorization boundary.
 - Keep the existing internal child URLs under the shared internal parent, which owns the unified operational workspace; avoids duplicate mock workflows.
+- Keep the initial master access allowlist in a locked Cloud table and claim its admin role only for a verified account; this permits a secure first administrator without client-side role assignment.
