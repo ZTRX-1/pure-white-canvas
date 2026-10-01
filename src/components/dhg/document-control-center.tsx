@@ -36,6 +36,7 @@ const statusStyles: Record<DocumentStatus, string> = {
 };
 
 type Modal = "add" | "preview" | "replace" | "request" | null;
+type DocumentFilters = { search: string; unit: string; status: string; type: string; validity: string };
 
 function StatusBadge({ status }: { status: DocumentStatus }) {
   return (
@@ -64,7 +65,7 @@ function Validity({ document }: { document: ProcessDocument }) {
   return <span className="text-slate-600">Válido até {document.expires_at}</span>;
 }
 
-function Filters({ onChange }: { onChange: (filters: Record<string, string>) => void }) {
+function Filters({ onChange }: { onChange: (filters: DocumentFilters) => void }) {
   const [filters, setFilters] = useState({
     search: "",
     unit: "Todas",
@@ -158,7 +159,7 @@ export function DocumentControlCenter() {
   const [filtered, setFiltered] = useState(documentMocks);
   const [selected, setSelected] = useState<ProcessDocument | null>(null);
   const [modal, setModal] = useState<Modal>(null);
-  const applyFilters = (filters: Record<string, string>) => {
+  const applyFilters = (filters: DocumentFilters) => {
     const search = filters.search.toLowerCase();
     setFiltered(
       documents.filter((document) => {
