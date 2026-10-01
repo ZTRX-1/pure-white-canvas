@@ -14,16 +14,198 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      dhg_clients: {
+        Row: {
+          cnh: string | null
+          cnpj: string | null
+          cpf: string | null
+          created_at: string
+          created_by: string
+          email: string | null
+          id: string
+          name: string
+          notes: string | null
+          person_type: string
+          phone: string | null
+          rg: string | null
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          cnh?: string | null
+          cnpj?: string | null
+          cpf?: string | null
+          created_at?: string
+          created_by?: string
+          email?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          person_type?: string
+          phone?: string | null
+          rg?: string | null
+          unit: string
+          updated_at?: string
+        }
+        Update: {
+          cnh?: string | null
+          cnpj?: string | null
+          cpf?: string | null
+          created_at?: string
+          created_by?: string
+          email?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          person_type?: string
+          phone?: string | null
+          rg?: string | null
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      dhg_documents: {
+        Row: {
+          category: string
+          client_id: string
+          created_at: string
+          created_by: string
+          file_name: string
+          id: string
+          mime_type: string | null
+          process_id: string | null
+          size_bytes: number | null
+          storage_path: string
+        }
+        Insert: {
+          category: string
+          client_id: string
+          created_at?: string
+          created_by?: string
+          file_name: string
+          id?: string
+          mime_type?: string | null
+          process_id?: string | null
+          size_bytes?: number | null
+          storage_path: string
+        }
+        Update: {
+          category?: string
+          client_id?: string
+          created_at?: string
+          created_by?: string
+          file_name?: string
+          id?: string
+          mime_type?: string | null
+          process_id?: string | null
+          size_bytes?: number | null
+          storage_path?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dhg_documents_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "dhg_clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dhg_documents_process_id_fkey"
+            columns: ["process_id"]
+            isOneToOne: false
+            referencedRelation: "dhg_processes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dhg_processes: {
+        Row: {
+          client_id: string
+          created_at: string
+          created_by: string
+          deadline: string | null
+          id: string
+          notes: string | null
+          plate: string | null
+          protocol: string | null
+          service: string
+          stage: string
+          unit: string
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          created_by?: string
+          deadline?: string | null
+          id?: string
+          notes?: string | null
+          plate?: string | null
+          protocol?: string | null
+          service: string
+          stage?: string
+          unit: string
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          created_by?: string
+          deadline?: string | null
+          id?: string
+          notes?: string | null
+          plate?: string | null
+          protocol?: string | null
+          service?: string
+          stage?: string
+          unit?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dhg_processes_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "dhg_clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_staff: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "staff"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +332,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "staff"],
+    },
   },
 } as const
