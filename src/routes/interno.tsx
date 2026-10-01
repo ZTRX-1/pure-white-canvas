@@ -1,801 +1,167 @@
-import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
-import {
-  Bell,
-  BookOpen,
-  Building2,
-  ChevronDown,
-  CircleHelp,
-  FileText,
-  FolderOpen,
-  LayoutDashboard,
-  LogOut,
-  Menu,
-  MoreHorizontal,
-  Plus,
-  Search,
-  Settings,
-  SlidersHorizontal,
-  Upload,
-  UserCog,
-  Users,
-  X,
-} from "lucide-react";
-import { useState, type ReactNode } from "react";
-import { Button } from "@/components/ui/button";
-import { DocumentControlCenter, ProcessDocuments } from "@/components/dhg/document-control-center";
-import { Input } from "@/components/ui/input";
+import { createFileRoute, Link, Outlet, useNavigate, useLocation } from '@tanstack/react-router';
+import { useCallback, useEffect, useState, type FormEvent } from 'react';
+import { FolderOpen, Users, ClipboardList, LogOut, Plus, Upload, Download, Trash2, Search, ShieldCheck } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import type { Database } from '@/integrations/supabase/types';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 
-export const Route = createFileRoute("/interno")({
-  head: () => ({
-    meta: [{ title: "Painel Interno | DHG" }, { name: "robots", content: "noindex" }],
-  }),
+export const Route = createFileRoute('/interno')({
+  head: () => ({ meta: [{ title: 'Operação | DHG' }, { name: 'description', content: 'Gestão interna de clientes, processos e documentos da DHG.' }, { property: 'og:title', content: 'Operação | DHG' }, { property: 'og:description', content: 'Gestão interna de clientes, processos e documentos da DHG.' }, { property: 'og:type', content: 'website' }, { name: 'twitter:card', content: 'summary' }, { name: 'robots', content: 'noindex,nofollow' }] }),
   component: InternalPage,
 });
 
-type View =
-  | "Visão geral"
-  | "Clientes"
-  | "Processos"
-  | "Documentos"
-  | "Unidades"
-  | "Equipe"
-  | "Conteúdos"
-  | "Integrações";
-type Unit = "Carapicuíba" | "Osasco - Jd. D'Abril" | "Osasco - Conceição";
-type ProcessStage =
-  | "Aberto"
-  | "Documentos pendentes"
-  | "Protocolado no órgão"
-  | "Aguardando análise"
-  | "Pendência a resolver"
-  | "Concluído";
-
-const navigation: { label: View; icon: typeof LayoutDashboard }[] = [
-  { label: "Visão geral", icon: LayoutDashboard },
-  { label: "Clientes", icon: Users },
-  { label: "Processos", icon: FileText },
-  { label: "Documentos", icon: FolderOpen },
-  { label: "Unidades", icon: Building2 },
-  { label: "Equipe", icon: UserCog },
-  { label: "Conteúdos", icon: BookOpen },
-  { label: "Integrações", icon: SlidersHorizontal },
-];
-
-const unitInfo: Record<Unit, { code: string; team: number; processes: number; revenue: string }> = {
-  Carapicuíba: { code: "CPQ", team: 8, processes: 42, revenue: "R$ 38.420" },
-  "Osasco - Jd. D'Abril": { code: "JDA", team: 6, processes: 31, revenue: "R$ 29.680" },
-  "Osasco - Conceição": { code: "JDC", team: 5, processes: 25, revenue: "R$ 21.940" },
-};
-
-const processes: {
-  client: string;
-  plate?: string;
-  type: string;
-  unit: Unit;
-  attendant: string;
-  stage: ProcessStage;
-  deadline?: string;
-  deadlineStatus?: "overdue" | "urgent";
-}[] = [
-  {
-    client: "Renata Oliveira",
-    plate: "ABC-1D23",
-    type: "Transferência",
-    unit: "Carapicuíba",
-    attendant: "Camila Santos",
-    stage: "Documentos pendentes",
-    deadline: "22 set 2026",
-    deadlineStatus: "overdue",
-  },
-  {
-    client: "Marcos Ribeiro",
-    plate: "EJX-9F02",
-    type: "Licenciamento",
-    unit: "Carapicuíba",
-    attendant: "Diego Rodrigues",
-    stage: "Protocolado no órgão",
-    deadline: "26 set 2026",
-    deadlineStatus: "urgent",
-  },
-  {
-    client: "Juliana Costa",
-    plate: "RTA-4C88",
-    type: "2ª via de CRLV",
-    unit: "Osasco - Jd. D'Abril",
-    attendant: "Felipe Nunes",
-    stage: "Aguardando análise",
-    deadline: "30 set 2026",
-  },
-  {
-    client: "Paulo Mendes",
-    plate: "GHL-7A61",
-    type: "Débitos e Regularizações",
-    unit: "Osasco - Conceição",
-    attendant: "Aline Moreira",
-    stage: "Pendência a resolver",
-    deadline: "25 set 2026",
-    deadlineStatus: "urgent",
-  },
-  {
-    client: "Larissa Almeida",
-    type: "CNH",
-    unit: "Osasco - Jd. D'Abril",
-    attendant: "Felipe Nunes",
-    stage: "Aberto",
-  },
-  {
-    client: "Roberto Lima",
-    plate: "KLM-3N45",
-    type: "Transferência",
-    unit: "Osasco - Conceição",
-    attendant: "Aline Moreira",
-    stage: "Concluído",
-  },
-];
+type Client = Database['public']['Tables']['dhg_clients']['Row'];
+type Process = Database['public']['Tables']['dhg_processes']['Row'];
+type Document = Database['public']['Tables']['dhg_documents']['Row'];
+type Invite = Database['public']['Tables']['dhg_invitations']['Row'];
+const units = ['Carapicuíba', "Osasco - Jd. D'Abril", 'Osasco - Jardim Conceição'];
+const stages = ['Aberto','Documentos pendentes','Protocolado no órgão','Aguardando análise','Pendência a resolver','Concluído','Cancelado'];
+const services = ['Documentação veicular','Transferência de veículo','Licenciamento','Débitos e Regularizações','CNH','Outro'];
+const categories = ['CNH','RG','CPF','Documento do veículo','Comprovante de pagamento','Documento do processo','Outro'];
+const field = 'w-full border border-border bg-card px-3 py-2 text-foreground outline-none focus:border-primary';
+const label = 'grid gap-1 text-sm font-medium text-foreground';
+const date = (value: string) => new Date(value).toLocaleDateString('pt-BR');
+const errorMessage = (error: unknown) => error instanceof Error ? error.message : 'Não foi possível concluir a operação.';
 
 function InternalPage() {
+  const navigate = useNavigate();
   const location = useLocation();
-  const [view, setView] = useState<View>("Visão geral");
-  const [unit, setUnit] = useState<Unit>("Carapicuíba");
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [documents, setDocuments] = useState([
-    "CRLV - ABC-1D23.pdf",
-    "RG - Renata Oliveira.pdf",
-    "ATPV-e - ABC-1D23.pdf",
-  ]);
-  const [search, setSearch] = useState("");
-  const info = unitInfo[unit];
+  const [auth, setAuth] = useState<'loading'|'signed-out'|'pending'|'ready'>('loading');
+  const [userEmail, setUserEmail] = useState('');
+  const [admin, setAdmin] = useState(false);
+  const [tab, setTab] = useState<'overview'|'clients'|'processes'|'documents'|'team'>('overview');
+  const [clients, setClients] = useState<Client[]>([]);
+  const [processes, setProcesses] = useState<Process[]>([]);
+  const [documents, setDocuments] = useState<Document[]>([]);
+  const [invites, setInvites] = useState<Invite[]>([]);
+  const [selectedClient, setSelectedClient] = useState<string>('');
+  const [selectedProcess, setSelectedProcess] = useState<string>('');
+  const [editingClient, setEditingClient] = useState<string|null>(null);
+  const [editingProcess, setEditingProcess] = useState<string|null>(null);
+  const [form, setForm] = useState<'client'|'process'|'document'|'invite'|null>(null);
+  const [query, setQuery] = useState('');
+  const [feedback, setFeedback] = useState('');
+  const [busy, setBusy] = useState(false);
 
-  const selectView = (next: View) => {
-    if (next === "Documentos") {
-      window.location.assign("/interno/documentos");
-      return;
+  const refresh = useCallback(async () => {
+    const [a,b,c,d] = await Promise.all([
+      supabase.from('dhg_clients').select('*').order('created_at',{ascending:false}),
+      supabase.from('dhg_processes').select('*').order('created_at',{ascending:false}),
+      supabase.from('dhg_documents').select('*').order('created_at',{ascending:false}),
+      supabase.from('dhg_invitations').select('*').order('created_at',{ascending:false}),
+    ]);
+    const failure = a.error || b.error || c.error || (admin && d.error);
+    if (failure) setFeedback(failure.message);
+    else { setClients(a.data ?? []); setProcesses(b.data ?? []); setDocuments(c.data ?? []); setInvites(d.data ?? []); }
+  },[admin]);
+
+  useEffect(() => {
+    let active = true;
+    async function check() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!active) return;
+      if (!user) { setAuth('signed-out'); return; }
+      setUserEmail(user.email ?? '');
+      await supabase.rpc('claim_dhg_access');
+      const { data: allowed } = await supabase.rpc('is_staff', { _user_id: user.id });
+      const { data: isAdmin } = await supabase.rpc('has_role', { _user_id: user.id, _role: 'admin' });
+      if (active) { setAdmin(isAdmin === true); setAuth(allowed ? 'ready' : 'pending'); }
     }
-    if (location.pathname !== "/interno") {
-      window.location.assign("/interno");
-      return;
-    }
-    setView(next);
-    setMenuOpen(false);
+    void check();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => { void check(); });
+    return () => { active = false; subscription.unsubscribe(); };
+  },[]);
+  useEffect(() => { if (auth === 'ready') void refresh(); }, [auth, refresh]);
+  useEffect(() => { if (location.pathname === '/interno/documentos') setTab('documents'); else if (location.pathname.startsWith('/interno/processos/')) { setTab('processes'); setSelectedProcess(location.pathname.split('/').pop() ?? ''); } }, [location.pathname]);
+
+  const run = async (action: () => Promise<void>) => {
+    setBusy(true); setFeedback('');
+    try { await action(); await refresh(); setForm(null); setEditingClient(null); setEditingProcess(null); setFeedback('Alterações salvas.'); }
+    catch (error) { setFeedback(errorMessage(error)); }
+    finally { setBusy(false); }
   };
-  const content =
-    view === "Visão geral" ? (
-      <Overview unit={unit} info={info} />
-    ) : view === "Clientes" ? (
-      <Clients search={search} onSearch={setSearch} />
-    ) : view === "Processos" ? (
-      <Processes />
-    ) : view === "Documentos" ? (
-      <Documents
-        documents={documents}
-        onAdd={(name) => setDocuments((current) => [name, ...current])}
-      />
-    ) : view === "Unidades" ? (
-      <Units unit={unit} />
-    ) : view === "Equipe" ? (
-      <Team />
-    ) : view === "Conteúdos" ? (
-      <Content />
-    ) : (
-      <Integrations />
-    );
+  const requireOk = (error: { message: string } | null) => { if (error) throw new Error(error.message); };
+  const clientName = (id: string) => clients.find(item => item.id === id)?.name ?? 'Cliente removido';
+  const chooseClient = (id: string) => { setSelectedClient(id); setTab('clients'); setForm(null); };
+  const chooseProcess = (id: string) => { setSelectedProcess(id); setTab('processes'); setForm(null); };
+  const filteredClients = clients.filter(item => `${item.name} ${item.cpf ?? ''} ${item.cnpj ?? ''} ${item.phone ?? ''}`.toLowerCase().includes(query.toLowerCase()));
+  const filteredProcesses = processes.filter(item => `${clientName(item.client_id)} ${item.plate ?? ''} ${item.service} ${item.protocol ?? ''}`.toLowerCase().includes(query.toLowerCase()));
+  const currentClient = clients.find(item => item.id === selectedClient);
+  const currentProcess = processes.find(item => item.id === selectedProcess);
+  const currentDocs = documents.filter(item => item.client_id === selectedClient);
 
-  return (
-    <div className="min-h-screen bg-[#f6f8fb] text-slate-900">
-      <aside
-        className={`fixed inset-y-0 left-0 z-40 flex w-72 flex-col bg-[#101c36] text-white transition-transform lg:translate-x-0 ${menuOpen ? "translate-x-0" : "-translate-x-full"}`}
-      >
-        <div className="flex h-20 items-center justify-between border-b border-white/10 px-7">
-          <div>
-            <span className="text-lg font-bold tracking-tight">DHG</span>
-            <span className="ml-2 text-xs font-medium tracking-[0.18em] text-blue-200">GESTÃO</span>
-          </div>
-          <button className="lg:hidden" onClick={() => setMenuOpen(false)} aria-label="Fechar menu">
-            <X className="size-5" />
-          </button>
-        </div>
-        <div className="px-4 py-6">
-          <p className="px-3 text-[10px] font-bold tracking-[0.16em] text-blue-200/55">OPERAÇÃO</p>
-          <nav className="mt-3 grid gap-1">
-            {navigation.slice(0, 5).map(({ label, icon: Icon }) => (
-              <NavItem
-                key={label}
-                active={view === label}
-                icon={<Icon />}
-                label={label}
-                onClick={() => selectView(label)}
-              />
-            ))}
-          </nav>
-          <p className="mt-7 px-3 text-[10px] font-bold tracking-[0.16em] text-blue-200/55">
-            ADMINISTRAÇÃO
-          </p>
-          <nav className="mt-3 grid gap-1">
-            {navigation.slice(5).map(({ label, icon: Icon }) => (
-              <NavItem
-                key={label}
-                active={view === label}
-                icon={<Icon />}
-                label={label}
-                onClick={() => selectView(label)}
-              />
-            ))}
-          </nav>
-        </div>
-        <div className="mt-auto border-t border-white/10 p-4">
-          <button className="flex w-full items-center gap-3 rounded-md px-3 py-3 text-left text-sm text-blue-100/70 hover:bg-white/5">
-            <CircleHelp className="size-4" /> Central de ajuda
-          </button>
-          <button className="flex w-full items-center gap-3 rounded-md px-3 py-3 text-left text-sm text-blue-100/70 hover:bg-white/5">
-            <LogOut className="size-4" /> Encerrar sessão
-          </button>
-        </div>
-      </aside>
-      {menuOpen && (
-        <button
-          className="fixed inset-0 z-30 bg-slate-950/35 lg:hidden"
-          onClick={() => setMenuOpen(false)}
-          aria-label="Fechar menu"
-        />
-      )}
-      <main className="min-h-screen lg:pl-72">
-        <header className="sticky top-0 z-20 flex h-20 items-center gap-3 border-b border-slate-200 bg-white/95 px-5 backdrop-blur lg:px-8">
-          <button
-            className="rounded-md p-2 hover:bg-slate-100 lg:hidden"
-            onClick={() => setMenuOpen(true)}
-            aria-label="Abrir menu"
-          >
-            <Menu className="size-5" />
-          </button>
-          <div className="relative hidden max-w-sm flex-1 md:block">
-            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
-            <Input
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder="Buscar cliente, placa ou processo..."
-              className="h-10 border-slate-200 bg-slate-50 pl-9 text-sm"
-            />
-          </div>
-          <div className="ml-auto flex items-center gap-3">
-            <button className="relative rounded-md p-2 text-slate-500 hover:bg-slate-100">
-              <Bell className="size-5" />
-              <span className="absolute right-1.5 top-1.5 size-2 rounded-full bg-blue-600" />
-            </button>
-            <div className="hidden h-8 w-px bg-slate-200 sm:block" />
-            <div className="flex items-center gap-2">
-              <div className="grid size-9 place-items-center rounded-full bg-blue-100 text-xs font-bold text-blue-700">
-                DR
-              </div>
-              <div className="hidden text-sm sm:block">
-                <p className="font-semibold leading-4">Diego Rodrigues</p>
-                <p className="text-xs text-slate-500">Administrador</p>
-              </div>
-              <ChevronDown className="size-4 text-slate-400" />
-            </div>
-          </div>
-        </header>
-        <section className="px-5 py-7 lg:px-8 lg:py-9">
-          <div className="mx-auto max-w-7xl">
-            {location.pathname === "/interno/documentos" ? (
-              <DocumentControlCenter />
-            ) : location.pathname.startsWith("/interno/processos/") ? (
-              <ProcessDocuments processId={location.pathname.split("/").pop() ?? ""} />
-            ) : (
-              <>
-                <div className="mb-7 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-blue-600">
-                      Painel interno
-                    </p>
-                    <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-950 lg:text-3xl">
-                      {view}
-                    </h1>
-                  </div>
-                  <UnitSelect unit={unit} onChange={setUnit} />
-                </div>
-                {content}
-              </>
-            )}
-          </div>
-        </section>
-      </main>
+  if (auth === 'loading') return <div className="min-h-screen bg-background p-12 text-foreground">Verificando acesso…</div>;
+  if (auth !== 'ready') return <main className="grid min-h-screen place-items-center bg-background p-6 text-foreground"><div className="max-w-md space-y-5"><h1 className="text-3xl font-bold">{auth === 'signed-out' ? 'Acesso restrito' : 'Acesso pendente'}</h1><p className="text-muted-foreground">{auth === 'signed-out' ? 'Entre com sua conta para acessar a operação da DHG.' : 'Sua conta está confirmada, mas precisa de autorização da administração para acessar esta área.'}</p>{auth === 'pending' && <p className="text-sm text-muted-foreground">{userEmail}</p>}{auth === 'pending' ? <Button onClick={async () => { await supabase.auth.signOut(); await navigate({to:'/login',replace:true}); }}>Sair desta conta</Button> : <Button asChild><Link to="/login">Ir para entrada</Link></Button>}</div></main>;
+
+  return <div className="min-h-screen bg-background text-foreground lg:grid lg:grid-cols-[225px_1fr]">
+    <aside className="bg-brand-deep p-5 text-primary-foreground lg:min-h-screen">
+      <Link to="/" className="text-xl font-bold">DHG <span className="text-sm font-normal">/ operação</span></Link>
+      <nav aria-label="Área interna" className="mt-8 flex flex-wrap gap-1 lg:grid">
+        {([['overview','Visão geral',ClipboardList],['clients','Clientes',Users],['processes','Processos',ClipboardList],['documents','Documentos',FolderOpen],...(admin ? [['team','Acessos',ShieldCheck] as const] : [])] as const).map(([key,text,Icon]) =>
+          <Button key={key} type="button" variant="ghost" className={`justify-start text-primary-foreground hover:bg-primary-foreground/15 hover:text-primary-foreground ${tab === key ? 'bg-primary-foreground/15' : ''}`} onClick={() => { setTab(key); setForm(null); setQuery(''); }}><Icon className="size-4" />{text}</Button>)}
+      </nav>
+      <div className="mt-10 break-all text-xs text-primary-foreground/65">{userEmail}</div>
+      <Button variant="ghost" className="mt-3 text-primary-foreground hover:text-primary-foreground" onClick={async () => { await supabase.auth.signOut(); await navigate({to:'/login',replace:true}); }}><LogOut className="size-4" /> Sair</Button>
+    </aside>
+    <main className="min-w-0 p-5 md:p-9">
+      <header className="mb-8 flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6"><div><p className="text-xs font-bold uppercase text-primary">DHG / Gestão</p><h1 className="mt-2 text-3xl font-bold">{{overview:'Visão geral',clients:'Clientes',processes:'Processos',documents:'Documentos',team:'Acessos'}[tab]}</h1></div>
+        {tab === 'clients' && <Button onClick={() => {setSelectedClient('');setEditingClient(null);setForm('client');}}><Plus className="size-4"/> Novo cliente</Button>}
+        {tab === 'processes' && <Button disabled={!clients.length} onClick={() => {setEditingProcess(null);setForm('process');}}><Plus className="size-4"/> Novo processo</Button>}
+        {tab === 'documents' && <Button disabled={!clients.length} onClick={() => setForm('document')}><Upload className="size-4"/> Anexar documento</Button>}
+        {tab === 'team' && admin && <Button onClick={() => setForm('invite')}><Plus className="size-4"/> Autorizar e-mail</Button>}
+      </header>
+      {feedback && <p role="status" className="mb-5 border-l-4 border-primary bg-secondary p-3 text-sm">{feedback}</p>}
+      {tab === 'overview' && <div className="space-y-8"><div className="grid gap-4 sm:grid-cols-3">{[['Clientes',clients.length],['Processos em andamento',processes.filter(p=>!['Concluído','Cancelado'].includes(p.stage)).length],['Documentos',documents.length]].map(([name,count]) => <div key={name} className="border-b-2 border-primary bg-card p-5"><p className="text-sm text-muted-foreground">{name}</p><strong className="text-4xl">{count}</strong></div>)}</div><h2 className="text-xl font-bold">Processos recentes</h2><ProcessList items={processes.slice(0,8)} clientName={clientName} onOpen={chooseProcess}/></div>}
+      {(tab === 'clients' || tab === 'processes' || tab === 'documents') && <div className="mb-5 flex max-w-lg items-center gap-2 border border-border bg-card px-3"><Search className="size-4 text-muted-foreground"/><Input className="border-0" aria-label="Buscar registros" placeholder="Buscar por nome, documento, placa ou protocolo" value={query} onChange={e=>setQuery(e.target.value)}/></div>}
+      {tab === 'clients' && <div className="grid gap-8 xl:grid-cols-[minmax(240px,1fr)_minmax(350px,1.4fr)]"><div className="divide-y divide-border border-y border-border">{filteredClients.map(client => <Button key={client.id} variant="ghost" className={`h-auto w-full justify-start py-4 text-left ${selectedClient===client.id?'bg-secondary':''}`} onClick={()=>chooseClient(client.id)}><span className="grid"><strong>{client.name}</strong><small className="text-muted-foreground">{client.cpf || client.cnpj || client.person_type} · {client.unit}</small></span></Button>)}{!filteredClients.length && <p className="py-6 text-muted-foreground">Nenhum cliente encontrado.</p>}</div><div>{currentClient ? <div className="space-y-6"><div className="flex flex-wrap items-start justify-between gap-3"><div><h2 className="text-2xl font-bold">{currentClient.name}</h2><p className="text-muted-foreground">{currentClient.person_type} · {currentClient.unit}</p></div><Button variant="outline" onClick={()=>{setEditingClient(currentClient.id);setForm('client');}}>Editar cadastro</Button></div><dl className="grid gap-3 border-y border-border py-5 sm:grid-cols-2">{[['CPF',currentClient.cpf],['CNPJ',currentClient.cnpj],['RG',currentClient.rg],['CNH',currentClient.cnh],['Telefone',currentClient.phone],['E-mail',currentClient.email],['Observações',currentClient.notes]].filter(([,v])=>v).map(([k,v])=><div key={k}><dt className="text-xs uppercase text-muted-foreground">{k}</dt><dd className="break-words">{v}</dd></div>)}</dl><div className="flex items-center justify-between"><h3 className="text-lg font-bold">Processos</h3><Button size="sm" variant="outline" onClick={()=>{setForm('process');setEditingProcess(null);}}>Adicionar processo</Button></div><ProcessList items={processes.filter(p=>p.client_id===selectedClient)} clientName={clientName} onOpen={chooseProcess}/><div className="flex items-center justify-between"><h3 className="text-lg font-bold">Documentos</h3><Button size="sm" variant="outline" onClick={()=>setForm('document')}>Anexar</Button></div><DocumentList items={currentDocs} onOpen={async doc=>{const {data,error}=await supabase.storage.from('dhg-documents').createSignedUrl(doc.storage_path,60);if(error)setFeedback(error.message);else window.open(data.signedUrl,'_blank','noopener,noreferrer');}} onDelete={doc=>void run(async()=>{requireOk((await supabase.storage.from('dhg-documents').remove([doc.storage_path])).error);requireOk((await supabase.from('dhg_documents').delete().eq('id',doc.id)).error);})}/></div>:<p className="text-muted-foreground">Selecione um cliente para ver cadastro, processos e arquivos.</p>}</div></div>}
+      {tab === 'processes' && <div className="grid gap-8 xl:grid-cols-[1fr_1fr]"><ProcessList items={filteredProcesses} clientName={clientName} onOpen={chooseProcess}/>{currentProcess ? <div className="space-y-5 border-t-2 border-primary pt-5"><h2 className="text-2xl font-bold">{currentProcess.service}</h2><Button variant="link" className="p-0" onClick={()=>chooseClient(currentProcess.client_id)}>{clientName(currentProcess.client_id)}</Button><p>{currentProcess.stage} · {currentProcess.unit}</p><p className="text-sm text-muted-foreground">Placa: {currentProcess.plate || '—'} · Protocolo: {currentProcess.protocol || '—'} · Prazo: {currentProcess.deadline ? date(currentProcess.deadline+'T12:00:00') : '—'}</p>{currentProcess.notes && <p className="whitespace-pre-wrap">{currentProcess.notes}</p>}<Button variant="outline" onClick={()=>{setEditingProcess(currentProcess.id);setForm('process');}}>Atualizar processo</Button><h3 className="font-bold">Arquivos vinculados</h3><DocumentList items={documents.filter(d=>d.process_id===currentProcess.id)} onOpen={async doc=>{const {data,error}=await supabase.storage.from('dhg-documents').createSignedUrl(doc.storage_path,60);if(error)setFeedback(error.message);else window.open(data.signedUrl,'_blank','noopener,noreferrer');}} onDelete={doc=>void run(async()=>{requireOk((await supabase.storage.from('dhg-documents').remove([doc.storage_path])).error);requireOk((await supabase.from('dhg_documents').delete().eq('id',doc.id)).error);})}/><Button variant="outline" onClick={()=>setForm('document')}>Anexar arquivo</Button></div>:<p className="text-muted-foreground">Selecione um processo para acompanhar e atualizar.</p>}</div>}
+      {tab === 'documents' && <DocumentList items={documents.filter(d=>`${d.file_name} ${d.category} ${clientName(d.client_id)}`.toLowerCase().includes(query.toLowerCase()))} clientName={clientName} onOpen={async doc=>{const {data,error}=await supabase.storage.from('dhg-documents').createSignedUrl(doc.storage_path,60);if(error)setFeedback(error.message);else window.open(data.signedUrl,'_blank','noopener,noreferrer');}} onDelete={doc=>void run(async()=>{requireOk((await supabase.storage.from('dhg-documents').remove([doc.storage_path])).error);requireOk((await supabase.from('dhg_documents').delete().eq('id',doc.id)).error);})}/>}
+      {tab === 'team' && admin && <div className="max-w-2xl space-y-4"><p className="text-muted-foreground">Somente e-mails autorizados podem acessar a operação após confirmar o cadastro.</p>{invites.map(invite=><div className="flex items-center justify-between gap-3 border-b border-border py-3" key={invite.id}><div><strong>{invite.email}</strong><p className="text-sm text-muted-foreground">{invite.claimed_at?'Acesso ativado':'Aguardando cadastro e confirmação'}</p></div><Button size="icon" variant="outline" title="Revogar acesso" aria-label={`Revogar acesso de ${invite.email}`} onClick={()=>{if(window.confirm(`Revogar o acesso de ${invite.email}?`))void run(async()=>{requireOk((await supabase.rpc('revoke_dhg_staff',{_invitation_id:invite.id})).error);});}}><Trash2 className="size-4"/></Button></div>)}</div>}
+      {form && <div className="fixed inset-0 z-50 overflow-y-auto bg-brand-deep/65 p-4" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)setForm(null)}}><div role="dialog" aria-modal="true" aria-label={{client:'Cadastro de cliente',process:'Cadastro de processo',document:'Anexar documento',invite:'Autorizar e-mail'}[form]} className="mx-auto my-8 max-w-xl bg-card p-6 text-card-foreground md:p-8"><div className="mb-6 flex justify-between gap-3"><h2 className="text-2xl font-bold">{{client:editingClient?'Editar cliente':'Novo cliente',process:editingProcess?'Atualizar processo':'Novo processo',document:'Anexar documento',invite:'Autorizar acesso'}[form]}</h2><Button variant="ghost" onClick={()=>setForm(null)}>Fechar</Button></div>
+        {form==='client' && <ClientForm initial={clients.find(c=>c.id===editingClient)} busy={busy} onSave={data=>void run(async()=>{const result=editingClient?await supabase.from('dhg_clients').update({...data,updated_at:new Date().toISOString()}).eq('id',editingClient):await supabase.from('dhg_clients').insert(data).select('id').single();requireOk(result.error);if(!editingClient && result.data)setSelectedClient(result.data.id);})}/>}
+        {form==='process' && <ProcessForm initial={processes.find(p=>p.id===editingProcess)} clients={clients} initialClient={selectedClient} busy={busy} onSave={data=>void run(async()=>{const result=editingProcess?await supabase.from('dhg_processes').update({...data,updated_at:new Date().toISOString()}).eq('id',editingProcess):await supabase.from('dhg_processes').insert(data).select('id').single();requireOk(result.error);if(!editingProcess && result.data)setSelectedProcess(result.data.id);})}/>}
+        {form==='document' && <UploadForm clients={clients} processes={processes} initialClient={selectedClient || currentProcess?.client_id || ''} initialProcess={selectedProcess} busy={busy} onSave={(clientId,processId,category,file)=>void run(async()=>{if(file.size>20*1024*1024)throw new Error('O arquivo deve ter até 20 MB.');const {data:{user}}=await supabase.auth.getUser();if(!user)throw new Error('Sessão expirada.');const path=`${user.id}/${clientId}/${crypto.randomUUID()}/${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;requireOk((await supabase.storage.from('dhg-documents').upload(path,file,{contentType:file.type || 'application/octet-stream'})).error);const {error}=await supabase.from('dhg_documents').insert({client_id:clientId,process_id:processId || null,category,file_name:file.name,storage_path:path,mime_type:file.type,size_bytes:file.size});if(error){await supabase.storage.from('dhg-documents').remove([path]);throw error;}})}/>}
+        {form==='invite' && <form className="space-y-4" onSubmit={e=>{e.preventDefault();const email=new FormData(e.currentTarget).get('email')?.toString().trim().toLowerCase();if(email)void run(async()=>{requireOk((await supabase.from('dhg_invitations').insert({email,role:'staff'})).error);});}}><label className={label}>E-mail autorizado<Input name="email" type="email" required autoComplete="email"/></label><Button disabled={busy} type="submit">Autorizar</Button></form>}
+      </div></div>}
       <Outlet />
-    </div>
-  );
+    </main>
+  </div>;
 }
 
-function NavItem({
-  active,
-  icon,
-  label,
-  onClick,
-}: {
-  active: boolean;
-  icon: ReactNode;
-  label: string;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={`flex items-center gap-3 rounded-md px-3 py-2.5 text-left text-sm font-medium transition-colors ${active ? "bg-blue-600 text-white" : "text-blue-100/75 hover:bg-white/7 hover:text-white"}`}
-    >
-      {icon}
-      {label}
-    </button>
-  );
+function ClientForm({initial,busy,onSave}:{initial:Client|undefined;busy:boolean;onSave:(data:Database['public']['Tables']['dhg_clients']['Insert'])=>void}) {
+  return <form className="grid gap-4 sm:grid-cols-2" onSubmit={(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();const d=new FormData(e.currentTarget);const value=(key:string)=>d.get(key)?.toString().trim()||null;onSave({name:value('name')||'',person_type:value('person_type')||'PF',cpf:value('cpf'),cnpj:value('cnpj'),rg:value('rg'),cnh:value('cnh'),phone:value('phone'),email:value('email'),unit:value('unit')||units[0]||'Carapicuíba',notes:value('notes')});}}>
+    <label className={`${label} sm:col-span-2`}>Nome completo / razão social<Input name="name" required defaultValue={initial?.name}/></label>
+    <label className={label}>Tipo<select className={field} name="person_type" defaultValue={initial?.person_type||'PF'}><option>PF</option><option>PJ</option></select></label>
+    <label className={label}>Unidade<select className={field} name="unit" defaultValue={initial?.unit||units[0]}>{units.map(u=><option key={u}>{u}</option>)}</select></label>
+    {([['cpf','CPF'],['cnpj','CNPJ'],['rg','RG'],['cnh','CNH'],['phone','Telefone'],['email','E-mail']] as const).map(([key,title])=><label className={label} key={key}>{title}<Input type={key==='email'?'email':'text'} name={key} defaultValue={initial?.[key]||''}/></label>)}
+    <label className={`${label} sm:col-span-2`}>Observações<Textarea name="notes" defaultValue={initial?.notes||''}/></label><Button type="submit" disabled={busy} className="sm:col-span-2">Salvar cliente</Button>
+  </form>;
 }
-function UnitSelect({ unit, onChange }: { unit: Unit; onChange: (unit: Unit) => void }) {
-  return (
-    <select
-      value={unit}
-      onChange={(event) => onChange(event.target.value as Unit)}
-      className="h-10 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 outline-none focus:border-blue-500"
-    >
-      <option>Carapicuíba</option>
-      <option>Osasco - Jd. D'Abril</option>
-      <option>Osasco - Conceição</option>
-    </select>
-  );
+function ProcessForm({initial,clients,initialClient,busy,onSave}:{initial:Process|undefined;clients:Client[];initialClient:string;busy:boolean;onSave:(data:Database['public']['Tables']['dhg_processes']['Insert'])=>void}) {
+  return <form className="grid gap-4 sm:grid-cols-2" onSubmit={e=>{e.preventDefault();const d=new FormData(e.currentTarget);const v=(key:string)=>d.get(key)?.toString().trim()||null;const client=clients.find(c=>c.id===v('client_id'));onSave({client_id:client?.id||'',unit:v('unit')||client?.unit||units[0]||'Carapicuíba',service:v('service')||'',stage:v('stage')||'Aberto',plate:v('plate'),protocol:v('protocol'),deadline:v('deadline'),notes:v('notes')});}}>
+    <label className={`${label} sm:col-span-2`}>Cliente<select className={field} name="client_id" required defaultValue={initial?.client_id||initialClient}>{!initial?.client_id&&!initialClient&&<option value="">Selecione</option>}{clients.map(c=><option key={c.id} value={c.id}>{c.name}</option>)}</select></label>
+    <label className={label}>Serviço<select className={field} name="service" defaultValue={initial?.service||''} required><option value="">Selecione</option>{services.map(s=><option key={s}>{s}</option>)}</select></label>
+    <label className={label}>Etapa<select className={field} name="stage" defaultValue={initial?.stage||'Aberto'}>{stages.map(s=><option key={s}>{s}</option>)}</select></label>
+    <label className={label}>Unidade<select className={field} name="unit" defaultValue={initial?.unit||clients.find(c=>c.id===initialClient)?.unit||units[0]}>{units.map(u=><option key={u}>{u}</option>)}</select></label>
+    <label className={label}>Placa<Input name="plate" defaultValue={initial?.plate||''}/></label>
+    <label className={label}>Protocolo<Input name="protocol" defaultValue={initial?.protocol||''}/></label>
+    <label className={label}>Prazo informado<Input type="date" name="deadline" defaultValue={initial?.deadline||''}/></label>
+    <label className={`${label} sm:col-span-2`}>Anotações / pendências<Textarea name="notes" defaultValue={initial?.notes||''}/></label>
+    <Button type="submit" disabled={busy} className="sm:col-span-2">Salvar processo</Button>
+  </form>;
 }
-function Status({ children }: { children: ReactNode }) {
-  return (
-    <span className="inline-flex rounded-full bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700">
-      {children}
-    </span>
-  );
+function UploadForm({clients,processes,initialClient,initialProcess,busy,onSave}:{clients:Client[];processes:Process[];initialClient:string;initialProcess:string;busy:boolean;onSave:(client:string,process:string,category:string,file:File)=>void}) {
+  const [client,setClient]=useState(initialClient);
+  return <form className="grid gap-4" onSubmit={e=>{e.preventDefault();const d=new FormData(e.currentTarget);const file=d.get('file');if(file instanceof File&&file.size)onSave(client,d.get('process')?.toString()||'',d.get('category')?.toString()||'Outro',file);}}>
+    <label className={label}>Cliente<select className={field} required value={client} onChange={e=>setClient(e.target.value)}><option value="">Selecione</option>{clients.map(c=><option key={c.id} value={c.id}>{c.name}</option>)}</select></label>
+    <label className={label}>Processo (opcional)<select className={field} name="process" defaultValue={initialProcess&&processes.find(p=>p.id===initialProcess)?.client_id===client?initialProcess:''}><option value="">Apenas no cadastro do cliente</option>{processes.filter(p=>p.client_id===client).map(p=><option key={p.id} value={p.id}>{p.service} · {p.plate||date(p.created_at)}</option>)}</select></label>
+    <label className={label}>Tipo de documento<select className={field} name="category">{categories.map(c=><option key={c}>{c}</option>)}</select></label>
+    <label className={label}>Arquivo (até 20 MB)<Input name="file" type="file" required accept="image/*,.pdf,.doc,.docx"/></label>
+    <Button disabled={busy||!client} type="submit">Enviar arquivo</Button>
+  </form>;
 }
-
-function Overview({ unit, info }: { unit: Unit; info: (typeof unitInfo)[Unit] }) {
-  return (
-    <>
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <Metric
-          label="Processos ativos"
-          value={String(info.processes)}
-          detail="8 iniciados esta semana"
-          color="blue"
-        />
-        <Metric label="Pendências" value="12" detail="3 vencem hoje" color="amber" />
-        <Metric label="Clientes atendidos" value="186" detail="+14% no mês" color="emerald" />
-        <Metric
-          label="Faturamento mensal"
-          value={info.revenue}
-          detail="Meta: R$ 45.000"
-          color="violet"
-        />
-      </div>
-      <div className="mt-6 grid gap-6 xl:grid-cols-[1.6fr_0.9fr]">
-        <Panel title="Processos prioritários" action="Ver todos">
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[620px] text-left text-sm">
-              <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-400">
-                <tr>
-                  <th className="pb-3 font-semibold">Serviço / Cliente</th>
-                  <th className="pb-3 font-semibold">Placa</th>
-                  <th className="pb-3 font-semibold">Status</th>
-                  <th className="pb-3 font-semibold">Prazo</th>
-                </tr>
-              </thead>
-              <tbody>
-                {processes.slice(0, 4).map((process) => (
-                  <tr
-                    key={`${process.client}-${process.type}`}
-                    className="border-b border-slate-100 last:border-0"
-                  >
-                    <td className="py-4">
-                      <p className="font-semibold text-slate-800">{process.type}</p>
-                      <p className="text-xs text-slate-500">{process.client}</p>
-                    </td>
-                    <td className="font-mono text-xs font-semibold text-slate-600">
-                      {process.plate ?? "-"}
-                    </td>
-                    <td>
-                      <StageBadge stage={process.stage} />
-                    </td>
-                    <td className="text-xs font-medium text-slate-600">
-                      {process.deadline ?? "Sem prazo"}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </Panel>
-        <Panel title="Resumo da unidade">
-          <div className="space-y-5">
-            <div className="rounded-lg bg-blue-50 p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-blue-600">
-                Unidade selecionada
-              </p>
-              <p className="mt-1 text-lg font-bold text-slate-900">{unit}</p>
-              <p className="mt-1 text-sm text-slate-600">Base operacional {info.code} separada</p>
-            </div>
-            <Progress label="Documentos validados" value="78%" width="78%" />
-            <Progress label="Processos no prazo" value="91%" width="91%" />
-            <div className="flex items-center justify-between border-t border-slate-100 pt-4 text-sm">
-              <span className="text-slate-500">Equipe alocada</span>
-              <span className="font-bold">{info.team} pessoas</span>
-            </div>
-          </div>
-        </Panel>
-      </div>
-    </>
-  );
-}
-function Metric({
-  label,
-  value,
-  detail,
-  color,
-}: {
-  label: string;
-  value: string;
-  detail: string;
-  color: string;
-}) {
-  const colors: Record<string, string> = {
-    blue: "bg-blue-600",
-    amber: "bg-amber-500",
-    emerald: "bg-emerald-500",
-    violet: "bg-violet-500",
-  };
-  return (
-    <div className="rounded-lg border border-slate-200 bg-white p-5">
-      <div className="flex items-start justify-between">
-        <p className="text-sm font-medium text-slate-500">{label}</p>
-        <span className={`size-2 rounded-full ${colors[color]}`} />
-      </div>
-      <p className="mt-3 text-2xl font-bold tracking-tight text-slate-900">{value}</p>
-      <p className="mt-1 text-xs text-slate-500">{detail}</p>
-    </div>
-  );
-}
-function Panel({
-  title,
-  action,
-  children,
-}: {
-  title: string;
-  action?: string;
-  children: ReactNode;
-}) {
-  return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 lg:p-6">
-      <div className="mb-5 flex items-center justify-between">
-        <h2 className="font-bold text-slate-900">{title}</h2>
-        {action && (
-          <button className="text-xs font-bold text-blue-600 hover:text-blue-800">{action}</button>
-        )}
-      </div>
-      {children}
-    </section>
-  );
-}
-function Progress({ label, value, width }: { label: string; value: string; width: string }) {
-  return (
-    <div>
-      <div className="mb-2 flex justify-between text-sm">
-        <span className="text-slate-600">{label}</span>
-        <span className="font-bold text-slate-800">{value}</span>
-      </div>
-      <div className="h-2 overflow-hidden rounded-full bg-slate-100">
-        <div className="h-full rounded-full bg-blue-600" style={{ width }} />
-      </div>
-    </div>
-  );
-}
-
-function Clients({ search, onSearch }: { search: string; onSearch: (value: string) => void }) {
-  const clients = [
-    ["Renata Oliveira", "CPF 123.456.789-00", "Transferência em andamento", "Carapicuíba"],
-    ["Marcos Ribeiro", "CPF 987.654.321-00", "Licenciamento 2026", "Carapicuíba"],
-    ["Juliana Costa", "CNPJ 12.345.678/0001-00", "2 processos ativos", "Jd. D'Abril"],
-    ["Paulo Mendes", "CPF 456.789.123-00", "Regularização de débitos", "Conceição"],
-  ].filter((client) => client.join(" ").toLowerCase().includes(search.toLowerCase()));
-  return (
-    <Panel title="Base de clientes" action="+ Novo cliente">
-      <div className="mb-5 flex gap-3 md:hidden">
-        <Input
-          value={search}
-          onChange={(event) => onSearch(event.target.value)}
-          placeholder="Buscar cliente"
-        />
-      </div>
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[640px] text-sm">
-          <thead className="border-b border-slate-100 text-left text-xs uppercase text-slate-400">
-            <tr>
-              <th className="pb-3">Cliente</th>
-              <th className="pb-3">Documento</th>
-              <th className="pb-3">Situação</th>
-              <th className="pb-3">Unidade</th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {clients.map(([name, document, status, branch]) => (
-              <tr key={name} className="border-b border-slate-100">
-                <td className="py-4 font-semibold">{name}</td>
-                <td className="text-slate-500">{document}</td>
-                <td>
-                  <Status>{status}</Status>
-                </td>
-                <td className="text-slate-600">{branch}</td>
-                <td>
-                  <button aria-label={`Ações de ${name}`}>
-                    <MoreHorizontal className="size-5 text-slate-400" />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </Panel>
-  );
-}
-function Processes() {
-  return (
-    <Panel title="Fila de processos" action="+ Novo processo">
-      <div className="mb-5 flex flex-wrap gap-3 text-xs text-slate-500">
-        <span className="inline-flex items-center gap-2 rounded-full bg-red-50 px-3 py-1.5 font-semibold text-red-700">
-          <span className="size-2 rounded-full bg-red-500" /> Prazo vencido
-        </span>
-        <span className="inline-flex items-center gap-2 rounded-full bg-amber-50 px-3 py-1.5 font-semibold text-amber-700">
-          <span className="size-2 rounded-full bg-amber-500" /> Vence em até 3 dias
-        </span>
-      </div>
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[1040px] text-left text-sm">
-          <thead className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-400">
-            <tr>
-              <th className="pb-3 font-semibold">Cliente / veículo</th>
-              <th className="pb-3 font-semibold">Tipo</th>
-              <th className="pb-3 font-semibold">Unidade</th>
-              <th className="pb-3 font-semibold">Responsável</th>
-              <th className="pb-3 font-semibold">Etapa atual</th>
-              <th className="pb-3 font-semibold">Prazo / SLA</th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {processes.map((process) => (
-              <tr
-                key={`${process.client}-${process.type}`}
-                className={`border-b border-slate-100 last:border-0 ${process.deadlineStatus === "overdue" ? "border-l-2 border-l-red-500" : process.deadlineStatus === "urgent" ? "border-l-2 border-l-amber-500" : ""}`}
-              >
-                <td className="py-4">
-                  <p className="font-semibold text-slate-800">{process.client}</p>
-                  <p className="font-mono text-xs font-semibold text-slate-500">
-                    {process.plate ?? "Sem veículo relacionado"}
-                  </p>
-                </td>
-                <td className="font-medium text-slate-700">{process.type}</td>
-                <td className="text-slate-600">{process.unit}</td>
-                <td className="text-slate-600">{process.attendant}</td>
-                <td>
-                  <StageBadge stage={process.stage} />
-                </td>
-                <td>
-                  {process.deadline ? (
-                    <span
-                      className={`inline-flex items-center gap-2 font-semibold ${process.deadlineStatus === "overdue" ? "text-red-700" : process.deadlineStatus === "urgent" ? "text-amber-700" : "text-slate-700"}`}
-                    >
-                      {process.deadlineStatus && (
-                        <span
-                          className={`size-2 rounded-full ${process.deadlineStatus === "overdue" ? "bg-red-500" : "bg-amber-500"}`}
-                        />
-                      )}
-                      {process.deadline}
-                    </span>
-                  ) : (
-                    <span className="text-slate-400">Sem prazo</span>
-                  )}
-                </td>
-                <td>
-                  <button aria-label={`Ações do processo de ${process.client}`}>
-                    <MoreHorizontal className="size-5 text-slate-400" />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </Panel>
-  );
-}
-function StageBadge({ stage }: { stage: ProcessStage }) {
-  const styles: Record<ProcessStage, string> = {
-    Aberto: "bg-slate-100 text-slate-700",
-    "Documentos pendentes": "bg-amber-50 text-amber-700",
-    "Protocolado no órgão": "bg-blue-50 text-blue-700",
-    "Aguardando análise": "bg-violet-50 text-violet-700",
-    "Pendência a resolver": "bg-red-50 text-red-700",
-    Concluído: "bg-emerald-50 text-emerald-700",
-  };
-
-  return (
-    <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${styles[stage]}`}>
-      {stage}
-    </span>
-  );
-}
-function Documents({ documents, onAdd }: { documents: string[]; onAdd: (name: string) => void }) {
-  return (
-    <div className="grid gap-6 xl:grid-cols-[0.9fr_1.5fr]">
-      <section className="grid min-h-64 place-items-center rounded-lg border-2 border-dashed border-blue-200 bg-blue-50/40 p-6 text-center">
-        <div>
-          <div className="mx-auto grid size-12 place-items-center rounded-full bg-blue-100 text-blue-600">
-            <Upload className="size-5" />
-          </div>
-          <h2 className="mt-4 font-bold">Anexar documentos</h2>
-          <p className="mt-1 max-w-xs text-sm text-slate-500">PDF, JPG ou PNG de até 20 MB.</p>
-          <label className="mt-5 inline-flex h-9 cursor-pointer items-center gap-2 rounded-md bg-blue-600 px-4 text-sm font-semibold text-white hover:bg-blue-700">
-            <Plus className="size-4" /> Selecionar arquivo
-            <input
-              type="file"
-              className="sr-only"
-              onChange={(event) => {
-                const file = event.target.files?.[0];
-                if (file) onAdd(file.name);
-              }}
-            />
-          </label>
-        </div>
-      </section>
-      <Panel title="Documentos recentes" action="Ver biblioteca">
-        <div className="space-y-2">
-          {documents.map((document) => (
-            <div
-              key={document}
-              className="flex items-center justify-between rounded-md border border-slate-100 p-3"
-            >
-              <div className="flex items-center gap-3">
-                <FileText className="size-5 text-blue-600" />
-                <div>
-                  <p className="text-sm font-semibold">{document}</p>
-                  <p className="text-xs text-slate-500">Enviado hoje</p>
-                </div>
-              </div>
-              <button>
-                <MoreHorizontal className="size-5 text-slate-400" />
-              </button>
-            </div>
-          ))}
-        </div>
-      </Panel>
-    </div>
-  );
-}
-function Units({ unit }: { unit: Unit }) {
-  return (
-    <div className="grid gap-5 lg:grid-cols-3">
-      {(Object.entries(unitInfo) as [Unit, (typeof unitInfo)[Unit]][]).map(([name, info]) => (
-        <section
-          key={name}
-          className={`rounded-lg border bg-white p-6 ${name === unit ? "border-blue-500 ring-1 ring-blue-500" : "border-slate-200"}`}
-        >
-          <div className="flex items-start justify-between">
-            <div className="grid size-11 place-items-center rounded-md bg-blue-50 font-bold text-blue-700">
-              {info.code}
-            </div>
-            {name === unit && <span className="text-xs font-bold text-blue-600">ATIVA</span>}
-          </div>
-          <h2 className="mt-5 text-lg font-bold">{name}</h2>
-          <p className="mt-1 text-sm text-slate-500">Banco operacional individual</p>
-          <dl className="mt-6 space-y-3 border-t border-slate-100 pt-5 text-sm">
-            <div className="flex justify-between">
-              <dt className="text-slate-500">Processos ativos</dt>
-              <dd className="font-bold">{info.processes}</dd>
-            </div>
-            <div className="flex justify-between">
-              <dt className="text-slate-500">Equipe</dt>
-              <dd className="font-bold">{info.team} membros</dd>
-            </div>
-            <div className="flex justify-between">
-              <dt className="text-slate-500">Faturamento</dt>
-              <dd className="font-bold">{info.revenue}</dd>
-            </div>
-          </dl>
-          <Button variant="outline" className="mt-6 w-full">
-            Gerenciar unidade
-          </Button>
-        </section>
-      ))}
-    </div>
-  );
-}
-function Team() {
-  return (
-    <Panel title="Equipe DHG" action="+ Convidar membro">
-      <div className="grid gap-3">
-        {[
-          ["Diego Rodrigues", "Todas as unidades", "Administrador", "DR"],
-          ["Camila Santos", "Carapicuíba", "Operacional", "CS"],
-          ["Felipe Nunes", "Osasco - Jd. D'Abril", "Operacional", "FN"],
-          ["Aline Moreira", "Osasco - Conceição", "Gestor", "AM"],
-        ].map(([name, unit, role, initials]) => (
-          <div
-            key={name}
-            className="flex items-center gap-4 rounded-md border border-slate-100 p-4"
-          >
-            <span className="grid size-10 place-items-center rounded-full bg-slate-100 text-xs font-bold text-slate-600">
-              {initials}
-            </span>
-            <div className="min-w-0 flex-1">
-              <p className="font-semibold">{name}</p>
-              <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500">
-                <span>
-                  Unidade: <strong className="font-semibold text-slate-700">{unit}</strong>
-                </span>
-                <span>
-                  Papel: <strong className="font-semibold text-slate-700">{role}</strong>
-                </span>
-              </div>
-            </div>
-            <span className="size-2 rounded-full bg-emerald-500" />
-          </div>
-        ))}
-      </div>
-    </Panel>
-  );
-}
-function Content() {
-  return (
-    <Panel title="Central de conteúdos" action="+ Novo artigo">
-      <div className="grid gap-4 md:grid-cols-3">
-        {[
-          ["Licenciamento 2026: prazos e documentos", "Publicado", "12 ago 2026"],
-          ["Como fazer transferência digital de veículo", "Em revisão", "15 ago 2026"],
-          ["Débitos veiculares: como regularizar", "Rascunho", "-"],
-        ].map(([title, status, date]) => (
-          <article key={title} className="rounded-md border border-slate-200 p-5">
-            <div className="flex justify-between">
-              <BookOpen className="size-5 text-blue-600" />
-              <Status>{status}</Status>
-            </div>
-            <h2 className="mt-8 font-bold leading-5">{title}</h2>
-            <p className="mt-3 text-xs text-slate-500">Atualizado: {date}</p>
-          </article>
-        ))}
-      </div>
-    </Panel>
-  );
-}
-function Integrations() {
-  return (
-    <>
-      <div className="mb-5 rounded-lg border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-900">
-        <strong>Configuração necessária.</strong> Conexões oficiais só podem ser ativadas após
-        credenciais, homologação e autorização de cada órgão.
-      </div>
-      <div className="grid gap-4 lg:grid-cols-3">
-        {[
-          [
-            "DETRAN-SP",
-            "Consultas veiculares, débitos e situação de veículos",
-            "Aguardando credenciais",
-          ],
-          ["gov.br", "Autenticação e validação de identidade", "Não configurada"],
-          ["CREVSP", "Serviços e registros de despachante", "Aguardando homologação"],
-        ].map(([name, description, status]) => (
-          <section key={name} className="rounded-lg border border-slate-200 bg-white p-6">
-            <div className="flex items-start justify-between">
-              <div className="grid size-11 place-items-center rounded-md bg-slate-100">
-                <Settings className="size-5 text-slate-600" />
-              </div>
-              <Status>{status}</Status>
-            </div>
-            <h2 className="mt-5 text-lg font-bold">{name}</h2>
-            <p className="mt-2 min-h-12 text-sm text-slate-500">{description}</p>
-            <Button variant="outline" className="mt-6 w-full">
-              Configurar integração
-            </Button>
-          </section>
-        ))}
-      </div>
-    </>
-  );
-}
+function ProcessList({items,clientName,onOpen}:{items:Process[];clientName:(id:string)=>string;onOpen:(id:string)=>void}) { return <div className="divide-y divide-border border-y border-border">{items.map(p=><Button key={p.id} variant="ghost" className="h-auto w-full justify-between gap-4 py-4 text-left" onClick={()=>onOpen(p.id)}><span className="min-w-0"><strong className="block truncate">{clientName(p.client_id)}</strong><span className="block truncate text-sm text-muted-foreground">{p.service} · {p.plate||p.unit}</span></span><span className="shrink-0 text-right text-xs text-muted-foreground">{p.stage}<br/>{p.deadline||''}</span></Button>)}{!items.length&&<p className="py-6 text-muted-foreground">Nenhum processo encontrado.</p>}</div>; }
+function DocumentList({items,clientName,onOpen,onDelete}:{items:Document[];clientName?:(id:string)=>string;onOpen:(d:Document)=>void;onDelete:(d:Document)=>void}) { return <div className="divide-y divide-border border-y border-border">{items.map(d=><div key={d.id} className="flex items-center gap-2 py-3"><FolderOpen className="size-4 shrink-0 text-primary"/><div className="min-w-0 flex-1"><p className="truncate font-medium">{d.file_name}</p><p className="text-xs text-muted-foreground">{d.category}{clientName?' · '+clientName(d.client_id):''} · {date(d.created_at)}</p></div><Button size="icon" variant="ghost" title="Abrir arquivo" aria-label={`Abrir ${d.file_name}`} onClick={()=>onOpen(d)}><Download className="size-4"/></Button><Button size="icon" variant="ghost" title="Excluir arquivo" aria-label={`Excluir ${d.file_name}`} onClick={()=>{if(window.confirm(`Excluir ${d.file_name}?`))onDelete(d)}}><Trash2 className="size-4"/></Button></div>)}{!items.length&&<p className="py-6 text-muted-foreground">Nenhum documento encontrado.</p>}</div>; }

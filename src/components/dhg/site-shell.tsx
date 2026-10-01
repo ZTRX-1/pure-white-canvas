@@ -34,7 +34,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   useEffect(() => setOpen(false), [pathname]);
-  if (pathname.startsWith("/interno")) return <>{children}</>;
+  if (pathname.startsWith("/interno") || pathname === "/login") return <>{children}</>;
   return (
     <div className="min-h-screen overflow-x-hidden bg-background text-foreground">
       <header className="sticky top-0 z-50 border-b border-primary-foreground/10 bg-brand-deep text-primary-foreground">

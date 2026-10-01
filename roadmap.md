@@ -27,3 +27,8 @@
 - [x] Tornar as categorias de serviços da Home evidentemente clicáveis
 - [x] Reutilizar os mesmos cards editoriais em Home e Conteúdos
 - [x] Diferenciar a apresentação das páginas individuais de serviços sem alterar as rotas
+
+- [x] Conectar Lovable Cloud, confirmação de e-mail e políticas de acesso
+- [x] Substituir cadastros fictícios por clientes, processos e documentos reais
+- [x] Consolidar as telas internas duplicadas em uma área operacional
+- [ ] Conceder o primeiro acesso master após o usuário informar e confirmar seu login (aguardando usuário)

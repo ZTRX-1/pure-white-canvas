@@ -1,0 +1,34 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1790889546177,
+      "tag": "0000_dhg_internal_operations",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790889566450,
+      "tag": "0001_dhg_staff_invitations",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790889741886,
+      "tag": "0002_restrict_internal_security_functions",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1790889815200,
+      "tag": "0003_manage_active_staff_access",
+      "breakpoints": true
+    }
+  ]
+}

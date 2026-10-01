@@ -1,0 +1,8 @@
+CREATE TABLE public.dhg_invitations (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), email text NOT NULL UNIQUE, role public.app_role NOT NULL DEFAULT 'staff', created_by uuid NOT NULL DEFAULT auth.uid(), created_at timestamptz NOT NULL DEFAULT now(), claimed_at timestamptz);
+GRANT SELECT,INSERT,UPDATE,DELETE ON public.dhg_invitations TO authenticated; GRANT ALL ON public.dhg_invitations TO service_role;
+ALTER TABLE public.dhg_invitations ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Admin read invitations" ON public.dhg_invitations FOR SELECT TO authenticated USING (public.has_role(auth.uid(),'admin'));
+CREATE POLICY "Admin invite staff" ON public.dhg_invitations FOR INSERT TO authenticated WITH CHECK (public.has_role(auth.uid(),'admin') AND created_by=auth.uid() AND role='staff');
+CREATE POLICY "Admin remove invitations" ON public.dhg_invitations FOR DELETE TO authenticated USING (public.has_role(auth.uid(),'admin'));
+CREATE FUNCTION public.claim_dhg_access() RETURNS boolean LANGUAGE plpgsql SECURITY DEFINER SET search_path=public AS $$ DECLARE matched public.dhg_invitations%ROWTYPE; BEGIN IF auth.uid() IS NULL OR (auth.jwt()->>'email') IS NULL THEN RETURN false; END IF; SELECT * INTO matched FROM public.dhg_invitations WHERE lower(email)=lower(auth.jwt()->>'email') AND role='staff' FOR UPDATE; IF NOT FOUND THEN RETURN public.is_staff(auth.uid()); END IF; INSERT INTO public.user_roles(user_id,role) VALUES(auth.uid(),'staff') ON CONFLICT DO NOTHING; UPDATE public.dhg_invitations SET claimed_at=now() WHERE id=matched.id AND claimed_at IS NULL; RETURN true; END $$;
+GRANT EXECUTE ON FUNCTION public.claim_dhg_access() TO authenticated;
