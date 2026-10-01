@@ -1,4 +1,4 @@
-import { createFileRoute, Link, Outlet, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, Link, Outlet, useNavigate, useLocation } from '@tanstack/react-router';
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { FolderOpen, Users, ClipboardList, LogOut, Plus, Upload, Download, Trash2, Search, ShieldCheck } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -28,6 +28,7 @@ const errorMessage = (error: unknown) => error instanceof Error ? error.message 
 
 function InternalPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [auth, setAuth] = useState<'loading'|'signed-out'|'pending'|'ready'>('loading');
   const [userEmail, setUserEmail] = useState('');
   const [admin, setAdmin] = useState(false);
@@ -74,6 +75,7 @@ function InternalPage() {
     return () => { active = false; subscription.unsubscribe(); };
   },[]);
   useEffect(() => { if (auth === 'ready') void refresh(); }, [auth, refresh]);
+  useEffect(() => { if (location.pathname === '/interno/documentos') setTab('documents'); else if (location.pathname.startsWith('/interno/processos/')) { setTab('processes'); setSelectedProcess(location.pathname.split('/').pop() ?? ''); } }, [location.pathname]);
 
   const run = async (action: () => Promise<void>) => {
     setBusy(true); setFeedback('');
