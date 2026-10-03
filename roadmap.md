@@ -32,3 +32,4 @@
 - [x] Substituir cadastros fictícios por clientes, processos e documentos reais
 - [x] Consolidar as telas internas duplicadas em uma área operacional
 - [x] Pré-autorizar o primeiro acesso master para o e-mail informado, com ativação após confirmação da conta
+- [x] Aplicar microinterações, revelação por rolagem, paralaxe e transições sem alterar o conteúdo

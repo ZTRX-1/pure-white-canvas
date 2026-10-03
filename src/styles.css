@@ -290,6 +290,9 @@
     transform: translateY(-3px);
     box-shadow: var(--shadow-interactive) !important;
   }
+  [data-slot="button"]:hover {
+    box-shadow: var(--shadow-interactive) !important;
+  }
 }
 
 .parallax-media {
