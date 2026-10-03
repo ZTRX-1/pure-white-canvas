@@ -21,7 +21,7 @@ function animateNumber(element: HTMLElement) {
   const startedAt = performance.now();
 
   const frame = (now: number) => {
-    const progress = Math.min((now - startedAt) / duration, 1);
+    const progress = Math.max(0, Math.min((now - startedAt) / duration, 1));
     const eased = 1 - Math.pow(1 - progress, 3);
     const current = target * eased;
     const formatted = current.toFixed(decimals).replace(".", ",");
@@ -37,49 +37,48 @@ export function SiteMotion() {
 
   useEffect(() => {
     if (pathname.startsWith("/interno") || pathname === "/login") return;
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const revealTargets = Array.from(document.querySelectorAll<HTMLElement>(revealSelector));
-    const countTargets = Array.from(document.querySelectorAll<HTMLElement>("[data-count]"));
+    let revealObserver: IntersectionObserver | undefined;
+    let countObserver: IntersectionObserver | undefined;
+    const timer = window.setTimeout(() => {
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const revealTargets = Array.from(document.querySelectorAll<HTMLElement>(revealSelector));
+      const countTargets = Array.from(document.querySelectorAll<HTMLElement>("[data-count]"));
 
-    if (reduceMotion || !("IntersectionObserver" in window)) {
-      revealTargets.forEach((element) => element.classList.add("motion-visible"));
-      countTargets.forEach((element) => {
-        const value = element.dataset['count'];
-        if (value) {
-          element.textContent = `${element.dataset['countPrefix'] ?? ""}${value}${element.dataset['countSuffix'] ?? ""}`;
-        }
-      });
-      return;
-    }
+      if (reduceMotion || !("IntersectionObserver" in window)) {
+        revealTargets.forEach((element) => element.classList.add("motion-visible"));
+        return;
+      }
 
-    revealTargets.forEach((element) => element.classList.add("motion-reveal"));
-    const revealObserver = new IntersectionObserver(
-      (entries, observer) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add("motion-visible");
-          observer.unobserve(entry.target);
-        });
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -7%" },
-    );
-    revealTargets.forEach((element) => revealObserver.observe(element));
+      revealTargets.forEach((element) => element.classList.add("motion-reveal"));
+      revealObserver = new IntersectionObserver(
+        (entries, observer) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add("motion-visible");
+            observer.unobserve(entry.target);
+          });
+        },
+        { threshold: 0.12, rootMargin: "0px 0px -7%" },
+      );
+      revealTargets.forEach((element) => revealObserver?.observe(element));
 
-    const countObserver = new IntersectionObserver(
-      (entries, observer) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          animateNumber(entry.target as HTMLElement);
-          observer.unobserve(entry.target);
-        });
-      },
-      { threshold: 0.65 },
-    );
-    countTargets.forEach((element) => countObserver.observe(element));
+      countObserver = new IntersectionObserver(
+        (entries, observer) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            animateNumber(entry.target as HTMLElement);
+            observer.unobserve(entry.target);
+          });
+        },
+        { threshold: 0.65 },
+      );
+      countTargets.forEach((element) => countObserver?.observe(element));
+    }, 180);
 
     return () => {
-      revealObserver.disconnect();
-      countObserver.disconnect();
+      window.clearTimeout(timer);
+      revealObserver?.disconnect();
+      countObserver?.disconnect();
     };
   }, [pathname]);
 
@@ -103,11 +102,12 @@ export function SiteMotion() {
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(update);
     };
-    update();
+    const startTimer = window.setTimeout(update, 180);
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
     return () => {
       if (frame) cancelAnimationFrame(frame);
+      window.clearTimeout(startTimer);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
