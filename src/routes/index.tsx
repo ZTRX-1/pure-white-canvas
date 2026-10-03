@@ -46,7 +46,8 @@ function HomePage() {
         <img
           src={unitImages.carapicuiba}
           alt="Fachada real da unidade DHG em Carapicuíba"
-          className="absolute inset-0 h-full w-full object-cover object-center"
+          className="parallax-media absolute inset-0 h-full w-full object-cover object-center"
+          data-parallax
           width="1448"
           height="1086"
           fetchPriority="high"
@@ -90,7 +91,7 @@ function HomePage() {
       <section className="bg-brand-blue py-5 text-primary-foreground">
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
           <p className="text-sm font-semibold">
-            Desde 2012 <span className="px-2 text-primary-foreground/45">·</span> 3 unidades{" "}
+            Desde <span data-count="2012">2012</span> <span className="px-2 text-primary-foreground/45">·</span> <span data-count="3">3</span> unidades{" "}
             <span className="px-2 text-primary-foreground/45">·</span> Pessoa Física e Jurídica
           </p>
         </div>
@@ -160,7 +161,7 @@ function HomePage() {
               <Link
                 key={title}
                 to={to as "/empresas"}
-                className="group flex min-h-[190px] flex-col justify-between border border-border bg-brand-soft p-6 transition-colors hover:border-primary hover:bg-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:p-8"
+                className="interactive-card group flex min-h-[190px] flex-col justify-between border border-border bg-brand-soft p-6 hover:border-primary hover:bg-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:p-8"
               >
                 <div>
                   <h3 className="text-xl font-semibold text-brand-deep sm:text-2xl">{title}</h3>
@@ -284,12 +285,13 @@ function HomePage() {
               <Link
                 key={slug}
                 to={`/unidades/${slug}` as "/unidades/carapicuiba"}
-                className={`group relative min-h-[290px] overflow-hidden bg-brand-deep ${index === 0 ? "lg:row-span-2 lg:min-h-[620px]" : ""}`}
+                data-motion-card
+                className={`interactive-card group relative min-h-[290px] overflow-hidden bg-brand-deep ${index === 0 ? "lg:row-span-2 lg:min-h-[620px]" : ""}`}
               >
                 <img
                   src={image}
                   alt={`Fachada real da unidade DHG ${area}`}
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
                   width="1448"
                   height="1086"
                   loading="lazy"

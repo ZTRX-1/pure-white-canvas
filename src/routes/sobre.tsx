@@ -57,7 +57,8 @@ function StoryHero() {
       <img
         src={atendimentoImage}
         alt="Equipe DHG em atendimento"
-        className="absolute inset-0 h-full w-full object-cover object-center"
+        className="parallax-media absolute inset-0 h-full w-full object-cover object-center"
+        data-parallax
         width="2048"
         height="1152"
         fetchPriority="high"
@@ -371,10 +372,10 @@ function SocialProof() {
         <div className="reveal-in">
           <p className="eyebrow text-primary">Confiança construída no atendimento</p>
           <h2 className="mt-4 text-3xl font-semibold text-brand-deep sm:text-5xl">
-            5,0 de avaliação média no Google.
+            <span data-count="5,0">5,0</span> de avaliação média no Google.
           </h2>
           <p className="mt-6 max-w-xl text-lg leading-8 text-muted-foreground">
-            Mais de 500 clientes avaliaram a DHG com 5 estrelas. A confiança se constrói com cada
+            Mais de <span data-count="500">500</span> clientes avaliaram a DHG com <span data-count="5">5</span> estrelas. A confiança se constrói com cada
             processo resolvido e cada recomendação que recebemos.
           </p>
           <div className="mt-10 flex flex-wrap gap-4">
@@ -395,7 +396,7 @@ function SocialProof() {
           {ratings.map((r) => (
             <div
               key={r.area}
-              className="flex items-center justify-between rounded-lg border border-border bg-background p-5"
+              className="interactive-list flex items-center justify-between rounded-lg border border-border bg-background p-5"
             >
               <div>
                 <p className="text-xl text-primary" aria-label="5 estrelas">

@@ -53,7 +53,8 @@ function ServicosPage() {
               <Link
                 key={to}
                 to={to}
-                className="group relative flex flex-col justify-between rounded-lg border border-border bg-background p-7 transition-shadow duration-300 hover:shadow-lg sm:min-h-[220px]"
+                data-motion-card
+                className="interactive-card group relative flex flex-col justify-between rounded-lg border border-border bg-background p-7 sm:min-h-[220px]"
               >
                 <div>
                   <h2 className="text-lg font-semibold text-brand-deep">{title}</h2>

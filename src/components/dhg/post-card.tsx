@@ -3,13 +3,13 @@ import { posts } from "@/lib/dhg-posts";
 
 export function PostCard({ post }: { post: (typeof posts)[number] }) {
   return (
-    <article className="group flex h-full flex-col overflow-hidden border border-border bg-background transition-colors hover:border-primary/50 focus-within:border-primary">
+    <article data-motion-card className="interactive-card group flex h-full flex-col overflow-hidden border border-border bg-background focus-within:border-primary">
       <Link to={post.to} className="flex h-full flex-col focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-primary">
         <div className="overflow-hidden">
           <img
             src={post.image}
             alt={post.alt}
-            className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-[1.02] motion-reduce:transform-none"
+            className="aspect-[16/10] w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04] motion-reduce:transform-none"
             width="1448"
             height="1086"
             loading="lazy"
