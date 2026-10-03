@@ -9,14 +9,14 @@ const revealSelector = [
 ].join(",");
 
 function animateNumber(element: HTMLElement) {
-  const raw = element.dataset.count;
+  const raw = element.dataset['count'];
   if (!raw) return;
   const target = Number(raw.replace(",", "."));
   if (!Number.isFinite(target)) return;
 
   const decimals = raw.includes(",") ? raw.split(",")[1]?.length ?? 0 : 0;
-  const prefix = element.dataset.countPrefix ?? "";
-  const suffix = element.dataset.countSuffix ?? "";
+  const prefix = element.dataset['countPrefix'] ?? "";
+  const suffix = element.dataset['countSuffix'] ?? "";
   const duration = 1500;
   const startedAt = performance.now();
 
@@ -44,9 +44,9 @@ export function SiteMotion() {
     if (reduceMotion || !("IntersectionObserver" in window)) {
       revealTargets.forEach((element) => element.classList.add("motion-visible"));
       countTargets.forEach((element) => {
-        const value = element.dataset.count;
+        const value = element.dataset['count'];
         if (value) {
-          element.textContent = `${element.dataset.countPrefix ?? ""}${value}${element.dataset.countSuffix ?? ""}`;
+          element.textContent = `${element.dataset['countPrefix'] ?? ""}${value}${element.dataset['countSuffix'] ?? ""}`;
         }
       });
       return;
