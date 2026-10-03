@@ -50,13 +50,14 @@ function UnidadesPage() {
               return (
                 <div
                   key={key}
-                  className="group flex flex-col overflow-hidden rounded-lg bg-background"
+                  data-motion-card
+                  className="interactive-card group flex flex-col overflow-hidden rounded-lg bg-background"
                 >
                   <div className="relative overflow-hidden">
                     <img
                       src={unitImages[key]}
                       alt={`Fachada real da unidade DHG ${unit.area}`}
-                      className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      className="aspect-[4/3] w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
                       width="1448"
                       height="1086"
                       loading="lazy"

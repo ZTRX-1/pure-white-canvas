@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { dhgLogos } from "@/lib/dhg-media";
 import { mainWhatsapp } from "@/lib/dhg";
 import { WhatsAppIcon } from "@/components/dhg/whatsapp-icon";
+import { SiteMotion } from "@/components/dhg/site-motion";
 
 const nav = [
   ["Início", "/"],
@@ -32,12 +33,22 @@ export function Logo({ inverse = false }: { inverse?: boolean }) {
 
 export function SiteShell({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   useEffect(() => setOpen(false), [pathname]);
+  useEffect(() => {
+    const update = () => setScrolled(window.scrollY > 20);
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, []);
   if (pathname.startsWith("/interno") || pathname === "/login") return <>{children}</>;
   return (
     <div className="min-h-screen overflow-x-hidden bg-background text-foreground">
-      <header className="sticky top-0 z-50 border-b border-primary-foreground/10 bg-brand-deep text-primary-foreground">
+      <SiteMotion />
+      <header
+        className={`site-header sticky top-0 z-50 border-b border-primary-foreground/10 bg-brand-deep text-primary-foreground ${scrolled ? "site-header-scrolled" : ""}`}
+      >
         <div className="mx-auto flex h-24 max-w-7xl items-center justify-between px-5 lg:px-8">
           <Link to="/" aria-label="DHG Despachante — início">
             <Logo inverse />
@@ -101,7 +112,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
           </nav>
         )}
       </header>
-      <main>{children}</main>
+      <main key={pathname} className="page-transition">{children}</main>
       <footer className="bg-brand-deep py-20 text-primary-foreground">
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
           <div className="grid gap-12 border-b border-primary-foreground/15 pb-14 md:grid-cols-[1.35fr_0.75fr_1fr_1fr]">

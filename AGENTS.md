@@ -16,3 +16,4 @@
 - Keep internal operational records in Lovable Cloud tables with role-based RLS and private document storage; the browser is only a presentation layer, never an authorization boundary.
 - Keep the existing internal child URLs under the shared internal parent, which owns the unified operational workspace; avoids duplicate mock workflows.
 - Keep the initial master access allowlist in a locked Cloud table and claim its admin role only for a verified account; this permits a secure first administrator without client-side role assignment.
+- Keep public-site motion in one shared client layer and exclude login/internal routes; this preserves consistent polish without coupling operational screens to marketing effects.

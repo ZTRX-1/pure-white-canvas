@@ -51,7 +51,8 @@ export function PageHero({
       <img
         src={image}
         alt="Atendimento profissional DHG"
-        className="absolute inset-0 h-full w-full object-cover"
+        className="parallax-media absolute inset-0 h-full w-full object-cover"
+        data-parallax
         width="1536"
         height="1024"
         fetchPriority="high"
@@ -217,7 +218,7 @@ export function ServiceDetail({ serviceKey }: { serviceKey: ServiceKey }) {
 export function UnitSummary({ unitKey }: { unitKey: UnitKey }) {
   const unit = units[unitKey];
   return (
-    <article className="group border-t border-border py-7">
+    <article className="interactive-list group border-t border-border py-7">
       <div className="grid gap-5 md:grid-cols-[0.6fr_1fr_auto] md:items-center">
         <div>
           <p className="eyebrow text-primary">{unit.city}</p>
@@ -312,7 +313,7 @@ export function UnitDetail({ unitKey }: { unitKey: UnitKey }) {
             <p className="text-xl" aria-label="5 estrelas">
               ★★★★★
             </p>
-            <p className="mt-2 text-3xl font-semibold">{unit.rating} no Google</p>
+            <p className="mt-2 text-3xl font-semibold"><span data-count={unit.rating}>0,0</span> no Google</p>
           </div>
           <p className="max-w-xl text-lg leading-8 text-primary-foreground/70">
             Confiança construída no atendimento da unidade {unit.area}, em {unit.city}.
@@ -337,7 +338,7 @@ export function StatsBar({
     <div className="grid border-t border-border md:grid-cols-3">
       {stats.map(({ value, label }) => (
         <div key={label} className="border-b border-border py-8 md:border-r md:px-8 first:pl-0 last:border-r-0">
-          <span className="text-3xl font-semibold text-brand-deep">{value}</span>
+          <span className="text-3xl font-semibold text-brand-deep" data-count={value.replace(/[^0-9,]/g, "")} data-count-prefix={value.match(/^\D+/)?.[0] ?? ""} data-count-suffix={value.match(/[^0-9,]+$/)?.[0] ?? ""}>{value}</span>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">{label}</p>
         </div>
       ))}
