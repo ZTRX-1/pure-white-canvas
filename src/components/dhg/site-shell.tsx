@@ -71,7 +71,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
               className="hidden h-11 bg-primary-foreground px-5 text-brand-deep shadow-none hover:bg-primary-foreground/90 md:inline-flex"
             >
               <a href={mainWhatsapp} target="_blank" rel="noreferrer">
-                <WhatsAppIcon /> Falar com a DHG
+                <WhatsAppIcon /> <span className="font-display tracking-wide">Falar com a DHG</span>
               </a>
             </Button>
             <Button
@@ -105,7 +105,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 className="mt-5 h-12 bg-whatsapp text-primary-foreground hover:bg-whatsapp/90"
               >
                 <a href={mainWhatsapp} target="_blank" rel="noreferrer">
-                  <WhatsAppIcon /> Falar com a DHG
+                  <WhatsAppIcon /> <span className="font-display tracking-wide">Falar com a DHG</span>
                 </a>
               </Button>
             </div>
@@ -128,7 +128,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 rel="noreferrer"
                 className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary-foreground"
               >
-                <WhatsAppIcon className="size-4" /> Falar com a DHG
+                <WhatsAppIcon className="size-4" /> <span className="font-display tracking-wide">Falar com a DHG</span>
               </a>
             </div>
             <div>

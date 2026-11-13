@@ -72,7 +72,7 @@ function HomePage() {
                 className="h-12 bg-whatsapp px-6 text-primary-foreground shadow-none hover:bg-whatsapp/90"
               >
                 <a href={mainWhatsapp} target="_blank" rel="noreferrer">
-                  <WhatsAppIcon /> Falar com a DHG
+                  <WhatsAppIcon /> <span className="font-display tracking-wide">Falar com a DHG</span>
                 </a>
               </Button>
               <Button

@@ -261,7 +261,8 @@ function WorkingMethod() {
                   className="mt-6 h-auto justify-start p-0 text-sm font-semibold text-primary hover:text-primary/80"
                 >
                   <a href={step.target.href} target="_blank" rel="noreferrer">
-                    {step.cta} <ArrowRight className="ml-1 size-4" />
+                    <span className="font-display tracking-wide">{step.cta}</span>{" "}
+                    <ArrowRight className="ml-1 size-4" />
                   </a>
                 </Button>
               ) : (

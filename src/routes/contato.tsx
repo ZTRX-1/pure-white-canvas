@@ -44,7 +44,7 @@ function ContatoPage() {
               className="mt-8 h-12 bg-whatsapp text-primary-foreground hover:bg-whatsapp/90"
             >
               <a href={mainWhatsapp} target="_blank" rel="noreferrer">
-                <WhatsAppIcon /> Falar com a DHG
+                <WhatsAppIcon /> <span className="font-display tracking-wide">Falar com a DHG</span>
               </a>
             </Button>
           </div>

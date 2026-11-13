@@ -111,7 +111,7 @@ export function CtaBand({
           className="h-12 bg-primary-foreground px-6 text-brand-deep shadow-none hover:bg-primary-foreground/90"
         >
           <a href={mainWhatsapp} target="_blank" rel="noreferrer">
-            <WhatsAppIcon /> Falar com a DHG
+            <WhatsAppIcon /> <span className="font-display tracking-wide">Falar com a DHG</span>
           </a>
         </Button>
       </div>
