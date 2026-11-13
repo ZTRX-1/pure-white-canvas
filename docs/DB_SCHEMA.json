@@ -1,0 +1,653 @@
+{
+  "enums": [
+    {
+      "nome": "app_role",
+      "valores": [
+        "admin",
+        "staff"
+      ]
+    }
+  ],
+  "funcoes": [
+    {
+      "nome": "claim_dhg_access",
+      "retorno": "boolean",
+      "definicao": "CREATE OR REPLACE FUNCTION public.claim_dhg_access()\n RETURNS boolean\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'public'\nAS $function$\nDECLARE\n  verified_email text;\n  master_access public.dhg_master_access%ROWTYPE;\n  matched public.dhg_invitations%ROWTYPE;\nBEGIN\n  IF auth.uid() IS NULL THEN RETURN false; END IF;\n  SELECT email INTO verified_email FROM auth.users\n    WHERE id=auth.uid() AND email_confirmed_at IS NOT NULL;\n  IF verified_email IS NULL THEN RETURN false; END IF;\n\n  SELECT * INTO master_access FROM public.dhg_master_access\n    WHERE lower(email)=lower(verified_email) FOR UPDATE;\n  IF FOUND THEN\n    IF master_access.claimed_by IS NOT NULL AND master_access.claimed_by <> auth.uid() THEN RETURN false; END IF;\n    INSERT INTO public.user_roles(user_id,role) VALUES(auth.uid(),'admin') ON CONFLICT DO NOTHING;\n    UPDATE public.dhg_master_access SET claimed_by=auth.uid(), claimed_at=coalesce(claimed_at,now()) WHERE email=master_access.email;\n    RETURN true;\n  END IF;\n\n  SELECT * INTO matched FROM public.dhg_invitations\n    WHERE lower(email)=lower(verified_email) AND role='staff' FOR UPDATE;\n  IF NOT FOUND THEN RETURN public.is_staff(auth.uid()); END IF;\n  IF matched.claimed_by IS NOT NULL AND matched.claimed_by <> auth.uid() THEN RETURN false; END IF;\n  INSERT INTO public.user_roles(user_id,role) VALUES(auth.uid(),'staff') ON CONFLICT DO NOTHING;\n  UPDATE public.dhg_invitations SET claimed_by=auth.uid(), claimed_at=coalesce(claimed_at,now()) WHERE id=matched.id;\n  RETURN true;\nEND $function$\n",
+      "argumentos": ""
+    },
+    {
+      "nome": "has_role",
+      "retorno": "boolean",
+      "definicao": "CREATE OR REPLACE FUNCTION public.has_role(_user_id uuid, _role app_role)\n RETURNS boolean\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO 'public'\nAS $function$ SELECT EXISTS (SELECT 1 FROM public.user_roles WHERE user_id=_user_id AND role=_role) $function$\n",
+      "argumentos": "_user_id uuid, _role app_role"
+    },
+    {
+      "nome": "is_staff",
+      "retorno": "boolean",
+      "definicao": "CREATE OR REPLACE FUNCTION public.is_staff(_user_id uuid)\n RETURNS boolean\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO 'public'\nAS $function$ SELECT public.has_role(_user_id,'admin') OR public.has_role(_user_id,'staff') $function$\n",
+      "argumentos": "_user_id uuid"
+    },
+    {
+      "nome": "revoke_dhg_staff",
+      "retorno": "void",
+      "definicao": "CREATE OR REPLACE FUNCTION public.revoke_dhg_staff(_invitation_id uuid)\n RETURNS void\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'public'\nAS $function$ DECLARE target public.dhg_invitations%ROWTYPE; BEGIN IF NOT public.has_role(auth.uid(),'admin') THEN RAISE EXCEPTION 'Acesso negado'; END IF; SELECT * INTO target FROM public.dhg_invitations WHERE id=_invitation_id AND role='staff' FOR UPDATE; IF NOT FOUND THEN RAISE EXCEPTION 'Acesso não encontrado'; END IF; IF target.claimed_by IS NOT NULL THEN DELETE FROM public.user_roles WHERE user_id=target.claimed_by AND role='staff'; END IF; DELETE FROM public.dhg_invitations WHERE id=target.id; END $function$\n",
+      "argumentos": "_invitation_id uuid"
+    }
+  ],
+  "tabelas": [
+    {
+      "tabela": "dhg_clients",
+      "colunas": [
+        {
+          "nome": "id",
+          "nulo": "NO",
+          "tipo": "uuid",
+          "default": "gen_random_uuid()",
+          "tipo_udt": "uuid"
+        },
+        {
+          "nome": "name",
+          "nulo": "NO",
+          "tipo": "text",
+          "default": null,
+          "tipo_udt": "text"
+        },
+        {
+          "nome": "person_type",
+          "nulo": "NO",
+          "tipo": "text",
+          "default": "'PF'::text",
+          "tipo_udt": "text"
+        },
+        {
+          "nome": "cpf",
+          "nulo": "YES",
+          "tipo": "text",
+          "default": null,
+          "tipo_udt": "text"
+        },
+        {
+          "nome": "cnpj",
+          "nulo": "YES",
+          "tipo": "text",
+          "default": null,
+          "tipo_udt": "text"
+        },
+        {
+          "nome": "rg",
+          "nulo": "YES",
+          "tipo": "text",
+          "default": null,
+          "tipo_udt": "text"
+        },
+        {
+          "nome": "cnh",
+          "nulo": "YES",
+          "tipo": "text",
+          "default": null,
+          "tipo_udt": "text"
+        },
+        {
+          "nome": "phone",
+          "nulo": "YES",
+          "tipo": "text",
+          "default": null,
+          "tipo_udt": "text"
+        },
+        {
+          "nome": "email",
+          "nulo": "YES",
+          "tipo": "text",
+          "default": null,
+          "tipo_udt": "text"
+        },
+        {
+          "nome": "unit",
+          "nulo": "NO",
+          "tipo": "text",
+          "default": null,
+          "tipo_udt": "text"
+        },
+        {
+          "nome": "notes",
+          "nulo": "YES",
+          "tipo": "text",
+          "default": null,
+          "tipo_udt": "text"
+        },
+        {
+          "nome": "created_by",
+          "nulo": "NO",
+          "tipo": "uuid",
+          "default": "auth.uid()",
+          "tipo_udt": "uuid"
+        },
+        {
+          "nome": "created_at",
+          "nulo": "NO",
+          "tipo": "timestamp with time zone",
+          "default": "now()",
+          "tipo_udt": "timestamptz"
+        },
+        {
+          "nome": "updated_at",
+          "nulo": "NO",
+          "tipo": "timestamp with time zone",
+          "default": "now()",
+          "tipo_udt": "timestamptz"
+        }
+      ]
+    },
+    {
+      "tabela": "dhg_documents",
+      "colunas": [
+        {
+          "nome": "id",
+          "nulo": "NO",
+          "tipo": "uuid",
+          "default": "gen_random_uuid()",
+          "tipo_udt": "uuid"
+        },
+        {
+          "nome": "client_id",
+          "nulo": "NO",
+          "tipo": "uuid",
+          "default": null,
+          "tipo_udt": "uuid"
+        },
+        {
+          "nome": "process_id",
+          "nulo": "YES",
+          "tipo": "uuid",
+          "default": null,
+          "tipo_udt": "uuid"
+        },
+        {
+          "nome": "category",
+          "nulo": "NO",
+          "tipo": "text",
+          "default": null,
+          "tipo_udt": "text"
+        },
+        {
+          "nome": "file_name",
+          "nulo": "NO",
+          "tipo": "text",
+          "default": null,
+          "tipo_udt": "text"
+        },
+        {
+          "nome": "storage_path",
+          "nulo": "NO",
+          "tipo": "text",
+          "default": null,
+          "tipo_udt": "text"
+        },
+        {
+          "nome": "mime_type",
+          "nulo": "YES",
+          "tipo": "text",
+          "default": null,
+          "tipo_udt": "text"
+        },
+        {
+          "nome": "size_bytes",
+          "nulo": "YES",
+          "tipo": "bigint",
+          "default": null,
+          "tipo_udt": "int8"
+        },
+        {
+          "nome": "created_by",
+          "nulo": "NO",
+          "tipo": "uuid",
+          "default": "auth.uid()",
+          "tipo_udt": "uuid"
+        },
+        {
+          "nome": "created_at",
+          "nulo": "NO",
+          "tipo": "timestamp with time zone",
+          "default": "now()",
+          "tipo_udt": "timestamptz"
+        }
+      ]
+    },
+    {
+      "tabela": "dhg_invitations",
+      "colunas": [
+        {
+          "nome": "id",
+          "nulo": "NO",
+          "tipo": "uuid",
+          "default": "gen_random_uuid()",
+          "tipo_udt": "uuid"
+        },
+        {
+          "nome": "email",
+          "nulo": "NO",
+          "tipo": "text",
+          "default": null,
+          "tipo_udt": "text"
+        },
+        {
+          "nome": "role",
+          "nulo": "NO",
+          "tipo": "USER-DEFINED",
+          "default": "'staff'::app_role",
+          "tipo_udt": "app_role"
+        },
+        {
+          "nome": "created_by",
+          "nulo": "NO",
+          "tipo": "uuid",
+          "default": "auth.uid()",
+          "tipo_udt": "uuid"
+        },
+        {
+          "nome": "created_at",
+          "nulo": "NO",
+          "tipo": "timestamp with time zone",
+          "default": "now()",
+          "tipo_udt": "timestamptz"
+        },
+        {
+          "nome": "claimed_at",
+          "nulo": "YES",
+          "tipo": "timestamp with time zone",
+          "default": null,
+          "tipo_udt": "timestamptz"
+        },
+        {
+          "nome": "claimed_by",
+          "nulo": "YES",
+          "tipo": "uuid",
+          "default": null,
+          "tipo_udt": "uuid"
+        }
+      ]
+    },
+    {
+      "tabela": "dhg_master_access",
+      "colunas": [
+        {
+          "nome": "email",
+          "nulo": "NO",
+          "tipo": "text",
+          "default": null,
+          "tipo_udt": "text"
+        },
+        {
+          "nome": "claimed_by",
+          "nulo": "YES",
+          "tipo": "uuid",
+          "default": null,
+          "tipo_udt": "uuid"
+        },
+        {
+          "nome": "claimed_at",
+          "nulo": "YES",
+          "tipo": "timestamp with time zone",
+          "default": null,
+          "tipo_udt": "timestamptz"
+        }
+      ]
+    },
+    {
+      "tabela": "dhg_processes",
+      "colunas": [
+        {
+          "nome": "id",
+          "nulo": "NO",
+          "tipo": "uuid",
+          "default": "gen_random_uuid()",
+          "tipo_udt": "uuid"
+        },
+        {
+          "nome": "client_id",
+          "nulo": "NO",
+          "tipo": "uuid",
+          "default": null,
+          "tipo_udt": "uuid"
+        },
+        {
+          "nome": "unit",
+          "nulo": "NO",
+          "tipo": "text",
+          "default": null,
+          "tipo_udt": "text"
+        },
+        {
+          "nome": "service",
+          "nulo": "NO",
+          "tipo": "text",
+          "default": null,
+          "tipo_udt": "text"
+        },
+        {
+          "nome": "stage",
+          "nulo": "NO",
+          "tipo": "text",
+          "default": "'Aberto'::text",
+          "tipo_udt": "text"
+        },
+        {
+          "nome": "plate",
+          "nulo": "YES",
+          "tipo": "text",
+          "default": null,
+          "tipo_udt": "text"
+        },
+        {
+          "nome": "protocol",
+          "nulo": "YES",
+          "tipo": "text",
+          "default": null,
+          "tipo_udt": "text"
+        },
+        {
+          "nome": "deadline",
+          "nulo": "YES",
+          "tipo": "date",
+          "default": null,
+          "tipo_udt": "date"
+        },
+        {
+          "nome": "notes",
+          "nulo": "YES",
+          "tipo": "text",
+          "default": null,
+          "tipo_udt": "text"
+        },
+        {
+          "nome": "created_by",
+          "nulo": "NO",
+          "tipo": "uuid",
+          "default": "auth.uid()",
+          "tipo_udt": "uuid"
+        },
+        {
+          "nome": "created_at",
+          "nulo": "NO",
+          "tipo": "timestamp with time zone",
+          "default": "now()",
+          "tipo_udt": "timestamptz"
+        },
+        {
+          "nome": "updated_at",
+          "nulo": "NO",
+          "tipo": "timestamp with time zone",
+          "default": "now()",
+          "tipo_udt": "timestamptz"
+        }
+      ]
+    },
+    {
+      "tabela": "user_roles",
+      "colunas": [
+        {
+          "nome": "id",
+          "nulo": "NO",
+          "tipo": "uuid",
+          "default": "gen_random_uuid()",
+          "tipo_udt": "uuid"
+        },
+        {
+          "nome": "user_id",
+          "nulo": "NO",
+          "tipo": "uuid",
+          "default": null,
+          "tipo_udt": "uuid"
+        },
+        {
+          "nome": "role",
+          "nulo": "NO",
+          "tipo": "USER-DEFINED",
+          "default": null,
+          "tipo_udt": "app_role"
+        }
+      ]
+    }
+  ],
+  "policies": [
+    {
+      "roles": [
+        "authenticated"
+      ],
+      "using": "has_role(auth.uid(), 'admin'::app_role)",
+      "policy": "Admin delete clients",
+      "tabela": "dhg_clients",
+      "comando": "DELETE",
+      "permissiva": "PERMISSIVE",
+      "with_check": null
+    },
+    {
+      "roles": [
+        "authenticated"
+      ],
+      "using": null,
+      "policy": "Staff add clients",
+      "tabela": "dhg_clients",
+      "comando": "INSERT",
+      "permissiva": "PERMISSIVE",
+      "with_check": "(is_staff(auth.uid()) AND (created_by = auth.uid()))"
+    },
+    {
+      "roles": [
+        "authenticated"
+      ],
+      "using": "is_staff(auth.uid())",
+      "policy": "Staff edit clients",
+      "tabela": "dhg_clients",
+      "comando": "UPDATE",
+      "permissiva": "PERMISSIVE",
+      "with_check": "is_staff(auth.uid())"
+    },
+    {
+      "roles": [
+        "authenticated"
+      ],
+      "using": "is_staff(auth.uid())",
+      "policy": "Staff read clients",
+      "tabela": "dhg_clients",
+      "comando": "SELECT",
+      "permissiva": "PERMISSIVE",
+      "with_check": null
+    },
+    {
+      "roles": [
+        "authenticated"
+      ],
+      "using": null,
+      "policy": "Staff add documents",
+      "tabela": "dhg_documents",
+      "comando": "INSERT",
+      "permissiva": "PERMISSIVE",
+      "with_check": "(is_staff(auth.uid()) AND (created_by = auth.uid()))"
+    },
+    {
+      "roles": [
+        "authenticated"
+      ],
+      "using": "is_staff(auth.uid())",
+      "policy": "Staff delete documents",
+      "tabela": "dhg_documents",
+      "comando": "DELETE",
+      "permissiva": "PERMISSIVE",
+      "with_check": null
+    },
+    {
+      "roles": [
+        "authenticated"
+      ],
+      "using": "is_staff(auth.uid())",
+      "policy": "Staff edit documents",
+      "tabela": "dhg_documents",
+      "comando": "UPDATE",
+      "permissiva": "PERMISSIVE",
+      "with_check": "is_staff(auth.uid())"
+    },
+    {
+      "roles": [
+        "authenticated"
+      ],
+      "using": "is_staff(auth.uid())",
+      "policy": "Staff read documents",
+      "tabela": "dhg_documents",
+      "comando": "SELECT",
+      "permissiva": "PERMISSIVE",
+      "with_check": null
+    },
+    {
+      "roles": [
+        "authenticated"
+      ],
+      "using": null,
+      "policy": "Admin invite staff",
+      "tabela": "dhg_invitations",
+      "comando": "INSERT",
+      "permissiva": "PERMISSIVE",
+      "with_check": "(has_role(auth.uid(), 'admin'::app_role) AND (created_by = auth.uid()) AND (role = 'staff'::app_role))"
+    },
+    {
+      "roles": [
+        "authenticated"
+      ],
+      "using": "has_role(auth.uid(), 'admin'::app_role)",
+      "policy": "Admin read invitations",
+      "tabela": "dhg_invitations",
+      "comando": "SELECT",
+      "permissiva": "PERMISSIVE",
+      "with_check": null
+    },
+    {
+      "roles": [
+        "authenticated"
+      ],
+      "using": "has_role(auth.uid(), 'admin'::app_role)",
+      "policy": "Admin remove invitations",
+      "tabela": "dhg_invitations",
+      "comando": "DELETE",
+      "permissiva": "PERMISSIVE",
+      "with_check": null
+    },
+    {
+      "roles": [
+        "authenticated"
+      ],
+      "using": "has_role(auth.uid(), 'admin'::app_role)",
+      "policy": "Admin delete processes",
+      "tabela": "dhg_processes",
+      "comando": "DELETE",
+      "permissiva": "PERMISSIVE",
+      "with_check": null
+    },
+    {
+      "roles": [
+        "authenticated"
+      ],
+      "using": null,
+      "policy": "Staff add processes",
+      "tabela": "dhg_processes",
+      "comando": "INSERT",
+      "permissiva": "PERMISSIVE",
+      "with_check": "(is_staff(auth.uid()) AND (created_by = auth.uid()))"
+    },
+    {
+      "roles": [
+        "authenticated"
+      ],
+      "using": "is_staff(auth.uid())",
+      "policy": "Staff edit processes",
+      "tabela": "dhg_processes",
+      "comando": "UPDATE",
+      "permissiva": "PERMISSIVE",
+      "with_check": "is_staff(auth.uid())"
+    },
+    {
+      "roles": [
+        "authenticated"
+      ],
+      "using": "is_staff(auth.uid())",
+      "policy": "Staff read processes",
+      "tabela": "dhg_processes",
+      "comando": "SELECT",
+      "permissiva": "PERMISSIVE",
+      "with_check": null
+    },
+    {
+      "roles": [
+        "authenticated"
+      ],
+      "using": "is_staff(auth.uid())",
+      "policy": "Staff view roles",
+      "tabela": "user_roles",
+      "comando": "SELECT",
+      "permissiva": "PERMISSIVE",
+      "with_check": null
+    }
+  ],
+  "triggers": [],
+  "gerado_em": "2026-11-13T16:28:59.198284+00:00",
+  "rls_ativo": {
+    "user_roles": true,
+    "dhg_clients": true,
+    "dhg_documents": true,
+    "dhg_processes": true,
+    "dhg_invitations": true,
+    "dhg_master_access": true
+  },
+  "contagem_linhas": {
+    "user_roles": 0,
+    "dhg_clients": 0,
+    "dhg_documents": 0,
+    "dhg_processes": 0,
+    "dhg_invitations": 0,
+    "dhg_master_access": 0
+  },
+  "chaves_primarias": [
+    {
+      "coluna": "id",
+      "tabela": "dhg_clients"
+    },
+    {
+      "coluna": "id",
+      "tabela": "dhg_documents"
+    },
+    {
+      "coluna": "id",
+      "tabela": "dhg_invitations"
+    },
+    {
+      "coluna": "email",
+      "tabela": "dhg_master_access"
+    },
+    {
+      "coluna": "id",
+      "tabela": "dhg_processes"
+    },
+    {
+      "coluna": "id",
+      "tabela": "user_roles"
+    }
+  ],
+  "chaves_estrangeiras": [
+    {
+      "coluna": "client_id",
+      "tabela": "dhg_documents",
+      "referencia": "dhg_clients.id"
+    },
+    {
+      "coluna": "process_id",
+      "tabela": "dhg_documents",
+      "referencia": "dhg_processes.id"
+    },
+    {
+      "coluna": "client_id",
+      "tabela": "dhg_processes",
+      "referencia": "dhg_clients.id"
+    }
+  ],
+  "triggers_auth_users": [],
+  "geckoai_sincronizado_em": "2026-11-13T16:29:53.483Z"
+}
